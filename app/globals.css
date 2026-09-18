@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+ * Design tokens
+ * ------------------------------------------------------------------------- */
+@theme {
+  --color-cobalt: #1238b8;
+  --color-cobalt-deep: #0e2c93;
+  --color-bougainvillea: #e50064;
+  --color-stone: #f5f0e8;
+  --color-stone-deep: #ede5d8;
+  --color-gold: #c9a24a;
+
+  --font-display: var(--font-bodoni), "Bodoni Moda", "Bodoni 72", "Didot", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-caveat), "Segoe Script", cursive;
+
+  --ease-editorial: cubic-bezier(0.65, 0, 0.15, 1);
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ------------------------------------------------------------------------- */
+html {
+  background: var(--color-stone);
+  color: var(--color-cobalt-deep);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+::selection {
+  background: rgba(229, 0, 100, 0.22);
+  color: var(--color-cobalt-deep);
+}
+
+.script {
+  font-family: var(--font-script);
+  font-weight: 600;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--color-cobalt);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transform: translateY(-200%);
+  transition: transform 0.4s var(--ease-editorial);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #fff;
+}
+
+/* ---------------------------------------------------------------------------
+ * KIKI scroll sequence
+ *
+ * The wordmark is laid out at its FINAL width (--wm-final) and scaled DOWN to
+ * its hero size (--wm-s0) so raster quality stays crisp throughout the scrub.
+ * Hero wordmark width = --wm-final * --wm-s0. The Reserve button is positioned
+ * from the same numbers so it always sits just beneath the letters.
+ * Wordmark height/width = 0.3 (see LETTERMARK in VideoLettermark.tsx).
+ * ------------------------------------------------------------------------- */
+.kiki-stage {
+  --wm-final: 118vw; /* final width, exceeds the viewport */
+  --wm-s0: 0.4915; /* 58vw hero width / 118vw */
+}
+@media (min-width: 768px) {
+  .kiki-stage {
+    --wm-final: 108vw;
+    --wm-s0: 0.2407; /* 26vw / 108vw */
+  }
+}
+@media (min-width: 1024px) {
+  .kiki-stage {
+    --wm-s0: 0.1667; /* 18vw / 108vw */
+  }
+}
+
+.kiki-wm {
+  left: 50%;
+  top: 46%;
+  width: var(--wm-final);
+  margin-left: calc(var(--wm-final) / -2);
+  margin-top: calc(var(--wm-final) * -0.15);
+  transform: scale(var(--wm-s0));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.kiki-reserve-slot {
+  top: calc(46svh + var(--wm-final) * var(--wm-s0) * 0.15 + 34px);
+}
+
+.kiki-stage-glow {
+  background:
+    radial-gradient(60% 50% at 0% 0%, rgba(229, 0, 100, 0.1), transparent 70%),
+    radial-gradient(50% 45% at 100% 100%, rgba(229, 0, 100, 0.08), transparent 70%),
+    radial-gradient(45% 40% at 100% 0%, rgba(18, 56, 184, 0.05), transparent 70%);
+}
+
+.kiki-wheel-section {
+  margin-top: -42svh;
+  padding-top: 2svh;
+}
+@media (min-width: 768px) {
+  .kiki-wheel-section {
+    margin-top: -38svh;
+  }
+}
+
+/* Scroll hint: a hairline with a slow travelling highlight. */
+.scroll-cue {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 46px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.45);
+}
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, #fff 50%, transparent);
+  transform: translateY(-100%);
+  animation: scroll-cue 2.6s var(--ease-editorial) infinite;
+}
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Thin animated underline for text links. */
+.link-underline {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.55s var(--ease-editorial);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+.link-underline:focus-visible {
+  outline: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Lenis
+ * ------------------------------------------------------------------------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
+}
+
+/* ---------------------------------------------------------------------------
+ * Reduced motion
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue::after {
+    animation: none;
+    transform: translateY(0);
+  }
+  .link-underline::after,
+  .skip-link {
+    transition: none;
+  }
+}
