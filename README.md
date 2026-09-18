@@ -114,7 +114,7 @@ scrubbed by scroll; fractions below are of that distance
 |---|---|
 | 0 – 22% | Hero holds. Photograph dollies 1.00 → 1.06. Six base petals drift. |
 | 22 – 36% | Tagline, chevron and note fade out. |
-| 22 – 68% | Floral wordmark scales from its hero size to 108vw (118vw mobile), centre anchored. |
+| 22 – 68% | Floral wordmark scales from its hero size to 98vw (all four letters in frame, edge to edge), centre anchored. |
 | 24 – 60% | Twenty‑nine more petals fade in at staggered times and parallax speeds. |
 | 30 – 55% | Photograph softens: a pre‑blurred copy fades over the sharp one (opacity only). |
 | 48 – 70% | Blurred photograph fades out, leaving warm stone. |

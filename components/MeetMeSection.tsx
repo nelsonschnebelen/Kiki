@@ -15,7 +15,7 @@ export default function MeetMeSection() {
     <section id="meet" className="relative z-10 bg-stone" aria-labelledby="meet-heading">
       <div className="grid grid-cols-1 md:grid-cols-[30%_44%_26%] md:grid-rows-[auto_1fr]">
         {/* Heart: rises into the section above on desktop. */}
-        <Reveal className="relative md:row-span-2 md:-mt-[16svh]">
+        <Reveal className="relative md:row-span-2 md:-mt-[22svh]">
           <div className="relative aspect-square w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[62svh]">
             <Image src={meet.heart.src} alt={meet.heart.alt} fill sizes="(max-width: 767px) 100vw, 30vw" className="object-cover object-[36%_50%]" />
           </div>

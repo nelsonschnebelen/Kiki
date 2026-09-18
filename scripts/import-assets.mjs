@@ -41,11 +41,8 @@ await out("10-private-events-sunset-table.png", "public/images/champagne.jpg", {
   width: 1000,
 });
 
-// Marina accent for the wheel section, 3:4 from the waterfront view.
-await out("11-miami-river-waterfront.png", "public/images/marina.jpg", {
-  crop: (w, h) => ({ left: w * 0.28, top: 0, width: w * 0.5, height: h }),
-  width: 900,
-});
+// Waterfront view for the right of the wheel section (full frame; cropped by CSS).
+await out("11-miami-river-waterfront.png", "public/images/marina.jpg", { width: 1600 });
 
 // Wheel centre: day on the left, night on the right.
 const half = (f) => sharp(`${SRC}/${f}`).resize({ width: 600, height: 1200, fit: "cover", position: "centre" }).toBuffer();

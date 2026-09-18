@@ -25,7 +25,7 @@ export default function ReducedMotionFallback() {
       </div>
 
       <div className="w-full overflow-hidden bg-stone pt-[8svh] pb-[48svh] md:pb-[36svh]">
-        <div className="mx-auto w-[118vw] md:w-[108vw]">
+        <div className="mx-auto w-[98vw]">
           <VideoLettermark letters={letters} mode="posters" />
         </div>
       </div>
