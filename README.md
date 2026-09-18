@@ -51,6 +51,7 @@ data/
   site-content.ts       ALL copy, links, image and video paths
 scripts/
   import-assets.mjs     converts the supplied stills in assets/source into public/images
+  extract-petals.mjs    cuts real bracts and leaves out of the floral wordmark → public/petals, lib/petal-sprites.ts
   brand-geometry.mjs    measures the wordmark PNGs → letter masks, outlines, lib/brand-geometry.ts
   encode-video.mjs      encodes a generated clip into desktop/mobile MP4 + poster
   verify-scroll.mjs     headless Playwright check of the sequence (desktop, mobile, reduced motion)
@@ -114,7 +115,7 @@ scrubbed by scroll; fractions below are of that distance
 | 0 – 22% | Hero holds. Photograph dollies 1.00 → 1.06. Six base petals drift. |
 | 22 – 36% | Tagline, chevron and note fade out. |
 | 22 – 68% | Floral wordmark scales from its hero size to 108vw (118vw mobile), centre anchored. |
-| 24 – 60% | Twenty‑four more petals fade in at staggered times and parallax speeds. |
+| 24 – 60% | Twenty‑nine more petals fade in at staggered times and parallax speeds. |
 | 30 – 55% | Photograph softens: a pre‑blurred copy fades over the sharp one (opacity only). |
 | 48 – 70% | Blurred photograph fades out, leaving warm stone. |
 | 50 – 74% | Floral wordmark crossfades into the video‑filled letters. |
@@ -155,8 +156,10 @@ hero, so the browser rasterises it at full resolution and the scrub stays crisp.
 - Videos: `muted loop playsInline preload="metadata"`, sources attached lazily
   when the letters reveal, paused when off screen, hidden on error.
 - Cursor repulsion and magnetic hover only run on fine pointers.
-- Petals: 18 on desktop, 8 on mobile (`MOBILE_PETAL_LIMIT`), seeded so server
-  and client markup match.
+- Petals: 36 on desktop, 16 on mobile (`MOBILE_PETAL_LIMIT`), seeded so server
+  and client markup match. They are real bracts and leaves cut from the floral
+  wordmark, each falling with sway, a 3D rocking tumble (a few flip right over),
+  a Y‑axis flutter and a slow spin; all transforms, paused off screen.
 - GSAP contexts are reverted on unmount; Lenis is destroyed.
 
 ## Visual direction

@@ -2,7 +2,11 @@
  * Seeded bougainvillea petal configuration.
  * Everything here is deterministic so server and client render identical markup
  * (no hydration warnings), and petals keep their positions across re-renders.
+ *
+ * Sprites are real bracts and leaves cut from the floral wordmark
+ * (scripts/extract-petals.mjs), so the falling flowers match the logo exactly.
  */
+import { PETAL_SPRITES, type PetalSprite } from "./petal-sprites";
 
 export type PetalTier = "base" | "transition";
 
@@ -12,22 +16,31 @@ export interface PetalConfig {
   tier: PetalTier;
   /** Rendered in front of the typography (true) or behind it (false). */
   front: boolean;
-  /** Colour variant, see PetalField gradients. */
-  variant: 0 | 1 | 2;
+  sprite: PetalSprite;
   /** Horizontal position in vw. */
   x: number;
-  /** Rendered size in px (longest edge). */
-  size: number;
+  /** Rendered width in px. */
+  width: number;
   /** Initial rotation in degrees. */
   rotation: number;
-  /** Rotation swing over one sway cycle, degrees. */
-  rotationDrift: number;
+  /** Degrees of Z rotation per fall cycle (a slow spin); sign gives direction. */
+  spin: number;
   /** Horizontal sway amplitude in px. */
   sway: number;
   /** Seconds per sway cycle. */
   swayDuration: number;
   /** Seconds for one full top-to-bottom fall. */
   fallDuration: number;
+  /** Seconds per tumble cycle about the X axis. */
+  tumbleDuration: number;
+  /** Full 360° flips (true) or a rocking tumble of ±tumbleAmplitude (false). */
+  flip: boolean;
+  /** Degrees of rock for non-flipping petals. */
+  tumbleAmplitude: number;
+  /** Amplitude of the Y-axis flutter, degrees. */
+  flutter: number;
+  /** Seconds per flutter cycle. */
+  flutterDuration: number;
   /** 0-1 phase offset so petals start mid-fall instead of all at the top. */
   phase: number;
   /** 0.25 (far) to 1 (near). Drives parallax distance and size. */
@@ -38,12 +51,12 @@ export interface PetalConfig {
   opacity: number;
 }
 
-export const PETAL_COUNT = 30;
+export const PETAL_COUNT = 36;
 export const PETAL_SEED = 20260917;
 /** Petals with an id at or above this limit are hidden below the md breakpoint. */
-export const MOBILE_PETAL_LIMIT = 14;
+export const MOBILE_PETAL_LIMIT = 16;
 /** Number of petals visible before scrolling. */
-export const BASE_PETAL_COUNT = 6;
+export const BASE_PETAL_COUNT = 7;
 
 /** Small, fast, deterministic PRNG (mulberry32). */
 export function mulberry32(seed: number): () => number {
@@ -58,31 +71,45 @@ export function mulberry32(seed: number): () => number {
 }
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const round = (v: number, d = 2) => Number(v.toFixed(d));
 
 export function createPetals(count = PETAL_COUNT, seed = PETAL_SEED): PetalConfig[] {
   const rand = mulberry32(seed);
+  const bracts = PETAL_SPRITES.filter((s) => s.kind === "bract");
+  const leaves = PETAL_SPRITES.filter((s) => s.kind === "leaf");
   const petals: PetalConfig[] = [];
 
   for (let i = 0; i < count; i++) {
     const depth = lerp(0.25, 1, rand());
     const front = i % 3 === 1;
-    const sizeMix = depth * 0.7 + rand() * 0.3;
+    const isLeaf = rand() < 0.22;
+    const pool = isLeaf ? leaves : bracts;
+    const sprite = pool[Math.floor(rand() * pool.length)];
+    // Near petals are bigger; the biggest clusters only appear up close.
+    const scale = lerp(0.42, 0.98, depth) * lerp(0.85, 1.15, rand());
+    const width = Math.round(sprite.w * scale);
+    const sign = rand() < 0.5 ? -1 : 1;
     petals.push({
       id: i,
       tier: i < BASE_PETAL_COUNT ? "base" : "transition",
       front,
-      variant: (i % 3) as 0 | 1 | 2,
-      x: Number(lerp(3, 97, rand()).toFixed(2)),
-      size: Math.round(lerp(16, 58, sizeMix)),
-      rotation: Math.round(lerp(-70, 70, rand())),
-      rotationDrift: Math.round(lerp(18, 75, rand()) * (rand() < 0.5 ? -1 : 1)),
-      sway: Math.round(lerp(14, 64, rand())),
-      swayDuration: Number(lerp(3.6, 7.8, rand()).toFixed(2)),
-      fallDuration: Number((lerp(24, 48, rand()) * (1.3 - depth * 0.4)).toFixed(2)),
-      phase: Number(rand().toFixed(3)),
-      depth: Number(depth.toFixed(3)),
-      blur: front ? (rand() < 0.3 ? 0.6 : 0) : Number(lerp(0, 1.6, 1 - depth).toFixed(2)),
-      opacity: Number(lerp(0.74, 0.96, rand()).toFixed(2)),
+      sprite,
+      x: round(lerp(2, 98, rand())),
+      width,
+      rotation: Math.round(lerp(-180, 180, rand())),
+      spin: Math.round(lerp(40, 160, rand())) * sign,
+      sway: Math.round(lerp(22, 90, rand()) * lerp(0.7, 1.2, depth)),
+      swayDuration: round(lerp(3.2, 6.8, rand())),
+      fallDuration: round(lerp(13, 26, rand()) * (1.35 - depth * 0.5)),
+      tumbleDuration: round(lerp(3.2, 7.5, rand())),
+      flip: rand() < 0.28,
+      tumbleAmplitude: Math.round(lerp(38, 70, rand())),
+      flutter: Math.round(lerp(28, 62, rand())),
+      flutterDuration: round(lerp(1.6, 3.4, rand())),
+      phase: round(rand(), 3),
+      depth: round(depth, 3),
+      blur: front ? (rand() < 0.3 ? 0.5 : 0) : round(lerp(0, 1.8, 1 - depth)),
+      opacity: round(lerp(0.82, 1, rand())),
     });
   }
   return petals;

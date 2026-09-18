@@ -1,7 +1,9 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- tiny transparent sprites; next/image adds no value here */
+
 import { useEffect, useRef } from "react";
-import { PETALS, MOBILE_PETAL_LIMIT, type PetalConfig } from "@/lib/petal-config";
+import { PETALS, MOBILE_PETAL_LIMIT } from "@/lib/petal-config";
 import { gsap, registerGsap, hasFinePointer, prefersReducedMotion } from "@/lib/animation";
 
 interface PetalFieldProps {
@@ -9,47 +11,16 @@ interface PetalFieldProps {
   layer: "front" | "back";
 }
 
-const GRADIENTS: Array<[string, string]> = [
-  ["#FF3D8A", "#E50064"],
-  ["#FF6FB0", "#F0187A"],
-  ["#FFA0CB", "#FF4D9C"],
-];
-
-/** Bougainvillea bract: a soft, slightly pointed oval with a pale vein. */
-function Petal({ petal, gradientId }: { petal: PetalConfig; gradientId: string }) {
-  return (
-    <svg
-      width={petal.size}
-      height={Math.round(petal.size * 1.3)}
-      viewBox="0 0 24 32"
-      aria-hidden
-      style={{
-        display: "block",
-        filter: petal.blur ? `blur(${petal.blur}px)` : undefined,
-      }}
-    >
-      <path
-        d="M12 1.5C16.8 1.5 22.6 8.2 22 16.6C21.5 24.2 15.2 29.6 12 31C8.8 29.6 2.5 24.2 2 16.6C1.4 8.2 7.2 1.5 12 1.5Z"
-        fill={`url(#${gradientId})`}
-      />
-      <path
-        d="M12 4.5C12.7 12 12.9 20.5 12 28.5"
-        stroke="rgba(255,255,255,0.42)"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </svg>
-  );
-}
-
 /**
- * Seeded, layered bougainvillea petals.
+ * Seeded, layered bougainvillea: real bracts and leaves cut from the wordmark.
  *
- * - Drift (fall + sway) runs on GSAP tweens, paused while off screen.
- * - Scroll parallax and the staged reveal are driven by the scroll sequence,
- *   which targets `.petal-outer` and reads the data attributes set here.
- * - Cursor repulsion runs on desktop fine pointers only.
+ * Element stack per petal (outer to inner), each animated by one concern only:
+ *   .petal-outer   scroll parallax + staged reveal (driven by the scroll sequence)
+ *   .petal-drift   fall (y) and sway (x)
+ *   .petal-tumble  3D tumble: rotationX turns over, rotationY flutters, rotation spins
+ *   .petal-repel   cursor repulsion (desktop fine pointer only)
+ *
+ * Everything is transform/opacity. Drift is paused while the field is off screen.
  */
 export default function PetalField({ layer }: PetalFieldProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -69,31 +40,60 @@ export default function PetalField({ layer }: PetalFieldProps) {
 
       drifts.forEach((el) => {
         if (!el.offsetParent) return; // hidden at this breakpoint
-        const fall = Number(el.dataset.fall);
-        const sway = Number(el.dataset.sway);
-        const swayDuration = Number(el.dataset.swayDuration);
-        const rotation = Number(el.dataset.rotation);
-        const rotationDrift = Number(el.dataset.rotationDrift);
-        const phase = Number(el.dataset.phase);
+        const d = el.dataset;
+        const fall = Number(d.fall);
+        const sway = Number(d.sway);
+        const swayDuration = Number(d.swayDuration);
+        const phase = Number(d.phase);
+        const tumble = el.querySelector<HTMLElement>(".petal-tumble");
+        if (!tumble) return;
+        const rotation = Number(d.rotation);
+        const spin = Number(d.spin);
+        const tumbleDuration = Number(d.tumbleDuration);
+        const flip = d.flip === "1";
+        const tumbleAmplitude = Number(d.tumbleAmplitude);
+        const flutter = Number(d.flutter);
+        const flutterDuration = Number(d.flutterDuration);
 
+        // Fall: slightly faster at the bottom than the top, like a petal gathering speed.
         tweens.push(
+          gsap.fromTo(el, { y: "-18vh" }, { y: "120vh", duration: fall, ease: "power1.in", repeat: -1, delay: -phase * fall }),
+          // Sway: a pendulum, paired with a lean into the direction of travel.
           gsap.fromTo(
             el,
-            { y: "-16vh" },
-            { y: "118vh", duration: fall, ease: "none", repeat: -1, delay: -phase * fall },
+            { x: -sway / 2 },
+            { x: sway / 2, duration: swayDuration, ease: "sine.inOut", yoyo: true, repeat: -1, delay: -phase * swayDuration },
           ),
+          // Tumble: a few petals turn right over; most rock, so they are rarely edge-on…
+          flip
+            ? gsap.fromTo(
+                tumble,
+                { rotationX: 0 },
+                { rotationX: 360, duration: tumbleDuration, ease: "none", repeat: -1, delay: -phase * tumbleDuration },
+              )
+            : gsap.fromTo(
+                tumble,
+                { rotationX: -tumbleAmplitude },
+                {
+                  rotationX: tumbleAmplitude,
+                  duration: tumbleDuration / 2,
+                  ease: "sine.inOut",
+                  yoyo: true,
+                  repeat: -1,
+                  delay: -phase * tumbleDuration,
+                },
+              ),
+          // …flutters about the Y axis…
           gsap.fromTo(
-            el,
-            { x: -sway / 2, rotation },
-            {
-              x: sway / 2,
-              rotation: rotation + rotationDrift,
-              duration: swayDuration,
-              ease: "sine.inOut",
-              yoyo: true,
-              repeat: -1,
-              delay: -phase * swayDuration,
-            },
+            tumble,
+            { rotationY: -flutter },
+            { rotationY: flutter, duration: flutterDuration, ease: "sine.inOut", yoyo: true, repeat: -1, delay: -phase * flutterDuration },
+          ),
+          // …and spins slowly in the plane.
+          gsap.fromTo(
+            tumble,
+            { rotation },
+            { rotation: rotation + spin, duration: fall, ease: "none", repeat: -1, delay: -phase * fall },
           ),
         );
       });
@@ -107,8 +107,8 @@ export default function PetalField({ layer }: PetalFieldProps) {
           y: gsap.quickTo(el, "y", { duration: 0.9, ease: "power3.out" }),
         }));
         const mouse = { x: -9999, y: -9999, active: false };
-        const RADIUS = 150;
-        const PUSH = 38;
+        const RADIUS = 160;
+        const PUSH = 44;
 
         onMove = (e: MouseEvent) => {
           mouse.x = e.clientX;
@@ -139,7 +139,7 @@ export default function PetalField({ layer }: PetalFieldProps) {
       }
     }, root);
 
-    /* Pause all drift while the field is off screen. */
+    /* Pause all motion while the field is off screen. */
     const io = new IntersectionObserver(
       ([entry]) => {
         const method = entry.isIntersecting ? "resume" : "pause";
@@ -159,42 +159,63 @@ export default function PetalField({ layer }: PetalFieldProps) {
 
   return (
     <div ref={rootRef} className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      <svg width="0" height="0" className="absolute" aria-hidden focusable="false">
-        <defs>
-          {GRADIENTS.map(([a, b], i) => (
-            <linearGradient key={i} id={`petal-grad-${layer}-${i}`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={a} />
-              <stop offset="100%" stopColor={b} />
-            </linearGradient>
-          ))}
-        </defs>
-      </svg>
-
-      {petals.map((p) => (
-        <div
-          key={p.id}
-          className={`petal-outer absolute top-0 will-change-transform ${p.id >= MOBILE_PETAL_LIMIT ? "hidden md:block" : ""}`}
-          data-tier={p.tier}
-          data-depth={p.depth}
-          data-opacity={p.opacity}
-          style={{ left: `${p.x}vw`, opacity: p.tier === "base" ? p.opacity : 0 }}
-        >
+      {petals.map((p) => {
+        const height = Math.round((p.width * p.sprite.h) / p.sprite.w);
+        return (
           <div
-            className="petal-drift will-change-transform"
-            data-fall={p.fallDuration}
-            data-sway={p.sway}
-            data-sway-duration={p.swayDuration}
-            data-rotation={p.rotation}
-            data-rotation-drift={p.rotationDrift}
-            data-phase={p.phase}
-            style={{ transform: `translateY(-16vh) rotate(${p.rotation}deg)` }}
+            key={p.id}
+            className={`petal-outer absolute top-0 will-change-transform ${p.id >= MOBILE_PETAL_LIMIT ? "hidden md:block" : ""}`}
+            data-tier={p.tier}
+            data-depth={p.depth}
+            data-opacity={p.opacity}
+            style={{ left: `${p.x}vw`, opacity: p.tier === "base" ? p.opacity : 0 }}
           >
-            <div className="petal-repel">
-              <Petal petal={p} gradientId={`petal-grad-${layer}-${p.variant}`} />
+            <div
+              className="petal-drift will-change-transform"
+              data-fall={p.fallDuration}
+              data-sway={p.sway}
+              data-sway-duration={p.swayDuration}
+              data-rotation={p.rotation}
+              data-spin={p.spin}
+              data-tumble-duration={p.tumbleDuration}
+              data-flip={p.flip ? "1" : "0"}
+              data-tumble-amplitude={p.tumbleAmplitude}
+              data-flutter={p.flutter}
+              data-flutter-duration={p.flutterDuration}
+              data-phase={p.phase}
+              style={{ transform: "translateY(-18vh)", perspective: "600px" }}
+            >
+              <div
+                className="petal-tumble will-change-transform"
+                style={{ transform: `rotate(${p.rotation}deg)`, transformStyle: "preserve-3d" }}
+              >
+                <div className="petal-repel">
+                  <img
+                    src={p.sprite.src}
+                    alt=""
+                    width={p.width}
+                    height={height}
+                    decoding="async"
+                    loading={p.tier === "base" ? "eager" : "lazy"}
+                    draggable={false}
+                    style={{
+                      display: "block",
+                      width: p.width,
+                      height,
+                      filter: [
+                        p.blur ? `blur(${p.blur}px)` : "",
+                        "drop-shadow(0 6px 10px rgba(120, 0, 40, 0.18))",
+                      ]
+                        .filter(Boolean)
+                        .join(" "),
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
