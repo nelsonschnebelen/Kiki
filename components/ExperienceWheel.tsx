@@ -73,7 +73,7 @@ export default function ExperienceWheel() {
     <section
       ref={sectionRef}
       id="experience"
-      className="kiki-wheel-section relative z-10 bg-stone pb-[10svh]"
+      className="kiki-wheel-section relative z-10 bg-transparent pb-[10svh]"
       aria-labelledby={`${uid}-heading`}
     >
       <div className="mx-auto grid max-w-[1500px] grid-cols-1 items-start gap-10 px-5 md:px-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
@@ -193,11 +193,11 @@ export default function ExperienceWheel() {
                 quality={85}
                 className="object-cover"
               />
-              <div className="absolute inset-0 grid place-items-end pb-[9%]">
-                <span className="rounded-full bg-white/92 px-4 py-2 font-display text-[11px] tracking-[0.36em] text-cobalt shadow-sm md:px-5 md:text-[12.5px]">
-                  {wheel.center}
-                </span>
-              </div>
+            </div>
+            <div className="pointer-events-none absolute inset-x-0 bottom-[23%] flex justify-center">
+              <span className="whitespace-nowrap rounded-full bg-white/92 px-4 py-2 font-display text-[11px] tracking-[0.36em] text-cobalt shadow-sm md:px-5 md:text-[12.5px]">
+                {wheel.center}
+              </span>
             </div>
           </div>
         </div>

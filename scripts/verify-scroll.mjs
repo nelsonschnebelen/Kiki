@@ -52,6 +52,10 @@ async function capture(name, { viewport, reducedMotion = "no-preference", mobile
     console.log("captured", file, "scrollY", y);
   }
 
+  const headerAtEnd = await page.evaluate(() => getComputedStyle(document.querySelector("header")).visibility);
+  console.log(`[${name}] header after the sequence: ${headerAtEnd}`);
+  if (headerAtEnd !== "visible") problems.push(`[${name}] header did not appear after the sequence`);
+
   if (reducedMotion !== "reduce") {
     await page.evaluate(() => window.scrollTo(0, Math.round(innerHeight * 2.8 * 0.6)));
     await page.waitForTimeout(500);

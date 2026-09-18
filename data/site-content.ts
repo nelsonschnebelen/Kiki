@@ -19,6 +19,8 @@ export interface LetterContent {
   char: "K" | "I";
   /** Accessible description of what plays inside the letter. */
   label: string;
+  /** CSS object-position for the poster and video inside the letter, e.g. "50% 20%". */
+  focus: string;
   video: VideoSource;
 }
 
@@ -69,6 +71,7 @@ export const siteContent = {
       id: "k1",
       char: "K",
       label: "A chef pouring rosé at the table",
+      focus: "50% 18%",
       video: {
         desktop: "/video/letters/k1.mp4",
         mobile: "/video/letters/k1-mobile.mp4",
@@ -79,6 +82,7 @@ export const siteContent = {
       id: "i1",
       char: "I",
       label: "Guests enjoying a Mediterranean lunch on the water",
+      focus: "50% 45%",
       video: {
         desktop: "/video/letters/i1.mp4",
         mobile: "/video/letters/i1-mobile.mp4",
@@ -89,6 +93,7 @@ export const siteContent = {
       id: "k2",
       char: "K",
       label: "A champagne celebration with sparklers",
+      focus: "50% 30%",
       video: {
         desktop: "/video/letters/k2.mp4",
         mobile: "/video/letters/k2-mobile.mp4",
@@ -99,6 +104,7 @@ export const siteContent = {
       id: "i2",
       char: "I",
       label: "Glamorous dancing as day turns into night",
+      focus: "50% 30%",
       video: {
         desktop: "/video/letters/i2.mp4",
         mobile: "/video/letters/i2-mobile.mp4",

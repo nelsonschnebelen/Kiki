@@ -84,7 +84,7 @@ body {
 }
 @media (min-width: 1024px) {
   .kiki-stage {
-    --wm-s0: 0.1667; /* 18vw / 108vw */
+    --wm-s0: 0.2037; /* 22vw / 108vw */
   }
 }
 
@@ -110,13 +110,15 @@ body {
     radial-gradient(45% 40% at 100% 0%, rgba(18, 56, 184, 0.05), transparent 70%);
 }
 
+/* Pulls the wheel up so its disc overlaps the bottom of the oversized letters
+   (the section itself is transparent so only the wheel overlaps). */
 .kiki-wheel-section {
-  margin-top: -42svh;
+  margin-top: -54svh;
   padding-top: 2svh;
 }
 @media (min-width: 768px) {
   .kiki-wheel-section {
-    margin-top: -38svh;
+    margin-top: -41svh;
   }
 }
 

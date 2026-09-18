@@ -164,7 +164,7 @@ export default function KikiScrollSequence() {
         <p
           ref={noteRef}
           aria-hidden
-          className="script pointer-events-none absolute right-[4vw] top-[16svh] hidden rotate-[-8deg] text-right text-[30px] leading-[0.95] text-cobalt opacity-0 lg:block xl:text-[34px]"
+          className="script pointer-events-none absolute right-[4vw] top-[5svh] hidden rotate-[-8deg] text-right text-[30px] leading-[0.95] text-cobalt opacity-0 lg:block xl:text-[34px]"
         >
           {siteContent.sequenceNote[0]}
           <br />

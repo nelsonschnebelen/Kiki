@@ -50,10 +50,11 @@ interface Slot {
   ink: Ink;
 }
 
+/* Optical size kept low so the Didone hairlines stay visible at wordmark scale. */
 const FONT: CSSProperties = {
   fontFamily: "var(--font-display)",
   fontWeight: 800,
-  fontVariationSettings: '"opsz" 96',
+  fontVariationSettings: '"opsz" 24',
   letterSpacing: 0,
 };
 
@@ -271,7 +272,7 @@ export default function VideoLettermark({
                   sizes="(max-width: 767px) 48vw, 36vw"
                   quality={82}
                   className="object-cover"
-                  style={{ transform: "scale(1.06)" }}
+                  style={{ transform: "scale(1.06)", objectPosition: l.focus }}
                 />
                 {mode === "sequence" && (
                   <video
@@ -286,7 +287,7 @@ export default function VideoLettermark({
                     aria-label={l.label}
                     tabIndex={-1}
                     className="absolute inset-0 h-full w-full object-cover"
-                    style={{ transform: "scale(1.08)", opacity: 0 }}
+                    style={{ transform: "scale(1.08)", opacity: 0, objectPosition: l.focus }}
                   />
                 )}
               </div>
