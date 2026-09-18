@@ -30,6 +30,7 @@ export default function KikiScrollSequence() {
   const bgRef = useRef<HTMLDivElement>(null);
   const uiRef = useRef<HTMLDivElement>(null);
   const blurRef = useRef<HTMLDivElement>(null);
+  const floralRef = useRef<HTMLDivElement>(null);
   const wmRef = useRef<HTMLDivElement>(null);
   const noteRef = useRef<HTMLParagraphElement>(null);
   const solidRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,12 @@ export default function KikiScrollSequence() {
       /* Solid white letters crossfade into video-filled letters. */
       tl.to(solidRef.current, { opacity: 0, duration: span(SEQUENCE.crossfade) }, SEQUENCE.crossfade[0]);
       tl.to(videoLayerRef.current, { opacity: 1, duration: span(SEQUENCE.crossfade) }, SEQUENCE.crossfade[0]);
+      tl.fromTo(
+        floralRef.current,
+        { opacity: 0, scale: 1.04 },
+        { opacity: 1, scale: 1, duration: span(SEQUENCE.crossfade) + 0.1, ease: EASE.reveal },
+        SEQUENCE.crossfade[0],
+      );
 
       /* Videos settle with a very slight scale once revealed. */
       tl.fromTo(
@@ -149,6 +156,12 @@ export default function KikiScrollSequence() {
         <div className="kiki-stage-glow absolute inset-0" aria-hidden />
 
         <Hero bgRef={bgRef} uiRef={uiRef} blurRef={blurRef} />
+
+        {/* Watercolour corners, revealed with the video letters. */}
+        <div ref={floralRef} className="absolute inset-0 opacity-0" aria-hidden>
+          <div className="kiki-floral kiki-floral--top" style={{ backgroundImage: `url(${siteContent.florals.top})` }} />
+          <div className="kiki-floral kiki-floral--down" style={{ backgroundImage: `url(${siteContent.florals.down})` }} />
+        </div>
 
         <PetalField layer="back" />
 

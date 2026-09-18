@@ -7,10 +7,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { BRAND_GEOMETRY } from "@/lib/brand-geometry";
 
 /* Wordmark proportions drive the sequence layout and where the next section starts. */
-const wordmarkVars = {
-  "--wm-aspect": BRAND_GEOMETRY.letterAspect,
-  "--wm-subtitle": BRAND_GEOMETRY.wordmark.subtitleBottom,
-} as CSSProperties;
+const wordmarkVars = { "--wm-aspect": BRAND_GEOMETRY.letterAspect } as CSSProperties;
 
 export default function HomePage() {
   return (

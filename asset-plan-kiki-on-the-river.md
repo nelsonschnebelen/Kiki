@@ -23,25 +23,23 @@ Every still is already supplied, so only motion is generated.
 
 | # | Asset | Model | Params | Credits |
 |---|---|---|---|---|
-| 1 | Hero ambient loop | `seedance1_5` | 4s, 720p, 16:9, silent, start_image = end_image = `01-kiki-hero-restaurant` | **4.8** |
 | 2 | Letter loop K1 (chef pouring rosé) | `seedance1_5` | 4s, 720p, 3:4, silent, start = end = `02-letter-k-chef-rose` | **4.8** |
 | 3 | Letter loop I1 (Mediterranean lunch) | `seedance1_5` | 4s, 720p, 3:4, silent, start = end = `03-letter-i-daytime-dining` | **4.8** |
 | 4 | Letter loop K2 (champagne celebration) | `seedance1_5` | 4s, 720p, 3:4, silent, start = end = `04-letter-k-champagne` | **4.8** |
 | 5 | Letter loop I2 (dancing) | `seedance1_5` | 4s, 720p, 3:4, silent, start = end = `05-letter-i-nightlife` | **4.8** |
-| — | **Total** | | | **24** |
+| — | **Total** | | | **19.2** |
 
 Preflighted today: a 4s / 720p `seedance1_5` clip is 4.8 credits in both 16:9
-and 3:4. Budget one retry (4.8) if a loop drifts: **worst case 28.8**.
+and 3:4. Budget one retry (4.8) if a loop drifts: **worst case 24**.
+
+The hero no longer needs a generated loop: it now plays KIKI's own homepage film.
 
 Naive equivalent (8s · 1080p · audio on = 24 each, plus separate 9:16 renders):
 **≈ 240 credits**. Saving from the cost levers: **≈ 216 credits**.
 
-Balance after: **1,176** (1,171 with one retry)
+Balance after: **1,180.8** (1,176 with one retry)
 
 ## Prompts (exact text that will be sent)
-
-**#1 — Hero ambient loop**
-> One continuous locked‑off take. Bougainvillea branches sway very gently in a warm breeze; a handful of magenta petals drift slowly downward through the frame; sunlight glitters softly on the river; the chef's pour continues in a slow, steady stream; guests move subtly and naturally as they talk. Extremely slow, calm, almost imperceptible motion. Consistent bright lighting throughout, no cuts, no camera movement, composition stays centred, final frame settles and matches the first frame for a seamless loop.
 
 **#2 — K1, chef pouring rosé**
 > One continuous locked‑off take: the chef slowly pours rosé, the wine level in the glass rising gently; his eyes stay on the glass; soft bougainvillea petals drift past; sunlight glitters on the water behind. Consistent bright lighting, no cuts, no camera movement, subject stays centred, motion settles at the end to match the first frame.
@@ -72,5 +70,5 @@ Balance after: **1,176** (1,171 with one retry)
 
 ---
 
-**Approval required.** Reply "approved" to spend 24 credits (up to 28.8 with one
+**Approval required.** Reply "approved" to spend 19.2 credits (up to 24 with one
 retry), or tell me what to change. Nothing is generated until then.

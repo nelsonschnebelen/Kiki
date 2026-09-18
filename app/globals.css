@@ -76,8 +76,7 @@ body {
   --wm-final: 98vw; /* final width of the letter box: edge to edge, all four letters in frame (as in the mock) */
   --wm-s0: 0.7143; /* 70vw hero width / 98vw */
   --wm-top: 50svh; /* vertical centre of the letter box within the stage */
-  --wm-aspect: 0.2946; /* letter box height / width; overridden inline from BRAND_GEOMETRY */
-  --wm-subtitle: 0.2637; /* subtitle depth below the letters, as a fraction of letter height; from BRAND_GEOMETRY */
+  --wm-aspect: 0.2742; /* letter box height / width; overridden inline from BRAND_GEOMETRY */
   /* Bottom edge of the letters at the end of the sequence, measured from the stage top. */
   --wm-letters-bottom: calc(var(--wm-top) + var(--wm-final) * var(--wm-aspect) / 2);
 }
@@ -103,11 +102,37 @@ body {
   will-change: transform;
 }
 
-/* "Eat · Drink · Dance" + chevron sit just under the wordmark's subtitle. */
+/* Subtitle, "Eat · Drink · Dance" and the chevron sit just under the logo. */
 .kiki-tagline-slot {
-  top: calc(
-    var(--wm-top) + var(--wm-final) * var(--wm-s0) * var(--wm-aspect) * (0.5 + var(--wm-subtitle)) + 22px
-  );
+  top: calc(var(--wm-top) + var(--wm-final) * var(--wm-s0) * var(--wm-aspect) * 0.5 + 26px);
+}
+
+/* Watercolour corner florals framing the second section, placed the way the
+   live site frames its menu: top-left and bottom-right, contained, behind the type. */
+.kiki-floral {
+  position: absolute;
+  width: min(34vw, 460px);
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+.kiki-floral--top {
+  left: 0;
+  top: 64px;
+  height: 62svh;
+  background-position: left top;
+}
+.kiki-floral--down {
+  right: 0;
+  /* Its bottom edge rests on the bottom of the letters, where the wheel band begins. */
+  top: calc(var(--wm-letters-bottom) - 58svh);
+  height: 58svh;
+  background-position: right bottom;
+}
+@media (max-width: 767px) {
+  .kiki-floral {
+    width: 46vw;
+  }
 }
 
 .hero-chevron {

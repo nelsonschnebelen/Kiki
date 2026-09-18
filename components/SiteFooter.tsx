@@ -30,8 +30,11 @@ export default function SiteFooter() {
           className="drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           aria-label={`KIKI on the Miami River, ${hero.reserveLabel}`}
         >
-          <BrandMark color="white" className="h-[68px] md:h-[104px]" />
+          <BrandMark color="white" className="h-[56px] md:h-[84px]" />
         </a>
+        <p className="mt-4 font-sans text-[10px] font-medium uppercase tracking-[0.5em] drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)] md:text-[11px]">
+          {siteContent.brand.subtitle}
+        </p>
 
         <nav aria-label="Footer" className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {footer.links.map((l) => (

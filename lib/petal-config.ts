@@ -57,6 +57,8 @@ export const PETAL_SEED = 20260917;
 export const MOBILE_PETAL_LIMIT = 16;
 /** Number of petals visible before scrolling. */
 export const BASE_PETAL_COUNT = 7;
+/** Longest edge in px for the farthest and nearest petals. Matches a single bract in the logo. */
+export const PETAL_SIZE = { far: 16, near: 32 } as const;
 
 /** Small, fast, deterministic PRNG (mulberry32). */
 export function mulberry32(seed: number): () => number {
@@ -76,18 +78,20 @@ const round = (v: number, d = 2) => Number(v.toFixed(d));
 export function createPetals(count = PETAL_COUNT, seed = PETAL_SEED): PetalConfig[] {
   const rand = mulberry32(seed);
   const bracts = PETAL_SPRITES.filter((s) => s.kind === "bract");
+  const buds = PETAL_SPRITES.filter((s) => s.kind === "bud");
   const leaves = PETAL_SPRITES.filter((s) => s.kind === "leaf");
   const petals: PetalConfig[] = [];
 
   for (let i = 0; i < count; i++) {
     const depth = lerp(0.25, 1, rand());
     const front = i % 3 === 1;
-    const isLeaf = rand() < 0.22;
-    const pool = isLeaf ? leaves : bracts;
+    // Mostly single bracts, with the odd bud or leaf.
+    const pick = rand();
+    const pool = pick < 0.1 && leaves.length ? leaves : pick < 0.2 && buds.length ? buds : bracts;
     const sprite = pool[Math.floor(rand() * pool.length)];
-    // Near petals are bigger; the biggest clusters only appear up close.
-    const scale = lerp(0.42, 0.98, depth) * lerp(0.85, 1.15, rand());
-    const width = Math.round(sprite.w * scale);
+    // Sized to a single flower in the logo: about 16px far away, 32px up close (longest edge).
+    const longest = lerp(PETAL_SIZE.far, PETAL_SIZE.near, depth) * lerp(0.9, 1.1, rand());
+    const width = Math.max(10, Math.round((longest * sprite.w) / Math.max(sprite.w, sprite.h)));
     const sign = rand() < 0.5 ? -1 : 1;
     petals.push({
       id: i,
@@ -98,7 +102,7 @@ export function createPetals(count = PETAL_COUNT, seed = PETAL_SEED): PetalConfi
       width,
       rotation: Math.round(lerp(-180, 180, rand())),
       spin: Math.round(lerp(40, 160, rand())) * sign,
-      sway: Math.round(lerp(22, 90, rand()) * lerp(0.7, 1.2, depth)),
+      sway: Math.round(lerp(18, 70, rand()) * lerp(0.7, 1.2, depth)),
       swayDuration: round(lerp(3.2, 6.8, rand())),
       fallDuration: round(lerp(13, 26, rand()) * (1.35 - depth * 0.5)),
       tumbleDuration: round(lerp(3.2, 7.5, rand())),
@@ -108,7 +112,7 @@ export function createPetals(count = PETAL_COUNT, seed = PETAL_SEED): PetalConfi
       flutterDuration: round(lerp(1.6, 3.4, rand())),
       phase: round(rand(), 3),
       depth: round(depth, 3),
-      blur: front ? (rand() < 0.3 ? 0.5 : 0) : round(lerp(0, 1.8, 1 - depth)),
+      blur: front ? 0 : round(lerp(0, 0.9, 1 - depth)),
       opacity: round(lerp(0.82, 1, rand())),
     });
   }

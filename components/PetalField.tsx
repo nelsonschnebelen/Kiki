@@ -107,8 +107,8 @@ export default function PetalField({ layer }: PetalFieldProps) {
           y: gsap.quickTo(el, "y", { duration: 0.9, ease: "power3.out" }),
         }));
         const mouse = { x: -9999, y: -9999, active: false };
-        const RADIUS = 160;
-        const PUSH = 44;
+        const RADIUS = 130;
+        const PUSH = 32;
 
         onMove = (e: MouseEvent) => {
           mouse.x = e.clientX;
@@ -204,7 +204,7 @@ export default function PetalField({ layer }: PetalFieldProps) {
                       height,
                       filter: [
                         p.blur ? `blur(${p.blur}px)` : "",
-                        "drop-shadow(0 6px 10px rgba(120, 0, 40, 0.18))",
+                        "drop-shadow(0 2px 3px rgba(120, 0, 40, 0.16))",
                       ]
                         .filter(Boolean)
                         .join(" "),

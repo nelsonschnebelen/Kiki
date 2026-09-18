@@ -76,14 +76,14 @@ export default function Hero({ bgRef, uiRef, blurRef }: HeroProps) {
         {/* Blurred copy, faded in by the sequence (opacity only: no per-frame filter). */}
         <div ref={blurRef} className="absolute inset-0 opacity-0" aria-hidden>
           <Image src={hero.blurImage} alt="" fill sizes="100vw" quality={75} className="object-cover object-center" />
-          <div className="absolute inset-0 bg-stone/35" />
+          <div className="absolute inset-0 bg-stone/55" />
         </div>
       </div>
 
       <div ref={uiRef} className="pointer-events-none absolute inset-0 z-30">
         <p
           aria-hidden
-          className="script absolute right-[6vw] top-[14svh] hidden rotate-[-6deg] text-right text-[30px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] md:block lg:text-[34px]"
+          className="script absolute right-[6vw] top-[14svh] hidden rotate-[-6deg] text-right text-[30px] leading-[0.95] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:block lg:text-[34px]"
         >
           {hero.note[0]}
           <br />
@@ -92,7 +92,10 @@ export default function Hero({ bgRef, uiRef, blurRef }: HeroProps) {
           <span className="text-[22px]">♡</span>
         </p>
 
-        <div className="kiki-tagline-slot absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-5 text-white md:gap-7">
+        <div className="kiki-tagline-slot absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-5 text-white md:gap-6">
+          <p className="whitespace-nowrap font-sans text-[11px] font-medium uppercase tracking-[0.52em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] md:text-[14px] lg:text-[16px]">
+            {brand.subtitle}
+          </p>
           <p className="whitespace-nowrap font-display text-[14px] uppercase tracking-[0.34em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:text-[18px] lg:text-[21px]">
             {brand.tagline}
           </p>

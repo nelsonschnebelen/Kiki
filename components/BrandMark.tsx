@@ -7,9 +7,9 @@ interface BrandMarkProps {
   className?: string;
 }
 
-/** The "KIKI on the Miami River" wordmark, rendered from the supplied PNG as a mask. */
+/** The KIKI logo, rendered from the traced vector as a mask so it can take any colour. */
 export default function BrandMark({ color = "cobalt", className = "" }: BrandMarkProps) {
-  const { src, width, height } = BRAND_GEOMETRY.wordmark;
+  const { svg: src, width, height } = BRAND_GEOMETRY.wordmark;
   return (
     <span
       role="img"

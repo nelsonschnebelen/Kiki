@@ -1,7 +1,5 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element -- decorative transparent sprites */
-
 import Image from "next/image";
 import { useEffect, useId, useRef } from "react";
 import { siteContent, resolveHref } from "@/data/site-content";
@@ -66,22 +64,8 @@ export default function ExperienceWheel() {
   return (
     <section ref={sectionRef} id="experience" className="kiki-wheel-section relative z-20" aria-labelledby={`${uid}-heading`}>
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_min(44vw,620px)_minmax(0,1fr)] lg:items-start">
-        {/* Left: copy on stone, with bougainvillea sprigs. */}
+        {/* Left: copy on stone. */}
         <div className="relative order-2 flex items-center overflow-hidden px-6 py-12 md:px-10 lg:order-1 lg:h-full lg:py-0 lg:pl-[4vw] lg:pr-6">
-          <img
-            src="/petals/bract-02.png"
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute -left-8 -top-6 hidden w-[15vw] max-w-[230px] rotate-[18deg] lg:block"
-            style={{ filter: "drop-shadow(0 10px 18px rgba(120,0,40,0.18))" }}
-          />
-          <img
-            src="/petals/bract-06.png"
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute -bottom-6 left-[38%] hidden w-[9vw] max-w-[150px] rotate-[-24deg] lg:block"
-            style={{ filter: "drop-shadow(0 8px 14px rgba(120,0,40,0.18))" }}
-          />
           <Reveal className="relative">
             <h2
               id={`${uid}-heading`}

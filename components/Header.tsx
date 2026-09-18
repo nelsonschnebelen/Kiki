@@ -57,7 +57,7 @@ export default function Header() {
           className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           aria-label="KIKI on the Miami River, back to top"
         >
-          <BrandMark color={onImage ? "white" : "cobalt"} className="h-9 md:h-11" />
+          <BrandMark color={onImage ? "white" : "cobalt"} className="h-7 md:h-9" />
         </a>
 
         <nav className="hidden items-center gap-7 md:flex lg:gap-9" aria-label="Primary">

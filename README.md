@@ -52,7 +52,8 @@ data/
 scripts/
   import-assets.mjs     converts the supplied stills in assets/source into public/images
   extract-petals.mjs    cuts real bracts and leaves out of the floral wordmark → public/petals, lib/petal-sprites.ts
-  brand-geometry.mjs    measures the wordmark PNGs → letter masks, outlines, lib/brand-geometry.ts
+  vectorize-logo.mjs    traces the 500px KIKI logo to SVG + a 2400px PNG
+  brand-geometry.mjs    measures the traced logo → letter masks, outlines, lib/brand-geometry.ts
   encode-video.mjs      encodes a generated clip into desktop/mobile MP4 + poster
   verify-scroll.mjs     headless Playwright check of the sequence (desktop, mobile, reduced motion)
   prepare-assets.mjs    earlier fallback that crops the mockups
@@ -68,7 +69,8 @@ Everything is referenced from **`data/site-content.ts`**. Drop the file into
 | What | Path in `site-content.ts` | File |
 |---|---|---|
 | Hero photograph | `hero.image` | `public/images/hero.jpg` (16:9, ≥1920px wide, **no text** — the wordmark is a separate layer) |
-| Wordmarks | — | `assets/source/13-*.png` (plain) and `14-*.png` (floral), then `node scripts/brand-geometry.mjs` |
+| Logo | — | `assets/source/15-kiki-logo-white-500.png`, then `vectorize-logo.mjs` and `brand-geometry.mjs` |
+| Corner florals | `florals.top` / `florals.down` | KIKI's watercolour corners (remote for now) |
 | Hero ambient loop | `hero.video.desktop` / `.mobile` | `public/video/hero.mp4`, `hero-mobile.mp4` |
 | Letter videos | `letters[n].video.desktop` / `.mobile` | `public/video/letters/k1.mp4`, `i1`, `k2`, `i2` (+ `-mobile`) |
 | Letter posters | `letters[n].video.poster` | `public/images/letters/*.jpg` (portrait, 3:4) |
@@ -118,7 +120,7 @@ scrubbed by scroll; fractions below are of that distance
 | 24 – 60% | Twenty‑nine more petals fade in at staggered times and parallax speeds. |
 | 30 – 55% | Photograph softens: a pre‑blurred copy fades over the sharp one (opacity only). |
 | 48 – 70% | Blurred photograph fades out, leaving warm stone. |
-| 50 – 74% | Plain wordmark crossfades into the video‑filled letters, with the logo's bougainvillea blooming around them. |
+| 50 – 74% | Logo crossfades into the video‑filled letters while the watercolour corner florals bloom in. |
 | 74 – 100% | Video layer settles with a slight scale. Videos start playing at 45%. |
 
 After the pin releases, the wheel section starts exactly at the bottom edge of
@@ -127,9 +129,10 @@ viewport), and the collage tucks under the wheel.
 
 ### How the video letters work
 
-The letters are the brand's own letterforms. `scripts/brand-geometry.mjs` reads
-the two supplied wordmark PNGs in `assets/source/` (plain and floral), measures
-the four letters, and writes:
+The letters are KIKI's real logo. The supplied file is only 500px wide, so
+`scripts/vectorize-logo.mjs` traces it to `public/brand/kiki-logo.svg` (crisp at
+any size) and a 2400px PNG. `scripts/brand-geometry.mjs` then measures the four
+letters and writes:
 
 - `public/brand/mask-*.png` — each letter's alpha, used as a CSS `mask-image`
   on a slot‑sized element holding that letter's poster and video;
@@ -138,17 +141,30 @@ the four letters, and writes:
 - `lib/brand-geometry.ts` — the letter box aspect, per‑letter slots, and where
   the letter box sits inside each wordmark image.
 
-- `public/brand/kiki-flowers-only.png` — the floral wordmark with the white
-  letters and subtitle removed, so the bougainvillea can sit on top of the video
-  letters exactly where it sits in the logo.
+`VideoLettermark` lays the vector logo (hero state) exactly over the masked
+video letters, which is what lets the scroll timeline crossfade one into the
+other. Video fills the letter strokes; the white outline layer fills the
+engraved inlines. `BrandMark` renders the same vector as a mask so it can be
+white over the hero, cobalt in the bar and white in the footer.
 
-`VideoLettermark` positions the plain wordmark (hero state) and the flowers
-layer so their letter boxes coincide with the masked video letters, which is
-what lets the scroll timeline crossfade one into the other: the plain KIKI fades
-out while the video letters and their flowers fade in. `BrandMark` renders the
-plain wordmark as a mask so it can be cobalt in the header and white in the footer.
+To change the logo: replace `assets/source/15-kiki-logo-white-500.png`, then run
+`node scripts/vectorize-logo.mjs && node scripts/brand-geometry.mjs`.
 
-Re‑run `node scripts/brand-geometry.mjs` if either wordmark PNG changes.
+### Florals and petals
+
+The second section is framed by KIKI's own watercolour corner florals, placed
+the way their site frames its menu (top‑left and bottom‑right, contained,
+behind the type). They are referenced from `florals` in `data/site-content.ts`
+and currently load from kikiontheriver.com; drop local copies in `public/brand`
+and change the two paths to self‑host. The falling petals are single bracts
+tinted to the same soft pink by `scripts/extract-petals.mjs`.
+
+### Hero film
+
+`hero.video` points at KIKI's own homepage film on their server (37 MB). The
+hero still is the poster and the fallback. To self‑host, save the file locally,
+run `node scripts/encode-video.mjs <file> hero`, and set the two paths to
+`/video/hero.mp4` and `/video/hero-mobile.mp4`.
 
 The wordmark element is laid out at its **final** size and scaled *down* for the
 hero, so the browser rasterises it at full resolution and the scrub stays crisp.
@@ -164,9 +180,11 @@ hero, so the browser rasterises it at full resolution and the scrub stays crisp.
   when the letters reveal, paused when off screen, hidden on error.
 - Cursor repulsion and magnetic hover only run on fine pointers.
 - Petals: 36 on desktop, 16 on mobile (`MOBILE_PETAL_LIMIT`), seeded so server
-  and client markup match. They are real bracts and leaves cut from the floral
-  wordmark, each falling with sway, a 3D rocking tumble (a few flip right over),
-  a Y‑axis flutter and a slow spin; all transforms, paused off screen.
+  and client markup match. They are single bracts carved out of the floral
+  wordmark (plus two buds and a leaf), sized to a single flower in the logo
+  (`PETAL_SIZE`, 16–32px), each falling with sway, a 3D rocking tumble (a few
+  flip right over), a Y‑axis flutter and a slow spin; all transforms, paused
+  off screen.
 - GSAP contexts are reverted on unmount; Lenis is destroyed.
 
 ## Visual direction
