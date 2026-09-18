@@ -86,12 +86,17 @@ Writes the desktop MP4 (1280px long edge), the mobile MP4 (720px) and the poster
 JPEG in one go. Sources are chosen at runtime: mobile viewports get the
 `-mobile` file, and visitors on data‑saver or 2G/3G connections get posters only.
 
-### Interim photography
+### Photography pipeline
 
-The current images are crops of the supplied mockups, produced by
-`node scripts/prepare-assets.mjs`. They are placeholders in resolution only;
-replace them with the Higgsfield assets described in
-`asset-plan-kiki-on-the-river.md`.
+The supplied stills live in `assets/source/` (named by slot). Running
+`node scripts/import-assets.mjs` converts them into every image under
+`public/images`, including the day/night wheel composite and the champagne and
+marina crops. Replace a source file and re-run to update the site.
+
+`scripts/prepare-assets.mjs` is the earlier fallback that crops the mockups;
+it is no longer needed unless a source still is missing.
+
+Videos are the remaining generated assets; see `asset-plan-kiki-on-the-river.md`.
 
 ## The scroll sequence
 

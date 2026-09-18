@@ -54,7 +54,7 @@ export const siteContent = {
 
   hero: {
     image: "/images/hero.jpg",
-    alt: "Guests at long white tables under bougainvillea on the Miami River at KIKI",
+    alt: "A chef pours rosé as guests dine under bougainvillea beside the Miami River at KIKI",
     /** Ambient loop generated from the hero still. Falls back to the image until it can play. */
     video: {
       desktop: "/video/hero.mp4",
@@ -71,7 +71,7 @@ export const siteContent = {
       id: "k1",
       char: "K",
       label: "A chef pouring rosé at the table",
-      focus: "50% 18%",
+      focus: "50% 26%",
       video: {
         desktop: "/video/letters/k1.mp4",
         mobile: "/video/letters/k1-mobile.mp4",
@@ -82,7 +82,7 @@ export const siteContent = {
       id: "i1",
       char: "I",
       label: "Guests enjoying a Mediterranean lunch on the water",
-      focus: "50% 45%",
+      focus: "50% 50%",
       video: {
         desktop: "/video/letters/i1.mp4",
         mobile: "/video/letters/i1-mobile.mp4",
@@ -128,8 +128,8 @@ export const siteContent = {
       { label: "Plan a Private Event", href: "privateEvents" as const, variant: "ghost" as const },
     ],
     note: ["Greek Soul", "Miami Vibes"],
-    accentImage: "/images/vase.jpg",
-    accentAlt: "Blue and white Greek ceramic vase",
+    accentImage: "/images/marina.jpg",
+    accentAlt: "Bougainvillea, striped mooring posts and yachts on the sunlit Miami River",
   },
 
   meet: {
