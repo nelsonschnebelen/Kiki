@@ -1,68 +1,109 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useState } from "react";
 import { siteContent } from "@/data/site-content";
-import {
-  gsap,
-  ScrollTrigger,
-  registerGsap,
-  isMobileViewport,
-  prefersReducedMotion,
-  SEQUENCE,
-  EASE,
-} from "@/lib/animation";
+import { ScrollTrigger, registerGsap, isMobileViewport, prefersReducedMotion, SEQUENCE } from "@/lib/animation";
+import BrandMark from "./BrandMark";
 import ReserveButton from "./ReserveButton";
 
 /**
- * Minimal persistent bar. Hidden over the hero (per client direction the hero
- * carries only the photograph, the wordmark and Reserve), then slides in once
- * the KIKI sequence has scrolled away.
+ * Editorial bar laid out as in the mock: small wordmark left, navigation,
+ * Reserve right. Transparent with white type over the hero photograph; turns
+ * white with cobalt type once the photograph has faded out of the sequence.
+ * Below md the links collapse into a minimal Menu button.
  */
 export default function Header() {
-  const ref = useRef<HTMLElement>(null);
+  const [solid, setSolid] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuId = useId();
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
     registerGsap();
     const reduced = prefersReducedMotion();
-
-    const show = () =>
-      gsap.to(el, { autoAlpha: 1, yPercent: 0, duration: reduced ? 0 : 0.7, ease: EASE.reveal });
-    const hide = () =>
-      gsap.to(el, { autoAlpha: 0, yPercent: -100, duration: reduced ? 0 : 0.45, ease: EASE.editorial });
-
     const trigger = ScrollTrigger.create({
       start: () => {
-        if (reduced) return window.innerHeight * 0.9;
+        if (reduced) return window.innerHeight * 0.85;
         const m = isMobileViewport() ? SEQUENCE.scrollMultiplier.mobile : SEQUENCE.scrollMultiplier.desktop;
-        return window.innerHeight * (m + 0.55);
+        return window.innerHeight * m * SEQUENCE.heroFade[1];
       },
-      onEnter: show,
-      onLeaveBack: hide,
+      onEnter: () => setSolid(true),
+      onLeaveBack: () => setSolid(false),
     });
-
     return () => trigger.kill();
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const onImage = !solid && !open;
+  const linkClass =
+    "link-underline font-sans text-[10px] font-medium uppercase tracking-[0.32em] focus-visible:outline-none " +
+    (onImage ? "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)]" : "text-cobalt");
+
   return (
     <header
-      ref={ref}
-      className="fixed inset-x-0 top-0 z-50 border-b border-cobalt/10 bg-white/92 backdrop-blur-sm"
-      style={{ opacity: 0, visibility: "hidden", transform: "translateY(-100%)" }}
+      className={
+        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-500 ease-editorial " +
+        (onImage ? "border-b border-transparent bg-transparent" : "border-b border-cobalt/10 bg-white/94 backdrop-blur-sm")
+      }
     >
-      <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 md:px-10">
+      <div className="mx-auto flex h-[72px] max-w-[1600px] items-center gap-6 px-5 md:h-20 md:px-8 lg:gap-10">
         <a
           href="#main"
-          className="font-display text-[22px] leading-none tracking-[0.12em] text-cobalt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cobalt focus-visible:ring-offset-2"
-          aria-label={`${siteContent.brand.name} ${siteContent.brand.subtitle}, back to top`}
+          className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+          aria-label="KIKI on the Miami River, back to top"
         >
-          {siteContent.brand.name}
-          <span className="ml-3 hidden font-sans text-[9px] font-medium uppercase tracking-[0.34em] text-cobalt/70 sm:inline">
-            {siteContent.brand.subtitle}
-          </span>
+          <BrandMark color={onImage ? "white" : "cobalt"} className="h-9 md:h-11" />
         </a>
-        <ReserveButton href={siteContent.reservationUrl} label={siteContent.hero.reserveLabel} size="md" />
+
+        <nav className="hidden items-center gap-7 md:flex lg:gap-9" aria-label="Primary">
+          {siteContent.navigation.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className={linkClass}
+              target={/^https?:/.test(item.href) ? "_blank" : undefined}
+              rel={/^https?:/.test(item.href) ? "noopener noreferrer" : undefined}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-3">
+          <ReserveButton href={siteContent.reservationUrl} label={siteContent.hero.reserveLabel} size="md" variant={onImage ? "onImage" : "primary"} />
+          <button
+            type="button"
+            className={
+              "md:hidden rounded-[2px] border px-3 py-[10px] font-sans text-[10px] font-medium uppercase tracking-[0.28em] transition-colors duration-500 ease-editorial focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current " +
+              (onImage ? "border-white/70 text-white" : "border-cobalt/40 text-cobalt")
+            }
+            aria-expanded={open}
+            aria-controls={menuId}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? "Close" : "Menu"}
+          </button>
+        </div>
+      </div>
+
+      <div id={menuId} hidden={!open} className="border-t border-cobalt/10 bg-white/96 md:hidden">
+        <nav className="mx-auto flex max-w-[1600px] flex-col px-5 py-4" aria-label="Primary, mobile">
+          {siteContent.navigation.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="border-b border-cobalt/10 py-4 font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-cobalt last:border-b-0"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
       </div>
     </header>
   );

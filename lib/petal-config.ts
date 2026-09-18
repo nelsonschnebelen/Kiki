@@ -38,12 +38,12 @@ export interface PetalConfig {
   opacity: number;
 }
 
-export const PETAL_COUNT = 18;
+export const PETAL_COUNT = 30;
 export const PETAL_SEED = 20260917;
 /** Petals with an id at or above this limit are hidden below the md breakpoint. */
-export const MOBILE_PETAL_LIMIT = 8;
+export const MOBILE_PETAL_LIMIT = 14;
 /** Number of petals visible before scrolling. */
-export const BASE_PETAL_COUNT = 5;
+export const BASE_PETAL_COUNT = 6;
 
 /** Small, fast, deterministic PRNG (mulberry32). */
 export function mulberry32(seed: number): () => number {
@@ -73,7 +73,7 @@ export function createPetals(count = PETAL_COUNT, seed = PETAL_SEED): PetalConfi
       front,
       variant: (i % 3) as 0 | 1 | 2,
       x: Number(lerp(3, 97, rand()).toFixed(2)),
-      size: Math.round(lerp(14, 42, sizeMix)),
+      size: Math.round(lerp(16, 58, sizeMix)),
       rotation: Math.round(lerp(-70, 70, rand())),
       rotationDrift: Math.round(lerp(18, 75, rand()) * (rand() < 0.5 ? -1 : 1)),
       sway: Math.round(lerp(14, 64, rand())),

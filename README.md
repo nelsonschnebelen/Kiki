@@ -31,8 +31,9 @@ app/
   page.tsx              page composition
   globals.css           tokens, wordmark sizing variables, Lenis + utility styles
 components/
-  Header.tsx            slim bar that slides in after the sequence (wordmark + Reserve)
-  Hero.tsx              hero photograph, ambient video loop, Reserve button, scroll hint
+  Header.tsx            wordmark, Menu / Experience / Private Events / VIP, Reserve; transparent over the hero
+  BrandMark.tsx         the "KIKI on the Miami River" wordmark as a colourable mask
+  Hero.tsx              hero photograph (+ blurred copy for the transition), ambient loop, tagline, chevron
   PetalField.tsx        seeded bougainvillea petals (drift, parallax, cursor repulsion)
   KikiScrollSequence.tsx  the pinned GSAP timeline that ties hero -> letters together
   VideoLettermark.tsx   KIKI as four independently clipped letters (solid / video / posters)
@@ -49,8 +50,11 @@ lib/
 data/
   site-content.ts       ALL copy, links, image and video paths
 scripts/
-  prepare-assets.mjs    crops the supplied mockups into interim photography
+  import-assets.mjs     converts the supplied stills in assets/source into public/images
+  brand-geometry.mjs    measures the wordmark PNGs → letter masks, outlines, lib/brand-geometry.ts
   encode-video.mjs      encodes a generated clip into desktop/mobile MP4 + poster
+  verify-scroll.mjs     headless Playwright check of the sequence (desktop, mobile, reduced motion)
+  prepare-assets.mjs    earlier fallback that crops the mockups
 assets/mockups/         the two supplied mockups (source for interim crops)
 public/images, public/video   the media the site loads
 ```
@@ -62,7 +66,8 @@ Everything is referenced from **`data/site-content.ts`**. Drop the file into
 
 | What | Path in `site-content.ts` | File |
 |---|---|---|
-| Hero photograph | `hero.image` | `public/images/hero.jpg` (16:9, ≥1920px wide, **no text** — the wordmark is live type) |
+| Hero photograph | `hero.image` | `public/images/hero.jpg` (16:9, ≥1920px wide, **no text** — the wordmark is a separate layer) |
+| Wordmarks | — | `assets/source/13-*.png` (plain) and `14-*.png` (floral), then `node scripts/brand-geometry.mjs` |
 | Hero ambient loop | `hero.video.desktop` / `.mobile` | `public/video/hero.mp4`, `hero-mobile.mp4` |
 | Letter videos | `letters[n].video.desktop` / `.mobile` | `public/video/letters/k1.mp4`, `i1`, `k2`, `i2` (+ `-mobile`) |
 | Letter posters | `letters[n].video.poster` | `public/images/letters/*.jpg` (portrait, 3:4) |
@@ -106,27 +111,36 @@ scrubbed by scroll; fractions below are of that distance
 
 | Progress | What happens |
 |---|---|
-| 0 – 25% | Hero holds. Photograph dollies 1.00 → 1.06. Five base petals drift. |
-| 25 – 40% | Reserve button, note and scroll hint fade out. |
-| 25 – 72% | Wordmark scales from its hero size to 108vw (118vw mobile), centre anchored. |
-| 30 – 70% | Thirteen more petals fade in at staggered times and parallax speeds. |
-| 45 – 70% | Solid white letters crossfade into the video‑filled letters. |
-| 62 – 90% | Photograph fades; the stone section resolves beneath the typography. |
-| 70 – 100% | Video layer settles with a slight scale. Videos start playing at 42%. |
+| 0 – 22% | Hero holds. Photograph dollies 1.00 → 1.06. Six base petals drift. |
+| 22 – 36% | Tagline, chevron and note fade out. |
+| 22 – 68% | Floral wordmark scales from its hero size to 108vw (118vw mobile), centre anchored. |
+| 24 – 60% | Twenty‑four more petals fade in at staggered times and parallax speeds. |
+| 30 – 55% | Photograph softens: a pre‑blurred copy fades over the sharp one (opacity only). |
+| 48 – 70% | Blurred photograph fades out, leaving warm stone. |
+| 50 – 74% | Floral wordmark crossfades into the video‑filled letters. |
+| 74 – 100% | Video layer settles with a slight scale. Videos start playing at 45%. |
 
 After the pin releases, the wheel section overlaps the bottom of the letters.
 
 ### How the video letters work
 
-`VideoLettermark` lays the word out in a fixed 1000×300 design box. Each letter
-is an SVG `<clipPath clipPathUnits="objectBoundingBox">` containing the glyph
-itself, applied to a slot‑sized element holding that letter's poster and video.
-A second SVG draws the white outline on top; a third, solid‑white SVG sits above
-both for the hero state. Glyph widths are measured once the display font is
-ready so the clip, outline and solid layers always line up.
+The letters are the brand's own letterforms. `scripts/brand-geometry.mjs` reads
+the two supplied wordmark PNGs in `assets/source/` (plain and floral), measures
+the four letters, and writes:
 
-`clipPath` is used instead of `<mask>` because CSS references to inline SVG
-masks are not supported by Safari; the effect is identical.
+- `public/brand/mask-*.png` — each letter's alpha, used as a CSS `mask-image`
+  on a slot‑sized element holding that letter's poster and video;
+- `public/brand/outline-*.png` — a dilated copy of each letter, masking a white
+  layer beneath it that reads as the crisp outline;
+- `lib/brand-geometry.ts` — the letter box aspect, per‑letter slots, and where
+  the letter box sits inside each wordmark image.
+
+`VideoLettermark` positions the floral wordmark PNG so its letters coincide
+exactly with the masked video letters, which is what lets the scroll timeline
+crossfade one into the other. `BrandMark` renders the plain wordmark as a mask
+so it can be cobalt in the header and white in the footer.
+
+Re‑run `node scripts/brand-geometry.mjs` if either wordmark PNG changes.
 
 The wordmark element is laid out at its **final** size and scaled *down* for the
 hero, so the browser rasterises it at full resolution and the scrub stays crisp.

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { siteContent } from "@/data/site-content";
+import { BRAND_GEOMETRY } from "@/lib/brand-geometry";
 import {
   gsap,
   ScrollTrigger,
@@ -29,9 +30,10 @@ export default function KikiScrollSequence() {
   const stageRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const uiRef = useRef<HTMLDivElement>(null);
+  const blurRef = useRef<HTMLDivElement>(null);
   const wmRef = useRef<HTMLDivElement>(null);
   const noteRef = useRef<HTMLParagraphElement>(null);
-  const solidRef = useRef<SVGSVGElement>(null);
+  const solidRef = useRef<HTMLDivElement>(null);
   const videoLayerRef = useRef<HTMLDivElement>(null);
 
   const playingRef = useRef(false);
@@ -56,8 +58,9 @@ export default function KikiScrollSequence() {
       const span = (range: readonly [number, number]) => range[1] - range[0];
       const tl = gsap.timeline({ defaults: { ease: "none" } });
 
-      /* Background: slow dolly across the whole sequence, then fade to stone. */
+      /* Background: slow dolly, then soften (blurred copy fades in), then fade to stone. */
       tl.fromTo(bgRef.current, { scale: 1 }, { scale: 1.06, duration: 1 }, 0);
+      tl.to(blurRef.current, { opacity: 1, duration: span(SEQUENCE.heroBlur), ease: EASE.editorial }, SEQUENCE.heroBlur[0]);
       tl.to(bgRef.current, { opacity: 0, duration: span(SEQUENCE.heroFade) }, SEQUENCE.heroFade[0]);
 
       /* Hero UI leaves as the wordmark begins to grow. */
@@ -99,7 +102,7 @@ export default function KikiScrollSequence() {
           opacity: (_i: number, el: HTMLElement) => Number(el.dataset.opacity) || 0.9,
           duration: span(SEQUENCE.petals),
           ease: EASE.reveal,
-          stagger: { each: 0.025, from: "random" },
+          stagger: { each: 0.012, from: "random" },
         },
         SEQUENCE.petals[0],
       );
@@ -142,10 +145,14 @@ export default function KikiScrollSequence() {
       className="relative"
       aria-label={`${siteContent.brand.name} ${siteContent.brand.subtitle}`}
     >
-      <div ref={stageRef} className="kiki-stage relative h-[100svh] w-full overflow-hidden bg-stone">
+      <div
+        ref={stageRef}
+        className="kiki-stage relative h-[100svh] w-full overflow-hidden bg-stone"
+        style={{ "--wm-aspect": BRAND_GEOMETRY.letterAspect } as CSSProperties}
+      >
         <div className="kiki-stage-glow absolute inset-0" aria-hidden />
 
-        <Hero bgRef={bgRef} uiRef={uiRef} />
+        <Hero bgRef={bgRef} uiRef={uiRef} blurRef={blurRef} />
 
         <PetalField layer="back" />
 

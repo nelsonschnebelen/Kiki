@@ -4,23 +4,25 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { siteContent } from "@/data/site-content";
 import { pickVideoSource, prefersReducedMotion } from "@/lib/animation";
-import ReserveButton from "./ReserveButton";
 
 interface HeroProps {
   /** Photograph layer. The scroll sequence scales and fades this. */
   bgRef: RefObject<HTMLDivElement | null>;
-  /** Reserve button, note and scroll hint. The scroll sequence fades this. */
+  /** Tagline, chevron and note. The scroll sequence fades this. */
   uiRef: RefObject<HTMLDivElement | null>;
+  /** Pre-blurred copy of the photograph. The scroll sequence fades this in over the sharp one. */
+  blurRef: RefObject<HTMLDivElement | null>;
 }
 
 /**
  * Full-viewport hero: the photograph (with an ambient video loop layered on top
- * once it can play), the Reserve button beneath the wordmark, and a scroll hint.
- * The KIKI wordmark itself lives in the scroll sequence so both hero and video
- * versions share one transform.
+ * once it can play), "EAT · DRINK · DANCE" and a chevron beneath the wordmark,
+ * and the handwritten note. The wordmark itself lives in the scroll sequence
+ * so the floral hero version and the video version share one transform.
+ * Reserve lives in the header, as in the mock.
  */
-export default function Hero({ bgRef, uiRef }: HeroProps) {
-  const { hero, reservationUrl } = siteContent;
+export default function Hero({ bgRef, uiRef, blurRef }: HeroProps) {
+  const { hero, brand } = siteContent;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
 
@@ -57,15 +59,7 @@ export default function Hero({ bgRef, uiRef }: HeroProps) {
   return (
     <>
       <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ transformOrigin: "50% 50%" }}>
-        <Image
-          src={hero.image}
-          alt={hero.alt}
-          fill
-          priority
-          quality={85}
-          sizes="100vw"
-          className="object-cover object-center"
-        />
+        <Image src={hero.image} alt={hero.alt} fill priority quality={85} sizes="100vw" className="object-cover object-center" />
         <video
           ref={videoRef}
           muted
@@ -79,12 +73,17 @@ export default function Hero({ bgRef, uiRef }: HeroProps) {
         />
         {/* Very light exposure lift so the white wordmark reads on the brightest skies. */}
         <div className="absolute inset-0 bg-white/[0.04]" aria-hidden />
+        {/* Blurred copy, faded in by the sequence (opacity only: no per-frame filter). */}
+        <div ref={blurRef} className="absolute inset-0 opacity-0" aria-hidden>
+          <Image src={hero.blurImage} alt="" fill sizes="100vw" quality={75} className="object-cover object-center" />
+          <div className="absolute inset-0 bg-stone/35" />
+        </div>
       </div>
 
       <div ref={uiRef} className="pointer-events-none absolute inset-0 z-30">
         <p
           aria-hidden
-          className="script absolute right-[6vw] top-[9svh] hidden rotate-[-6deg] text-right text-[30px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] md:block lg:text-[34px]"
+          className="script absolute right-[6vw] top-[14svh] hidden rotate-[-6deg] text-right text-[30px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] md:block lg:text-[34px]"
         >
           {hero.note[0]}
           <br />
@@ -93,21 +92,15 @@ export default function Hero({ bgRef, uiRef }: HeroProps) {
           <span className="text-[22px]">♡</span>
         </p>
 
-        <div className="kiki-reserve-slot absolute left-1/2 -translate-x-1/2">
-          <ReserveButton
-            href={reservationUrl}
-            label={hero.reserveLabel}
-            variant="onImage"
-            size="lg"
-            className="pointer-events-auto"
-          />
-        </div>
-
-        <div className="absolute bottom-[4.5svh] left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 text-white">
-          <span className="font-sans text-[9px] uppercase tracking-[0.4em] drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">
-            {hero.scrollHint}
+        <div className="kiki-tagline-slot absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-5 text-white md:gap-7">
+          <p className="whitespace-nowrap font-display text-[14px] uppercase tracking-[0.34em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:text-[18px] lg:text-[21px]">
+            {brand.tagline}
+          </p>
+          <span className="hero-chevron grid h-11 w-11 place-items-center rounded-full bg-white/92 text-cobalt shadow-[0_10px_30px_-12px_rgba(14,44,147,0.5)]" aria-hidden>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6l5 5 5-5" />
+            </svg>
           </span>
-          <span className="scroll-cue" aria-hidden />
         </div>
       </div>
     </>

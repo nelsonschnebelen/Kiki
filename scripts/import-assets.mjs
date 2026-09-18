@@ -35,10 +35,10 @@ await out("06-private-events-table.png", "public/images/long-table.jpg", { width
 await out("09-meet-me-at-kiki-heart.png", "public/images/heart.jpg", { width: 1200 });
 await out("12-nightlife-wide-banner.png", "public/images/nightlife.jpg", { width: 2560 });
 
-// Champagne: the right third of the sunset table, 4:5.
+// Champagne: the right side of the sunset table, roughly 3:4.
 await out("10-private-events-sunset-table.png", "public/images/champagne.jpg", {
-  crop: (w, h) => ({ left: w * 0.66, top: h * 0.28, width: w * 0.32, height: h * 0.71 }),
-  width: 900,
+  crop: (w, h) => ({ left: w * 0.6, top: h * 0.16, width: w * 0.4, height: h * 0.84 }),
+  width: 1000,
 });
 
 // Marina accent for the wheel section, 3:4 from the waterfront view.
@@ -55,3 +55,12 @@ await sharp({ create: { width: 1200, height: 1200, channels: 3, background: "#ff
   .jpeg(jpeg)
   .toFile("public/images/wheel-center.jpg");
 console.log("wrote public/images/wheel-center.jpg");
+
+// Pre-blurred hero for the scroll transition (opacity crossfade only, no per-frame blur).
+await sharp(`${SRC}/01-kiki-hero-restaurant.png`)
+  .resize({ width: 960, kernel: "lanczos3" })
+  .blur(22)
+  .modulate({ brightness: 1.06, saturation: 0.92 })
+  .jpeg({ quality: 78, mozjpeg: true })
+  .toFile("public/images/hero-blur.jpg");
+console.log("wrote public/images/hero-blur.jpg");

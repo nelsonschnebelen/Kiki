@@ -73,7 +73,7 @@ export default function ExperienceWheel() {
     <section
       ref={sectionRef}
       id="experience"
-      className="kiki-wheel-section relative z-10 bg-transparent pb-[10svh]"
+      className="kiki-wheel-section relative z-10 bg-transparent pb-[6svh] md:pb-[2svh]"
       aria-labelledby={`${uid}-heading`}
     >
       <div className="mx-auto grid max-w-[1500px] grid-cols-1 items-start gap-10 px-5 md:px-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
@@ -81,7 +81,7 @@ export default function ExperienceWheel() {
         <Reveal className="order-2 lg:order-1 lg:pt-[34svh]">
           <h2
             id={`${uid}-heading`}
-            className="font-display text-[34px] leading-[1.05] tracking-[0.06em] text-cobalt md:text-[42px] xl:text-[48px]"
+            className="font-display text-[26px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt md:text-[32px] xl:text-[38px]"
           >
             {wheel.heading[0]}
             <br />

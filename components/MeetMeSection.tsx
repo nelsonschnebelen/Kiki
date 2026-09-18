@@ -3,39 +3,48 @@ import { siteContent } from "@/data/site-content";
 import Reveal from "./Reveal";
 
 /**
- * "Meet me at KIKI": the rose heart, the long table by the river and the
- * champagne, arranged as an editorial collage.
+ * "Meet me at KIKI", laid out as in the mock: the rose heart bleeding off the
+ * left edge and rising into the wheel section, the long table running across
+ * the centre, and the headline over the champagne on the right. Edge to edge,
+ * no card gutters.
  */
 export default function MeetMeSection() {
   const { meet } = siteContent;
 
   return (
-    <section id="meet" className="relative z-10 bg-stone pb-[12svh] pt-[6svh]" aria-labelledby="meet-heading">
-      <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-6 px-5 md:grid-cols-12 md:gap-6 md:px-10">
-        <Reveal className="relative md:col-span-3">
-          <div className="relative aspect-square w-full overflow-hidden rounded-[2px]">
-            <Image src={meet.heart.src} alt={meet.heart.alt} fill sizes="(max-width: 767px) 100vw, 25vw" className="object-cover" />
+    <section id="meet" className="relative z-10 bg-stone" aria-labelledby="meet-heading">
+      <div className="grid grid-cols-1 md:grid-cols-[30%_44%_26%] md:grid-rows-[auto_1fr]">
+        {/* Heart: rises into the section above on desktop. */}
+        <Reveal className="relative md:row-span-2 md:-mt-[16svh]">
+          <div className="relative aspect-square w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[62svh]">
+            <Image src={meet.heart.src} alt={meet.heart.alt} fill sizes="(max-width: 767px) 100vw, 30vw" className="object-cover object-[36%_50%]" />
           </div>
         </Reveal>
 
-        <Reveal className="md:col-span-6" delay={0.1}>
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2px] md:aspect-[16/11]">
-            <Image src={meet.table.src} alt={meet.table.alt} fill sizes="(max-width: 767px) 100vw, 50vw" className="object-cover" />
-          </div>
-        </Reveal>
-
-        <Reveal className="flex flex-col md:col-span-3" delay={0.2}>
-          <h2 id="meet-heading" className="font-display text-[24px] leading-tight tracking-[0.12em] text-cobalt uppercase md:text-[26px]">
+        {/* Headline block, top right. */}
+        <Reveal className="order-first flex flex-col justify-center px-6 py-10 md:order-none md:col-start-3 md:px-8 md:pt-[6svh] md:pb-8" delay={0.1}>
+          <h2 id="meet-heading" className="font-display text-[22px] leading-tight tracking-[0.16em] text-cobalt uppercase md:text-[24px] xl:text-[27px]">
             {meet.eyebrow}
           </h2>
-          <span className="mt-5 block h-px w-10 bg-gold" aria-hidden />
-          <p className="mt-5 font-sans text-[11px] uppercase leading-[1.9] tracking-[0.3em] text-cobalt-deep/80">
+          <span className="mt-4 block h-px w-10 bg-gold" aria-hidden />
+          <p className="mt-5 font-sans text-[10.5px] uppercase leading-[2] tracking-[0.3em] text-cobalt-deep/80">
             {meet.lines[0]}
             <br />
             {meet.lines[1]}
           </p>
-          <div className="relative mt-8 aspect-[4/5] w-full overflow-hidden rounded-[2px]">
-            <Image src={meet.champagne.src} alt={meet.champagne.alt} fill sizes="(max-width: 767px) 100vw, 25vw" className="object-cover" />
+        </Reveal>
+
+        {/* Long table: across the centre, full height. */}
+        <Reveal className="relative md:col-start-2 md:row-span-2 md:row-start-1" delay={0.05}>
+          <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[62svh]">
+            <Image src={meet.table.src} alt={meet.table.alt} fill sizes="(max-width: 767px) 100vw, 44vw" className="object-cover object-[60%_50%]" />
+          </div>
+        </Reveal>
+
+        {/* Champagne, bottom right. */}
+        <Reveal className="relative md:col-start-3 md:row-start-2" delay={0.15}>
+          <div className="relative aspect-[4/5] w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[36svh]">
+            <Image src={meet.champagne.src} alt={meet.champagne.alt} fill sizes="(max-width: 767px) 100vw, 26vw" className="object-cover" />
           </div>
         </Reveal>
       </div>

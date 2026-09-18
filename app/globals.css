@@ -73,34 +73,53 @@ body {
  * Wordmark height/width = 0.3 (see LETTERMARK in VideoLettermark.tsx).
  * ------------------------------------------------------------------------- */
 .kiki-stage {
-  --wm-final: 118vw; /* final width, exceeds the viewport */
-  --wm-s0: 0.4915; /* 58vw hero width / 118vw */
+  --wm-final: 118vw; /* final width of the letter box, exceeds the viewport */
+  --wm-s0: 0.5932; /* 70vw hero width / 118vw */
+  --wm-top: 50%; /* vertical centre of the letter box */
+  --wm-aspect: 0.2946; /* letter box height / width; set from BRAND_GEOMETRY inline */
 }
 @media (min-width: 768px) {
   .kiki-stage {
     --wm-final: 108vw;
-    --wm-s0: 0.2407; /* 26vw / 108vw */
+    --wm-s0: 0.3704; /* 40vw / 108vw */
   }
 }
 @media (min-width: 1024px) {
   .kiki-stage {
-    --wm-s0: 0.2037; /* 22vw / 108vw */
+    --wm-s0: 0.3333; /* 36vw / 108vw */
   }
 }
 
 .kiki-wm {
   left: 50%;
-  top: 46%;
+  top: var(--wm-top);
   width: var(--wm-final);
   margin-left: calc(var(--wm-final) / -2);
-  margin-top: calc(var(--wm-final) * -0.15);
+  margin-top: calc(var(--wm-final) * var(--wm-aspect) / -2);
   transform: scale(var(--wm-s0));
   transform-origin: 50% 50%;
   will-change: transform;
 }
 
-.kiki-reserve-slot {
-  top: calc(46svh + var(--wm-final) * var(--wm-s0) * 0.15 + 34px);
+/* "Eat · Drink · Dance" + chevron sit just under the floral wordmark, whose
+   subtitle extends roughly half a letter-box height below the letters. */
+.kiki-tagline-slot {
+  top: calc(var(--wm-top) + var(--wm-final) * var(--wm-s0) * var(--wm-aspect) * 1.02 + 6px);
+}
+
+.hero-chevron {
+  animation: chevron-breathe 3.2s var(--ease-editorial) infinite;
+}
+@keyframes chevron-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
 }
 
 .kiki-stage-glow {
@@ -113,12 +132,12 @@ body {
 /* Pulls the wheel up so its disc overlaps the bottom of the oversized letters
    (the section itself is transparent so only the wheel overlaps). */
 .kiki-wheel-section {
-  margin-top: -54svh;
+  margin-top: -46svh;
   padding-top: 2svh;
 }
 @media (min-width: 768px) {
   .kiki-wheel-section {
-    margin-top: -41svh;
+    margin-top: -36svh;
   }
 }
 
@@ -201,7 +220,8 @@ html.lenis body {
  * Reduced motion
  * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-cue::after {
+  .scroll-cue::after,
+  .hero-chevron {
     animation: none;
     transform: translateY(0);
   }

@@ -41,21 +41,23 @@ export const SEQUENCE = {
   /** Scroll distance of the pinned hero, as a multiple of the viewport height. */
   scrollMultiplier: { desktop: 2.8, mobile: 2.0 },
   /** Hero holds; background scales; base petals drift. */
-  hold: [0, 0.25],
-  /** Reserve button, scroll hint and note fade. */
-  ui: [0.25, 0.4],
+  hold: [0, 0.22],
+  /** Tagline, chevron and note fade. */
+  ui: [0.22, 0.36],
   /** Wordmark scales from hero size to full-bleed. */
-  scale: [0.25, 0.72],
-  /** Solid white letters crossfade into video-filled letters. */
-  crossfade: [0.45, 0.7],
-  /** Transition petals enter. */
-  petals: [0.3, 0.7],
-  /** Hero photograph fades to reveal the stone section beneath. */
-  heroFade: [0.62, 0.9],
+  scale: [0.22, 0.68],
+  /** Transition petals enter (the flow thickens before the photograph goes). */
+  petals: [0.24, 0.6],
+  /** Hero photograph softens: the pre-blurred copy fades over the sharp one. */
+  heroBlur: [0.3, 0.55],
+  /** Blurred photograph fades out entirely, leaving warm stone. */
+  heroFade: [0.48, 0.7],
+  /** Floral wordmark crossfades into the video-filled letters. */
+  crossfade: [0.5, 0.74],
   /** Video letters settle with a slight scale. */
-  settle: [0.7, 1],
+  settle: [0.74, 1],
   /** Video playback starts once the letters are largely revealed. */
-  playThreshold: 0.42,
+  playThreshold: 0.45,
 } as const;
 
 /* ---------------------------------------------------------------------------

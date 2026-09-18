@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { siteContent, resolveHref } from "@/data/site-content";
+import BrandMark from "./BrandMark";
 
 /** Night-time close: the dancing crowd photograph with the wordmark over it. */
 export default function SiteFooter() {
-  const { footer, brand, hero, reservationUrl } = siteContent;
+  const { footer, hero, reservationUrl } = siteContent;
 
   return (
     <footer className="relative z-10 min-h-[78svh] w-full overflow-hidden text-white" aria-label="Footer">
@@ -26,14 +27,11 @@ export default function SiteFooter() {
           href={reservationUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-display text-[64px] leading-none tracking-[0.1em] drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent md:text-[88px]"
-          aria-label={`${brand.name}, ${hero.reserveLabel}`}
+          className="drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+          aria-label={`KIKI on the Miami River, ${hero.reserveLabel}`}
         >
-          {brand.name}
+          <BrandMark color="white" className="h-[68px] md:h-[104px]" />
         </a>
-        <p className="mt-3 font-sans text-[10px] uppercase tracking-[0.5em] drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)] md:text-[11px]">
-          {brand.subtitle}
-        </p>
 
         <nav aria-label="Footer" className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {footer.links.map((l) => (
