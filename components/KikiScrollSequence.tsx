@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { siteContent } from "@/data/site-content";
-import { BRAND_GEOMETRY } from "@/lib/brand-geometry";
 import {
   gsap,
   ScrollTrigger,
@@ -142,14 +141,11 @@ export default function KikiScrollSequence() {
     <section
       id="kiki-sequence"
       ref={sectionRef}
-      className="relative"
+      className="pointer-events-none relative z-30"
       aria-label={`${siteContent.brand.name} ${siteContent.brand.subtitle}`}
     >
-      <div
-        ref={stageRef}
-        className="kiki-stage relative h-[100svh] w-full overflow-hidden bg-stone"
-        style={{ "--wm-aspect": BRAND_GEOMETRY.letterAspect } as CSSProperties}
-      >
+      {/* Transparent stage: once the photograph has faded, the section beneath shows through. */}
+      <div ref={stageRef} className="kiki-stage relative h-[100svh] w-full overflow-hidden">
         <div className="kiki-stage-glow absolute inset-0" aria-hidden />
 
         <Hero bgRef={bgRef} uiRef={uiRef} blurRef={blurRef} />

@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- decorative transparent sprites */
+
 import Image from "next/image";
 import { useEffect, useId, useRef } from "react";
 import { siteContent, resolveHref } from "@/data/site-content";
@@ -10,11 +12,14 @@ import Reveal from "./Reveal";
 const MEANDER_UNITS = 30;
 
 /**
- * "Day turns into night" wheel, laid out as in the mock: copy and CTAs on the
- * left, the wheel centred and overlapping the bottom of the letters, and the
- * waterfront photograph bleeding off the right edge with the handwritten note
- * over it. Outer Greek border rotates clockwise, the inner directional ring
- * counter-clockwise; both respond to scroll and idle very slowly once settled.
+ * "Day turns into night", laid out as in the mock: one band that starts at the
+ * bottom of the letters. Copy and CTAs sit on stone to the left with a couple
+ * of bougainvillea sprigs, the wheel is centred and drives the band's height,
+ * and the waterfront photograph fills the right with the handwritten note over
+ * it. The collage below tucks under the wheel's bottom edge.
+ *
+ * Outer Greek border rotates clockwise, the inner ring counter-clockwise; both
+ * respond to scroll and idle very slowly once the section has settled.
  */
 export default function ExperienceWheel() {
   const { wheel } = siteContent;
@@ -59,33 +64,44 @@ export default function ExperienceWheel() {
   const arcStyle = { fontFamily: "var(--font-display)", fontWeight: 600 } as const;
 
   return (
-    <section
-      ref={sectionRef}
-      id="experience"
-      className="kiki-wheel-section relative z-10 bg-transparent"
-      aria-labelledby={`${uid}-heading`}
-    >
-      <div className="grid grid-cols-1 items-stretch lg:grid-cols-[minmax(0,1fr)_min(46vw,660px)_minmax(0,1fr)]">
-        {/* Left: copy */}
-        <Reveal className="order-2 px-6 pb-10 pt-6 md:px-10 lg:order-1 lg:pb-0 lg:pt-[30svh]">
-          <h2
-            id={`${uid}-heading`}
-            className="font-display text-[26px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt md:text-[32px] xl:text-[38px]"
-          >
-            {wheel.heading[0]}
-            <br />
-            {wheel.heading[1]}
-          </h2>
-          <span className="mt-6 block h-px w-12 bg-gold" aria-hidden />
-          <div className="mt-8 flex flex-col items-start gap-4">
-            {wheel.ctas.map((cta) => (
-              <ReserveButton key={cta.label} href={resolveHref(cta.href)} label={cta.label} variant={cta.variant} size="md" withArrow />
-            ))}
-          </div>
-        </Reveal>
+    <section ref={sectionRef} id="experience" className="kiki-wheel-section relative z-20" aria-labelledby={`${uid}-heading`}>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_min(44vw,620px)_minmax(0,1fr)] lg:items-start">
+        {/* Left: copy on stone, with bougainvillea sprigs. */}
+        <div className="relative order-2 flex items-center overflow-hidden px-6 py-12 md:px-10 lg:order-1 lg:h-full lg:py-0 lg:pl-[4vw] lg:pr-6">
+          <img
+            src="/petals/bract-02.png"
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute -left-8 -top-6 hidden w-[15vw] max-w-[230px] rotate-[18deg] lg:block"
+            style={{ filter: "drop-shadow(0 10px 18px rgba(120,0,40,0.18))" }}
+          />
+          <img
+            src="/petals/bract-06.png"
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute -bottom-6 left-[38%] hidden w-[9vw] max-w-[150px] rotate-[-24deg] lg:block"
+            style={{ filter: "drop-shadow(0 8px 14px rgba(120,0,40,0.18))" }}
+          />
+          <Reveal className="relative">
+            <h2
+              id={`${uid}-heading`}
+              className="font-display text-[26px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt md:text-[32px] xl:text-[38px]"
+            >
+              {wheel.heading[0]}
+              <br />
+              {wheel.heading[1]}
+            </h2>
+            <span className="mt-6 block h-px w-12 bg-gold" aria-hidden />
+            <div className="mt-8 flex flex-col items-start gap-4">
+              {wheel.ctas.map((cta) => (
+                <ReserveButton key={cta.label} href={resolveHref(cta.href)} label={cta.label} variant={cta.variant} size="md" withArrow />
+              ))}
+            </div>
+          </Reveal>
+        </div>
 
-        {/* Centre: wheel */}
-        <div className="order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:w-full lg:pb-[8svh]">
+        {/* Centre: wheel. It sets the band's height, poking up into the letters and down over the collage. */}
+        <div className="relative order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:-mt-[2vw] lg:-mb-[6svh] lg:w-full lg:pb-0">
           <div className="relative aspect-square w-full">
             <div
               className="absolute inset-0 rounded-full bg-[#FBF8F2] shadow-[0_40px_80px_-40px_rgba(18,56,184,0.35),0_0_0_1px_rgba(18,56,184,0.08)]"
@@ -149,12 +165,12 @@ export default function ExperienceWheel() {
           </div>
         </div>
 
-        {/* Right: waterfront photograph bleeding off the edge, note over it. */}
-        <div className="relative order-3 min-h-[46svh] lg:min-h-0">
-          <Image src={wheel.accentImage} alt={wheel.accentAlt} fill sizes="(max-width: 1023px) 100vw, 30vw" className="object-cover object-[40%_50%]" />
+        {/* Right: waterfront photograph filling the column, note over the sky. */}
+        <div className="relative order-3 min-h-[52svh] lg:h-full lg:min-h-0">
+          <Image src={wheel.accentImage} alt={wheel.accentAlt} fill sizes="(max-width: 1023px) 100vw, 32vw" className="object-cover object-[50%_38%]" />
           <p
             aria-hidden
-            className="script absolute right-[8%] top-[10%] rotate-[-6deg] text-right text-[34px] leading-[0.95] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] xl:text-[42px]"
+            className="script absolute right-[9%] top-[8%] rotate-[-6deg] text-right text-[34px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.75)] xl:text-[42px]"
           >
             {wheel.note[0]}
             <br />

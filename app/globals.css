@@ -72,19 +72,22 @@ body {
  * from the same numbers so it always sits just beneath the letters.
  * Wordmark height/width = 0.3 (see LETTERMARK in VideoLettermark.tsx).
  * ------------------------------------------------------------------------- */
-.kiki-stage {
+:root {
   --wm-final: 98vw; /* final width of the letter box: edge to edge, all four letters in frame (as in the mock) */
   --wm-s0: 0.7143; /* 70vw hero width / 98vw */
-  --wm-top: 50%; /* vertical centre of the letter box */
-  --wm-aspect: 0.2946; /* letter box height / width; set from BRAND_GEOMETRY inline */
+  --wm-top: 50svh; /* vertical centre of the letter box within the stage */
+  --wm-aspect: 0.2946; /* letter box height / width; overridden inline from BRAND_GEOMETRY */
+  --wm-subtitle: 0.2637; /* subtitle depth below the letters, as a fraction of letter height; from BRAND_GEOMETRY */
+  /* Bottom edge of the letters at the end of the sequence, measured from the stage top. */
+  --wm-letters-bottom: calc(var(--wm-top) + var(--wm-final) * var(--wm-aspect) / 2);
 }
 @media (min-width: 768px) {
-  .kiki-stage {
+  :root {
     --wm-s0: 0.4082; /* 40vw / 98vw */
   }
 }
 @media (min-width: 1024px) {
-  .kiki-stage {
+  :root {
     --wm-s0: 0.3673; /* 36vw / 98vw */
   }
 }
@@ -100,10 +103,11 @@ body {
   will-change: transform;
 }
 
-/* "Eat · Drink · Dance" + chevron sit just under the floral wordmark, whose
-   subtitle extends roughly half a letter-box height below the letters. */
+/* "Eat · Drink · Dance" + chevron sit just under the wordmark's subtitle. */
 .kiki-tagline-slot {
-  top: calc(var(--wm-top) + var(--wm-final) * var(--wm-s0) * var(--wm-aspect) * 1.02 + 6px);
+  top: calc(
+    var(--wm-top) + var(--wm-final) * var(--wm-s0) * var(--wm-aspect) * (0.5 + var(--wm-subtitle)) + 22px
+  );
 }
 
 .hero-chevron {
@@ -130,15 +134,12 @@ body {
 
 /* Pulls the wheel up so its disc overlaps the bottom of the oversized letters
    (the section itself is transparent so only the wheel overlaps). */
+/* The band starts exactly where the letters end, whatever the viewport. The
+   pinned stage sits above it in z-order, so the letters and their bougainvillea
+   overlap the band; the wheel alone pokes up into the letters and hangs down
+   over the collage (negative margins on its column). */
 .kiki-wheel-section {
-  margin-top: -50svh;
-  padding-top: 2svh;
-}
-@media (min-width: 1024px) {
-  .kiki-wheel-section {
-    margin-top: -34svh;
-    padding-top: 0;
-  }
+  margin-top: calc(var(--wm-letters-bottom) - 100svh);
 }
 
 /* Scroll hint: a hairline with a slow travelling highlight. */

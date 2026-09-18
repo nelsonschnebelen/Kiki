@@ -114,14 +114,16 @@ scrubbed by scroll; fractions below are of that distance
 |---|---|
 | 0 – 22% | Hero holds. Photograph dollies 1.00 → 1.06. Six base petals drift. |
 | 22 – 36% | Tagline, chevron and note fade out. |
-| 22 – 68% | Floral wordmark scales from its hero size to 98vw (all four letters in frame, edge to edge), centre anchored. |
+| 22 – 68% | Plain wordmark scales from its hero size to 98vw (all four letters in frame, edge to edge), centre anchored. |
 | 24 – 60% | Twenty‑nine more petals fade in at staggered times and parallax speeds. |
 | 30 – 55% | Photograph softens: a pre‑blurred copy fades over the sharp one (opacity only). |
 | 48 – 70% | Blurred photograph fades out, leaving warm stone. |
-| 50 – 74% | Floral wordmark crossfades into the video‑filled letters. |
+| 50 – 74% | Plain wordmark crossfades into the video‑filled letters, with the logo's bougainvillea blooming around them. |
 | 74 – 100% | Video layer settles with a slight scale. Videos start playing at 45%. |
 
-After the pin releases, the wheel section overlaps the bottom of the letters.
+After the pin releases, the wheel section starts exactly at the bottom edge of
+the letters (a CSS calc from the wordmark proportions, so it holds at any
+viewport), and the collage tucks under the wheel.
 
 ### How the video letters work
 
@@ -136,10 +138,15 @@ the four letters, and writes:
 - `lib/brand-geometry.ts` — the letter box aspect, per‑letter slots, and where
   the letter box sits inside each wordmark image.
 
-`VideoLettermark` positions the floral wordmark PNG so its letters coincide
-exactly with the masked video letters, which is what lets the scroll timeline
-crossfade one into the other. `BrandMark` renders the plain wordmark as a mask
-so it can be cobalt in the header and white in the footer.
+- `public/brand/kiki-flowers-only.png` — the floral wordmark with the white
+  letters and subtitle removed, so the bougainvillea can sit on top of the video
+  letters exactly where it sits in the logo.
+
+`VideoLettermark` positions the plain wordmark (hero state) and the flowers
+layer so their letter boxes coincide with the masked video letters, which is
+what lets the scroll timeline crossfade one into the other: the plain KIKI fades
+out while the video letters and their flowers fade in. `BrandMark` renders the
+plain wordmark as a mask so it can be cobalt in the header and white in the footer.
 
 Re‑run `node scripts/brand-geometry.mjs` if either wordmark PNG changes.
 

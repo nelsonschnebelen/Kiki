@@ -10,7 +10,7 @@ export const BRAND_GEOMETRY = {
   /** Dilation padding of the outline masks, as a fraction of the letter box width/height. */
   outlinePad: { x: 0.00980, y: 0.03325 },
   /** Plain wordmark (with "On the Miami River"): where the letter box sits inside the full image. */
-  wordmark: { src: "/brand/kiki-wordmark.png", width: 2169, height: 725, letter: { x: 0.16229, y: 0.14621, w: 0.65883, h: 0.58069 } },
-  /** Floral wordmark: where the letter box sits inside the full image. */
-  floral: { src: "/brand/kiki-wordmark-flowers.png", width: 2017, height: 780, letter: { x: 0.14725, y: 0.21667, w: 0.68466, h: 0.52160 } },
+  wordmark: { src: "/brand/kiki-wordmark.png", width: 2169, height: 725, letter: { x: 0.16229, y: 0.14621, w: 0.65883, h: 0.58069 }, subtitleBottom: 0.2637 },
+  /** Floral wordmark and its flowers-only derivative: where the letter box sits inside the full image. */
+  floral: { src: "/brand/kiki-wordmark-flowers.png", flowersSrc: "/brand/kiki-flowers-only.png", width: 2017, height: 780, letter: { x: 0.12524, y: 0.21667, w: 0.73126, h: 0.55710 } },
 } as const;

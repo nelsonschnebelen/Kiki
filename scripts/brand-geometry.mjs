@@ -87,17 +87,25 @@ const ly1 = plainBand.y1;
 const lw = lx1 - lx + 1;
 const lh = ly1 - ly + 1;
 
+// Subtitle extent below the letters (fraction of letter height), for placing the hero tagline.
+let lastInk = ly1;
+for (let y = plain.H - 1; y > ly1; y--) if (plain.rows[y] > 0) { lastInk = y; break; }
+const subtitleBottom = (lastInk - ly1) / lh;
+
+// Floral letter box: align on the vertical stems, detected the same way in both images
+// (flowers hide some serifs, so full ink extents are unreliable in the floral image).
 const floral = await project(FLORAL);
 const floralBand = rowBand(floral.rows, floral.W, 0.02);
-const floralSlots = await letterSlots(FLORAL, floralBand, 0.35, 20);
-console.log("floral", floral.W, "x", floral.H, "letters rows", floralBand, "stems", floralSlots);
-const fx = floralSlots[0].x0;
-const fx1 = floralSlots[floralSlots.length - 1].x1;
-// Floral letter box: same proportions as the plain box, anchored on the outer stems.
-const plainStemL = slots[0].x0;
-const plainStemR = slots[3].x1;
-const fScale = (fx1 - fx) / (plainStemR - plainStemL);
-const fLetter = { x: fx - (plainStemL - lx) * fScale, y: floralBand.y0, w: lw * fScale, h: lh * fScale };
+const plainStems = await letterSlots(PLAIN, plainBand, 0.35, 20);
+const floralStems = await letterSlots(FLORAL, floralBand, 0.35, 20);
+console.log("floral", floral.W, "x", floral.H, "letters rows", floralBand);
+console.log("plain stems", plainStems, "\nfloral stems", floralStems);
+const pStemL = plainStems[0].x0, pStemR = plainStems[plainStems.length - 1].x1;
+const fStemL = floralStems[0].x0, fStemR = floralStems[floralStems.length - 1].x1;
+const fScale = (fStemR - fStemL) / (pStemR - pStemL);
+const rowScale = (floralBand.y1 - floralBand.y0) / (ly1 - ly);
+console.log("floral scale from stems", fScale.toFixed(4), "from rows", rowScale.toFixed(4));
+const fLetter = { x: fStemL - (pStemL - lx) * fScale, y: floralBand.y0, w: lw * fScale, h: lh * fScale };
 console.log("floral letter box", fLetter);
 
 /* Per-letter masks (exact) and outline masks (dilated, with padding). */
@@ -138,10 +146,64 @@ export const BRAND_GEOMETRY = {
   /** Dilation padding of the outline masks, as a fraction of the letter box width/height. */
   outlinePad: { x: ${(OUTLINE_PAD / lw).toFixed(5)}, y: ${(OUTLINE_PAD / lh).toFixed(5)} },
   /** Plain wordmark (with "On the Miami River"): where the letter box sits inside the full image. */
-  wordmark: { src: "/brand/kiki-wordmark.png", width: ${plain.W}, height: ${plain.H}, letter: { x: ${(lx / plain.W).toFixed(5)}, y: ${(ly / plain.H).toFixed(5)}, w: ${(lw / plain.W).toFixed(5)}, h: ${(lh / plain.H).toFixed(5)} } },
-  /** Floral wordmark: where the letter box sits inside the full image. */
-  floral: { src: "/brand/kiki-wordmark-flowers.png", width: ${floral.W}, height: ${floral.H}, letter: { x: ${(fLetter.x / floral.W).toFixed(5)}, y: ${(fLetter.y / floral.H).toFixed(5)}, w: ${(fLetter.w / floral.W).toFixed(5)}, h: ${(fLetter.h / floral.H).toFixed(5)} } },
+  wordmark: { src: "/brand/kiki-wordmark.png", width: ${plain.W}, height: ${plain.H}, letter: { x: ${(lx / plain.W).toFixed(5)}, y: ${(ly / plain.H).toFixed(5)}, w: ${(lw / plain.W).toFixed(5)}, h: ${(lh / plain.H).toFixed(5)} }, subtitleBottom: ${subtitleBottom.toFixed(4)} },
+  /** Floral wordmark and its flowers-only derivative: where the letter box sits inside the full image. */
+  floral: { src: "/brand/kiki-wordmark-flowers.png", flowersSrc: "/brand/kiki-flowers-only.png", width: ${floral.W}, height: ${floral.H}, letter: { x: ${(fLetter.x / floral.W).toFixed(5)}, y: ${(fLetter.y / floral.H).toFixed(5)}, w: ${(fLetter.w / floral.W).toFixed(5)}, h: ${(fLetter.h / floral.H).toFixed(5)} } },
 } as const;
 `;
 await writeFile("lib/brand-geometry.ts", ts);
 console.log(ts);
+
+/* ---------------------------------------------------------------------------
+ * Flowers-only layer: the floral wordmark with the white letters and subtitle
+ * removed, so the bougainvillea can stay pinned around the video letters.
+ * ------------------------------------------------------------------------- */
+{
+  const { data, info } = await sharp(FLORAL).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width: FW, height: FH } = info;
+  const N = FW * FH;
+  const isWhite = new Uint8Array(N);
+  for (let i = 0; i < N; i++) {
+    const r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2], a = data[i * 4 + 3];
+    if (a > 40 && r > 215 && g > 215 && b > 215) isWhite[i] = 1;
+  }
+  // Connected white components; anything larger than a flower centre is type.
+  const seen = new Uint8Array(N);
+  const remove = new Uint8Array(N);
+  const stack = new Int32Array(N);
+  for (let s = 0; s < N; s++) {
+    if (!isWhite[s] || seen[s]) continue;
+    let sp = 0;
+    stack[sp++] = s;
+    seen[s] = 1;
+    const comp = [];
+    let y0 = FH, y1 = 0;
+    while (sp) {
+      const i = stack[--sp];
+      comp.push(i);
+      const x = i % FW, y = (i / FW) | 0;
+      if (y < y0) y0 = y;
+      if (y > y1) y1 = y;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= FW || ny >= FH) continue;
+        const j = ny * FW + nx;
+        if (!seen[j] && isWhite[j]) { seen[j] = 1; stack[sp++] = j; }
+      }
+    }
+    if (comp.length > 400 || y1 - y0 > 22) for (const i of comp) remove[i] = 1;
+  }
+  // Dilate the removal by 3px to take the anti-aliased halo with it.
+  const out = Buffer.from(data);
+  for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+    const i = y * FW + x;
+    let hit = 0;
+    for (let dy = -3; dy <= 3 && !hit; dy++) for (let dx = -3; dx <= 3; dx++) {
+      const nx = x + dx, ny = y + dy;
+      if (nx >= 0 && ny >= 0 && nx < FW && ny < FH && remove[ny * FW + nx]) { hit = 1; break; }
+    }
+    if (hit) out[i * 4 + 3] = 0;
+  }
+  await sharp(out, { raw: { width: FW, height: FH, channels: 4 } }).png({ compressionLevel: 9 }).toFile("public/brand/kiki-flowers-only.png");
+  console.log("wrote public/brand/kiki-flowers-only.png");
+}
