@@ -63,13 +63,13 @@ export default function ExperienceWheel() {
 
   return (
     <section ref={sectionRef} id="experience" className="kiki-wheel-section relative z-20" aria-labelledby={`${uid}-heading`}>
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_min(44vw,620px)_minmax(0,1fr)] lg:items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_44vw_minmax(0,1fr)] lg:items-start">
         {/* Left: copy on stone. */}
         <div className="relative order-2 flex items-center overflow-hidden px-6 py-12 md:px-10 lg:order-1 lg:h-full lg:py-0 lg:pl-[4vw] lg:pr-6">
           <Reveal className="relative">
             <h2
               id={`${uid}-heading`}
-              className="font-display text-[26px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt md:text-[32px] xl:text-[38px]"
+              className="font-display text-[26px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt md:text-[32px] lg:text-[clamp(32px,2.7vw,58px)]"
             >
               {wheel.heading[0]}
               <br />
@@ -85,7 +85,7 @@ export default function ExperienceWheel() {
         </div>
 
         {/* Centre: wheel. It sets the band's height, poking up into the letters and down over the collage. */}
-        <div className="relative order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:-mt-[2vw] lg:-mb-[6svh] lg:w-full lg:pb-0">
+        <div className="relative order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:-mt-[3vw] lg:-mb-[4.5vw] lg:w-full lg:pb-0">
           <div className="relative aspect-square w-full">
             <div
               className="absolute inset-0 rounded-full bg-[#FBF8F2] shadow-[0_40px_80px_-40px_rgba(18,56,184,0.35),0_0_0_1px_rgba(18,56,184,0.08)]"
@@ -154,7 +154,7 @@ export default function ExperienceWheel() {
           <Image src={wheel.accentImage} alt={wheel.accentAlt} fill sizes="(max-width: 1023px) 100vw, 32vw" className="object-cover object-[50%_38%]" />
           <p
             aria-hidden
-            className="script absolute right-[9%] top-[8%] rotate-[-6deg] text-right text-[34px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.75)] xl:text-[42px]"
+            className="script absolute right-[9%] top-[8%] rotate-[-6deg] text-right text-[34px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.75)] lg:text-[clamp(34px,2.9vw,60px)]"
           >
             {wheel.note[0]}
             <br />

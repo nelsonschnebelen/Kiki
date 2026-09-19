@@ -15,14 +15,14 @@ export default function MeetMeSection() {
     <section id="meet" className="relative z-10 bg-stone" aria-labelledby="meet-heading">
       <div className="grid grid-cols-1 md:grid-cols-[30%_44%_26%] md:grid-rows-[auto_1fr]">
         {/* Heart: starts a touch above the table, as in the mock. */}
-        <Reveal className="relative md:row-span-2 md:-mt-[3svh]">
+        <Reveal className="relative md:row-span-2 md:-mt-[3.2vw] lg:-mt-[8.5vw]">
           <div className="relative aspect-square w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[62svh]">
             <Image src={meet.heart.src} alt={meet.heart.alt} fill sizes="(max-width: 767px) 100vw, 30vw" className="object-cover object-[36%_50%]" />
           </div>
         </Reveal>
 
         {/* Headline block, top right. */}
-        <Reveal className="order-first flex flex-col justify-center px-6 py-10 md:order-none md:col-start-3 md:px-8 md:pt-[9svh] md:pb-8" delay={0.1}>
+        <Reveal className="order-first flex flex-col justify-center px-6 py-10 md:order-none md:col-start-3 md:px-8 md:pt-[6.5vw] md:pb-8" delay={0.1}>
           <h2 id="meet-heading" className="font-display text-[22px] leading-tight tracking-[0.16em] text-cobalt uppercase md:text-[24px] xl:text-[27px]">
             {meet.eyebrow}
           </h2>
