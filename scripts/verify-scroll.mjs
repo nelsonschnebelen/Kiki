@@ -39,6 +39,20 @@ async function capture(name, { viewport, reducedMotion = "no-preference", mobile
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(600);
 
+  /* The hero film must actually be running (ScrollTrigger's pin re-parents it, which pauses media). */
+  if (reducedMotion !== "reduce") {
+    const film = await page.evaluate(async () => {
+      const v = document.querySelector(".kiki-stage video");
+      if (!v) return null;
+      await new Promise((r) => setTimeout(r, 1500));
+      const a = v.currentTime;
+      await new Promise((r) => setTimeout(r, 1200));
+      return { paused: v.paused, advanced: v.currentTime > a };
+    });
+    console.log(`[${name}] hero film: ${JSON.stringify(film)}`);
+    if (!film || film.paused || !film.advanced) problems.push(`[${name}] hero film is not playing`);
+  }
+
   const vh = viewport.height;
   const mult = mobile ? 2.0 : 2.8;
   const stops = reducedMotion === "reduce" ? [0, 1, 2, 3] : [0, 0.2, 0.4, 0.55, 0.7, 0.85, 1, 1.35, 2.2, 3.2];

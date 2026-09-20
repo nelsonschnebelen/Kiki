@@ -63,6 +63,10 @@ export default function VideoLettermark({
   const rootRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const visibleRef = useRef(true);
+  const playingRef = useRef(playing);
+  useEffect(() => {
+    playingRef.current = playing;
+  }, [playing]);
 
   /* Pause videos while the wordmark is off screen. */
   useEffect(() => {
@@ -113,10 +117,17 @@ export default function VideoLettermark({
         if (!v) return;
         const onPlaying = () => gsap.to(v, { opacity: 1, duration: 0.9, ease: "power2.out" });
         const onError = () => gsap.set(v, { opacity: 0 });
+        /* ScrollTrigger re-parents the pinned stage on refresh, which pauses media. Resume if it should be running. */
+        const onPause = () =>
+          requestAnimationFrame(() => {
+            if (playingRef.current && visibleRef.current && !document.hidden && v.dataset.loaded) v.play().catch(() => {});
+          });
         v.addEventListener("playing", onPlaying);
+        v.addEventListener("pause", onPause);
         v.addEventListener("error", onError);
         listeners.push(() => {
           v.removeEventListener("playing", onPlaying);
+          v.removeEventListener("pause", onPause);
           v.removeEventListener("error", onError);
         });
         gsap.to(v, {

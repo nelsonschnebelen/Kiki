@@ -33,23 +33,50 @@ export default function Hero({ bgRef, uiRef, blurRef }: HeroProps) {
     if (!src) return;
 
     let cancelled = false;
-    const onCanPlay = () => {
-      if (cancelled) return;
-      v.play()
-        .then(() => setVideoReady(true))
-        .catch(() => setVideoReady(false));
-    };
-    const onError = () => setVideoReady(false);
+    let inView = true;
 
-    v.addEventListener("canplay", onCanPlay, { once: true });
+    const tryPlay = () => {
+      if (cancelled || !inView || document.hidden) return;
+      v.play().catch(() => {});
+    };
+    const onPlaying = () => !cancelled && setVideoReady(true);
+    const onError = () => setVideoReady(false);
+    /*
+     * ScrollTrigger re-parents the pinned stage (on creation and on every refresh),
+     * and moving a media element in the DOM pauses it. Resume whenever the film is
+     * paused while it should be running.
+     */
+    const onPause = () => requestAnimationFrame(tryPlay);
+    const onVisibility = () => tryPlay();
+
+    v.addEventListener("canplay", tryPlay);
+    v.addEventListener("playing", onPlaying);
+    v.addEventListener("pause", onPause);
     v.addEventListener("error", onError);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    /* Only run the film while the hero is on screen. */
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView) tryPlay();
+        else v.pause();
+      },
+      { threshold: 0 },
+    );
+    io.observe(v);
+
     v.src = src;
     v.load();
 
     return () => {
       cancelled = true;
-      v.removeEventListener("canplay", onCanPlay);
+      io.disconnect();
+      v.removeEventListener("canplay", tryPlay);
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("pause", onPause);
       v.removeEventListener("error", onError);
+      document.removeEventListener("visibilitychange", onVisibility);
       v.pause();
       v.removeAttribute("src");
       v.load();
