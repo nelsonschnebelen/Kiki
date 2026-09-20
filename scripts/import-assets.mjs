@@ -44,7 +44,13 @@ await out("10-private-events-sunset-table.png", "public/images/champagne.jpg", {
 // Waterfront view for the right of the wheel section (full frame; cropped by CSS).
 await out("11-miami-river-waterfront.png", "public/images/marina.jpg", { width: 1600 });
 
-// Wheel centre: day on the left, night on the right.
+// Wheel centre: full day and full night images; the wheel crossfades between them as it turns.
+for (const [src, out] of [["07-wheel-day-dining.png", "wheel-day.jpg"], ["08-wheel-night-party.png", "wheel-night.jpg"]]) {
+  await sharp(`${SRC}/${src}`).resize({ width: 1100, height: 1100, fit: "cover", position: "centre" }).jpeg(jpeg).toFile(`public/images/${out}`);
+  console.log("wrote public/images/" + out);
+}
+
+// Legacy split composite (kept for the reduced-motion fallback): day on the left, night on the right.
 const half = (f) => sharp(`${SRC}/${f}`).resize({ width: 600, height: 1200, fit: "cover", position: "centre" }).toBuffer();
 const [day, night] = await Promise.all([half("07-wheel-day-dining.png"), half("08-wheel-night-party.png")]);
 await sharp({ create: { width: 1200, height: 1200, channels: 3, background: "#ffffff" } })

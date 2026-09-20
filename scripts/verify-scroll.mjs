@@ -47,7 +47,7 @@ async function capture(name, { viewport, reducedMotion = "no-preference", mobile
       await new Promise((r) => setTimeout(r, 1500));
       const a = v.currentTime;
       await new Promise((r) => setTimeout(r, 1200));
-      return { paused: v.paused, advanced: v.currentTime > a };
+      return { paused: v.paused, advanced: v.currentTime !== a }; // !== so a wrap at the loop point still counts
     });
     console.log(`[${name}] hero film: ${JSON.stringify(film)}`);
     if (!film || film.paused || !film.advanced) problems.push(`[${name}] hero film is not playing`);

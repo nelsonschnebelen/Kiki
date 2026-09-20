@@ -29,7 +29,7 @@ export default function ExperienceWheel() {
   const outerScrollRef = useRef<HTMLDivElement>(null);
   const outerIdleRef = useRef<SVGSVGElement>(null);
   const innerScrollRef = useRef<HTMLDivElement>(null);
-  const innerIdleRef = useRef<SVGSVGElement>(null);
+  const nightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (reduced !== false) return;
@@ -38,20 +38,20 @@ export default function ExperienceWheel() {
     registerGsap();
 
     const ctx = gsap.context(() => {
-      const scrollTrigger = { trigger: section, start: "top bottom", end: "bottom top", scrub: 0.9 };
-      gsap.fromTo(outerScrollRef.current, { rotation: -34 }, { rotation: 34, ease: "none", scrollTrigger });
-      gsap.fromTo(innerScrollRef.current, { rotation: 22 }, { rotation: -22, ease: "none", scrollTrigger });
+      /* The wheel arrives showing day. As it travels up the screen it turns to night. */
+      const turn = { trigger: section, start: "top 72%", end: "bottom 45%", scrub: 0.9 };
+      // Outer Greek border: clockwise.
+      gsap.fromTo(outerScrollRef.current, { rotation: -40 }, { rotation: 40, ease: "none", scrollTrigger: turn });
+      // Dial: the sun starts at the top, the moon finishes there (half a turn, counter-clockwise).
+      gsap.fromTo(innerScrollRef.current, { rotation: 90 }, { rotation: -90, ease: "none", scrollTrigger: turn });
+      // Picture: day dissolves into night through the middle of the turn.
+      const fade = gsap.timeline({ scrollTrigger: turn, defaults: { ease: "none" } });
+      fade.to(nightRef.current, { opacity: 0, duration: 0.3 }).to(nightRef.current, { opacity: 1, duration: 0.4 }).to(nightRef.current, { opacity: 1, duration: 0.3 });
 
+      /* Very slow idle on the border only, so the dial always reads true. */
       const idleOuter = gsap.to(outerIdleRef.current, { rotation: 360, duration: 340, ease: "none", repeat: -1, paused: true });
-      const idleInner = gsap.to(innerIdleRef.current, { rotation: -360, duration: 280, ease: "none", repeat: -1, paused: true });
-      const play = () => {
-        idleOuter.play();
-        idleInner.play();
-      };
-      const pause = () => {
-        idleOuter.pause();
-        idleInner.pause();
-      };
+      const play = () => idleOuter.play();
+      const pause = () => idleOuter.pause();
       ScrollTrigger.create({ trigger: section, start: "top 85%", end: "bottom 15%", onEnter: play, onEnterBack: play, onLeave: pause, onLeaveBack: pause });
     }, section);
 
@@ -62,7 +62,7 @@ export default function ExperienceWheel() {
   const arcStyle = { fontFamily: "var(--font-display)", fontWeight: 600 } as const;
 
   return (
-    <section ref={sectionRef} id="experience" className="kiki-wheel-section relative z-20" aria-labelledby={`${uid}-heading`}>
+    <section ref={sectionRef} id="experience" className="kiki-wheel-section relative z-40" aria-labelledby={`${uid}-heading`}>
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_44vw_minmax(0,1fr)] lg:items-start">
         {/* Left: copy on stone. */}
         <div className="relative order-2 flex items-center overflow-hidden px-6 py-12 md:px-10 lg:order-1 lg:h-full lg:py-0 lg:pl-[4vw] lg:pr-6">
@@ -88,7 +88,7 @@ export default function ExperienceWheel() {
         <div className="relative order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:-mt-[3vw] lg:-mb-[4.5vw] lg:w-full lg:pb-0">
           <div className="relative aspect-square w-full">
             <div
-              className="absolute inset-0 rounded-full bg-[#FBF8F2] shadow-[0_40px_80px_-40px_rgba(18,56,184,0.35),0_0_0_1px_rgba(18,56,184,0.08)]"
+              className="absolute inset-0 rounded-full bg-[#FBF8F2] shadow-[0_40px_80px_-40px_rgba(18,56,184,0.35),0_-18px_50px_-24px_rgba(14,44,147,0.35),0_0_0_1px_rgba(18,56,184,0.12)]"
               aria-hidden
             />
 
@@ -121,7 +121,7 @@ export default function ExperienceWheel() {
             </div>
 
             <div ref={innerScrollRef} className="absolute inset-0 will-change-transform">
-              <svg ref={innerIdleRef} viewBox="0 0 400 400" className="absolute inset-0 h-full w-full will-change-transform" aria-hidden focusable="false">
+              <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full will-change-transform" aria-hidden focusable="false">
                 <circle cx="200" cy="200" r="138" fill="none" stroke="#1238B8" strokeWidth="1" strokeDasharray="1.5 5" />
                 <g fill="none" stroke="#1238B8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   {[45, 135, 225, 315].map((deg) => (
@@ -138,8 +138,22 @@ export default function ExperienceWheel() {
               </svg>
             </div>
 
+            {/* Stationary marker at twelve o'clock: whatever sits under it is "now". */}
+            <svg viewBox="0 0 400 400" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden focusable="false">
+              <path d="M200 84 l-5 -9 h10 z" fill="#1238B8" />
+            </svg>
+
             <div className="absolute inset-[19.5%] overflow-hidden rounded-full ring-1 ring-cobalt/15">
-              <Image src={wheel.centerImage} alt={wheel.centerAlt} fill sizes="(max-width: 1023px) 60vw, 30vw" quality={85} className="object-cover" />
+              {reduced ? (
+                <Image src={wheel.centerImage} alt={wheel.centerAlt} fill sizes="(max-width: 1023px) 60vw, 30vw" quality={85} className="object-cover" />
+              ) : (
+                <>
+                  <Image src={wheel.dayImage} alt={wheel.centerAlt} fill sizes="(max-width: 1023px) 60vw, 30vw" quality={85} className="object-cover" />
+                  <div ref={nightRef} className="absolute inset-0 opacity-0 will-change-[opacity]" aria-hidden>
+                    <Image src={wheel.nightImage} alt="" fill sizes="(max-width: 1023px) 60vw, 30vw" quality={85} className="object-cover" />
+                  </div>
+                </>
+              )}
             </div>
             <div className="pointer-events-none absolute inset-x-0 bottom-[27%] flex justify-center">
               <span className="whitespace-nowrap rounded-full bg-white/92 px-4 py-2 font-display text-[11px] tracking-[0.36em] text-cobalt shadow-sm md:px-5 md:text-[12.5px]">

@@ -126,7 +126,10 @@ export const siteContent = {
     topArc: "DAY TURNS INTO NIGHT",
     bottomArc: "KIKI ON THE MIAMI RIVER",
     center: "EAT • DRINK • DANCE",
-    /** Square image: left half is day, right half is night. */
+    /** Square images. The wheel starts on day and turns to night as you scroll. */
+    dayImage: "/images/wheel-day.jpg",
+    nightImage: "/images/wheel-night.jpg",
+    /** Split composite (left day, right night) shown when motion is reduced. */
     centerImage: "/images/wheel-center.jpg",
     centerAlt: "The KIKI terrace by day on the left, and the same terrace at night on the right",
     heading: ["Your table.", "Your night."],

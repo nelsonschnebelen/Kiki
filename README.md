@@ -77,7 +77,7 @@ Everything is referenced from **`data/site-content.ts`**. Drop the file into
 | Hero ambient loop | `hero.video.desktop` / `.mobile` | `public/video/hero.mp4`, `hero-mobile.mp4` |
 | Letter videos | `letters[n].video.desktop` / `.mobile` | `public/video/letters/k1.mp4`, `i1`, `k2`, `i2` (+ `-mobile`) |
 | Letter posters | `letters[n].video.poster` | `public/images/letters/*.jpg` (portrait, 3:4) |
-| Wheel centre | `wheel.centerImage` | `public/images/wheel-center.jpg` (square, left = day, right = night) |
+| Wheel pictures | `wheel.dayImage` / `wheel.nightImage` | `public/images/wheel-day.jpg`, `wheel-night.jpg` (square); `wheel-center.jpg` is the reduced-motion split |
 | Collage | `meet.heart / table / champagne` | `public/images/heart.jpg`, `long-table.jpg`, `champagne.jpg` |
 | Footer | `footer.image` | `public/images/nightlife.jpg` (wide) |
 | Reserve link | `reservationUrl` | or `NEXT_PUBLIC_RESERVATION_URL` in `.env.local` |
@@ -125,6 +125,13 @@ scrubbed by scroll; fractions below are of that distance
 | 48 – 70% | Blurred photograph fades out, leaving warm stone. |
 | 50 – 74% | Logo crossfades into the video‑filled letters while the watercolour corner florals bloom in. |
 | 74 – 100% | Video layer settles with a slight scale. Videos start playing at 45%. |
+
+The wheel is a solid disc layered above the letters. It arrives with the sun at
+twelve o'clock and the daytime picture; as it travels up the screen the dial
+makes half a turn so the moon comes to the top, and the picture dissolves from
+day (`wheel.dayImage`) into night (`wheel.nightImage`). The Greek border turns
+the other way and idles very slowly. With reduced motion the split day/night
+still is shown instead.
 
 After the pin releases, the wheel section starts exactly at the bottom edge of
 the letters (a CSS calc from the wordmark proportions, so it holds at any
