@@ -151,9 +151,13 @@ export const siteContent = {
     image: "/images/nightlife.jpg",
     /**
      * Optional boomerang loop (forward then reverse) made by scripts/make-boomerang.mjs.
-     * Leave as null until the clip exists; the still then drifts gently back and forth instead.
+     * Set to null to fall back to the still, which then drifts gently back and forth instead.
      */
-    video: null as VideoSource | null,
+    video: {
+      desktop: "/video/footer.mp4",
+      mobile: "/video/footer-mobile.mp4",
+      poster: "/images/footer-poster.jpg",
+    } as VideoSource | null,
     alt: "Guests dancing with white napkins in the air under bougainvillea at night",
     note: ["Food", "Friends", "Dancing", "Always"],
     address: "450 NW North River Dr, Miami, FL 33128",
