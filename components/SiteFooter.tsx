@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { siteContent, resolveHref } from "@/data/site-content";
 import BrandMark from "./BrandMark";
+import FooterMedia from "./FooterMedia";
 
 /** Night-time close: the dancing crowd photograph with the wordmark over it. */
 export default function SiteFooter() {
@@ -8,7 +8,7 @@ export default function SiteFooter() {
 
   return (
     <footer className="relative z-10 min-h-[78svh] w-full overflow-hidden text-white" aria-label="Footer">
-      <Image src={footer.image} alt={footer.alt} fill sizes="100vw" quality={82} className="object-cover object-center" />
+      <FooterMedia image={footer.image} alt={footer.alt} video={footer.video} />
 
       <p
         aria-hidden

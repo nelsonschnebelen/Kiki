@@ -167,6 +167,20 @@ body {
   margin-top: calc(var(--wm-letters-bottom) - 100svh);
 }
 
+/* Footer still: slow boomerang drift (out and back) until a boomerang clip is configured. */
+.footer-drift {
+  animation: footer-drift 9s var(--ease-editorial) infinite alternate;
+  will-change: transform;
+}
+@keyframes footer-drift {
+  from {
+    transform: scale(1.04) translate3d(-1.2%, 0.6%, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(1.2%, -0.8%, 0);
+  }
+}
+
 /* Scroll hint: a hairline with a slow travelling highlight. */
 .scroll-cue {
   position: relative;
@@ -247,6 +261,7 @@ html.lenis body {
  * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue::after,
+  .footer-drift,
   .hero-chevron {
     animation: none;
     transform: translateY(0);

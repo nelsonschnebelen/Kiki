@@ -54,6 +54,8 @@ scripts/
   extract-petals.mjs    cuts real bracts and leaves out of the floral wordmark → public/petals, lib/petal-sprites.ts
   vectorize-logo.mjs    traces the 500px KIKI logo to SVG + a 2400px PNG
   brand-geometry.mjs    measures the traced logo → letter masks, outlines, lib/brand-geometry.ts
+  cut-hero.mjs          cuts KIKI's vertical reel into the hero triptych + mobile edit
+  make-boomerang.mjs    forward-then-reverse loop from any clip (footer)
   encode-video.mjs      encodes a generated clip into desktop/mobile MP4 + poster
   verify-scroll.mjs     headless Playwright check of the sequence (desktop, mobile, reduced motion)
   prepare-assets.mjs    earlier fallback that crops the mockups
@@ -161,10 +163,26 @@ tinted to the same soft pink by `scripts/extract-petals.mjs`.
 
 ### Hero film
 
-`hero.video` points at KIKI's own homepage film on their server (37 MB). The
-hero still is the poster and the fallback. To self‑host, save the file locally,
-run `node scripts/encode-video.mjs <file> hero`, and set the two paths to
-`/video/hero.mp4` and `/video/hero-mobile.mp4`.
+The hero plays a nightlife film cut from KIKI's own vertical reel
+(`assets/source/16-kiki-nightlife-reel.mp4`) by `scripts/cut-hero.mjs`. The
+script drops the "Ladies Night" title, the white flash transitions and the logo
+end card, slows the footage to 0.75x, and writes:
+
+- `public/video/hero.mp4` — three vertical panels side by side (3 × 9:16 is
+  almost exactly 16:9), each with its own shot order so the cuts never land together;
+- `public/video/hero-mobile.mp4` — one vertical edit of the same shots;
+- `public/images/hero-night.jpg` and `hero-night-blur.jpg` — poster and the
+  blurred copy used by the scroll transition.
+
+To recut, edit the `SHOTS` and `COLUMNS` tables in the script and re-run it.
+
+### Footer boomerang
+
+`footer.video` in `data/site-content.ts` is `null` until a clip exists; the
+still then drifts slowly out and back. Once there is a clip of the scene, run
+`node scripts/make-boomerang.mjs <clip.mp4> footer` (forward then reversed, so
+it loops seamlessly) and set `footer.video` to
+`{ desktop: "/video/footer.mp4", mobile: "/video/footer-mobile.mp4", poster: "/images/footer-poster.jpg" }`.
 
 The wordmark element is laid out at its **final** size and scaled *down* for the
 hero, so the browser rasterises it at full resolution and the scrub stays crisp.
