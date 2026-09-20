@@ -55,7 +55,8 @@ scripts/
   vectorize-logo.mjs    traces the 500px KIKI logo to SVG + a 2400px PNG
   brand-geometry.mjs    measures the traced logo → letter masks, outlines, lib/brand-geometry.ts
   cut-hero.mjs          cuts KIKI's vertical reel into the hero triptych + mobile edit
-  make-boomerang.mjs    forward-then-reverse loop from any clip (footer)
+  cut-footer.mjs        cuts KIKI's three reels into the four-panel footer film
+  make-boomerang.mjs    forward-then-reverse loop from any clip
   encode-video.mjs      encodes a generated clip into desktop/mobile MP4 + poster
   verify-scroll.mjs     headless Playwright check of the sequence (desktop, mobile, reduced motion)
   prepare-assets.mjs    earlier fallback that crops the mockups
@@ -176,13 +177,15 @@ end card, slows the footage to 0.75x, and writes:
 
 To recut, edit the `SHOTS` and `COLUMNS` tables in the script and re-run it.
 
-### Footer boomerang
+### Footer film
 
-`footer.video` in `data/site-content.ts` is `null` until a clip exists; the
-still then drifts slowly out and back. Once there is a clip of the scene, run
-`node scripts/make-boomerang.mjs <clip.mp4> footer` (forward then reversed, so
-it loops seamlessly) and set `footer.video` to
-`{ desktop: "/video/footer.mp4", mobile: "/video/footer-mobile.mp4", poster: "/images/footer-poster.jpg" }`.
+The footer plays four vertical panels, one for every letter of KIKI, cut from
+KIKI's own reels (`assets/source/17–19-kiki-footer-reel-*.mp4`) by
+`scripts/cut-footer.mjs`. Four 9:16 panels are 2.25:1, which fits the wide
+footer band (three would crop heads). Titles, graphics, flashes and logo end
+cards are skipped. Edit the `PANELS` table and re-run to recut. Mobile gets one
+vertical edit. `scripts/make-boomerang.mjs` remains available for turning any
+single clip into a forward-then-reverse loop.
 
 The wordmark element is laid out at its **final** size and scaled *down* for the
 hero, so the browser rasterises it at full resolution and the scrub stays crisp.

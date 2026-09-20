@@ -148,17 +148,19 @@ export const siteContent = {
   },
 
   footer: {
-    image: "/images/nightlife.jpg",
+    /** Poster frame of the footer film (written by scripts/cut-footer.mjs). */
+    image: "/images/footer-poster.jpg",
     /**
-     * Optional boomerang loop (forward then reverse) made by scripts/make-boomerang.mjs.
-     * Set to null to fall back to the still, which then drifts gently back and forth instead.
+     * Four vertical panels cut from KIKI's own reels by scripts/cut-footer.mjs, one for
+     * every letter: the room at night, the party, the yacht by day, the party.
+     * Set to null to fall back to the still, which then drifts gently instead.
      */
     video: {
       desktop: "/video/footer.mp4",
       mobile: "/video/footer-mobile.mp4",
       poster: "/images/footer-poster.jpg",
     } as VideoSource | null,
-    alt: "Guests dancing with white napkins in the air under bougainvillea at night",
+    alt: "Four scenes of KIKI: the restaurant at night, a celebration at the table, lunch on the yacht, and dancing",
     note: ["Food", "Friends", "Dancing", "Always"],
     address: "450 NW North River Dr, Miami, FL 33128",
     instagram: { label: "@kikiontheriver", href: "https://www.instagram.com/kikiontheriver" },
