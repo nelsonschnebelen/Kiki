@@ -1,0 +1,5 @@
+# Source footage, mockups and verification output are not needed to build or serve the site.
+assets
+verify-out
+asset-plan-kiki-on-the-river.md
+asset-ledger.md

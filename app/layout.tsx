@@ -30,6 +30,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.kikiontheriver.com"),
   title,
   description: siteContent.brand.description,
+  /* Pitch mock carrying KIKI's brand: keep it out of search results. Remove when it becomes the real site. */
+  robots: { index: false, follow: false },
   openGraph: {
     title,
     description: siteContent.brand.description,
