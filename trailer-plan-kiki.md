@@ -4,6 +4,8 @@
 >
 > Rebuild from scratch: `node trailer/capture-site.mjs` → `node trailer/render-titles.mjs` → `node trailer/build-trailer.mjs [music]`. The cut, cue times and overlays are one table (`CUT`) in build-trailer.mjs.
 
+**Update, one-minute cut.** The default build is now 1:02 (`trailer/out/kiki-trailer.mp4`); `--long` builds the 2:22 version as `kiki-trailer-full.mp4`. Audio was reworked after clicks and distortion in v2: every narration line is faded at both edges, the narration uses fixed gain instead of a loudness leveller, the music sits at -9 dB with slow ducking, and the limiter no longer engages. `node trailer/audio-qc.mjs` measures edge clicks, peaks and the voice-over-music margin.
+
 The plan below is the original brief, kept for reference.
 
 **Format:** 16:9, 1080p, about 70 seconds · **Tone:** Netflix title sequence. Slow, confident, dark-to-bright. Short lines, long pauses, hard cuts on the beat.

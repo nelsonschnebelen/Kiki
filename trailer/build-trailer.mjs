@@ -16,6 +16,7 @@ import ffmpegPath from "ffmpeg-static";
 import sharp from "sharp";
 import { execFileSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
+import { statSync } from "node:fs";
 
 const args = process.argv.slice(2);
 const music = args.find((a) => !a.startsWith("--"));
@@ -23,8 +24,10 @@ const music = args.find((a) => !a.startsWith("--"));
 const dropArg = args.find((a) => a.startsWith("--drop="));
 const DROP = dropArg ? Number(dropArg.split("=")[1]) : null;
 const AUDIO_ONLY = args.includes("--audio-only");
+const LONG = args.includes("--long");
+const NAME = LONG ? "kiki-trailer-full" : "kiki-trailer";
 const BRAND = "trailer/brand/dl";
-const W = "trailer/work", T = `${W}/titles`, SEG = `${W}/seg`, OUT = "trailer/out";
+const W = "trailer/work", T = `${W}/titles`, SEG = `${W}/seg${process.argv.includes("--long") ? "" : "-short"}`, OUT = "trailer/out";
 await mkdir(SEG, { recursive: true });
 await mkdir(OUT, { recursive: true });
 const ff = (args) => execFileSync(ffmpegPath, ["-hide_banner", "-loglevel", "error", "-y", ...args], { stdio: "inherit" });
@@ -51,7 +54,7 @@ await sharp(Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1040" he
 const black = (d) => ({ inputs: ["-f", "lavfi", "-i", `color=c=black:s=1920x1080:r=30:d=${d}`], chain: "[0:v]null" });
 const clip = (file, from, to, speed = 1, extra = "") => ({
   inputs: ["-i", file],
-  chain: `[0:v]trim=start=${from}:end=${to},setpts=PTS-STARTPTS,${COVER}${speed !== 1 ? `,setpts=PTS/${speed},minterpolate=fps=30:mi_mode=blend` : ",fps=30"}${extra}`,
+  chain: `[0:v]trim=start=${from}:end=${to},setpts=PTS-STARTPTS,${COVER}${speed < 1 ? `,setpts=PTS/${speed},minterpolate=fps=30:mi_mode=blend` : speed > 1 ? `,setpts=PTS/${speed},fps=30` : ",fps=30"}${extra}`,
 });
 /* Generated data network, shifted from cobalt to Dishio green and pushed dark. */
 const DATA = (d) => `trim=duration=${d},setpts=PTS-STARTPTS,${COVER},hue=h=-105:s=0.85,eq=brightness=-0.14:contrast=1.08`;
@@ -72,7 +75,7 @@ const withDashboard = (d) => ({
   chain: `[0:v]${DATA(d)}[bg];[1:v]trim=start=0.6:end=${(0.6 + d).toFixed(2)},setpts=PTS-STARTPTS,fps=30,scale=1040:585,format=rgba[ds];[2:v]format=gray[dm];[ds][dm]alphamerge[dw];[bg][dw]overlay=820:248`,
 });
 
-const CUT = [
+const CUT_LONG = [
   { id: "presents", dur: 5.0, ...dishioLogo(5.0), over: [["presents", 0]], hit: [0.2], fade: [0, 0.6] },
   { id: "river", dur: 10.4, ...clip("trailer/assets/clips/river.mp4", 0, 8, 0.77), vo: [[1, 2.2], [2, 5.9]], fade: [1.2, 0.3] },
   { id: "legend", dur: 7.6, ...clip("public/video/hero.mp4", 0.4, 8.0), over: [["renowned", 3.6]], vo: [[3, 0.5]], hit: [0], fade: [0.15, 0.2] },
@@ -93,6 +96,22 @@ const CUT = [
   { id: "d6", dur: 7.6, ...withDashboard(7.6), over: [["d6", 0]], vo: [[19, 0.6]], fade: [0, 0.5] },
   { id: "close", dur: 8.5, ...black(8.5), over: [["close", 0]], vo: [[20, 1.2], [21, 4.6]], hit: [0.3] },
 ];
+
+/* One minute. Fewer lines, the titles carry more, footage runs faster. */
+const CUT_SHORT = [
+  { id: "presents", dur: 3.2, ...dishioLogo(3.2), fade: [0, 0.5] },
+  { id: "river", dur: 5.0, ...clip("trailer/assets/clips/river.mp4", 0.5, 5.5), vo: [[1, 0.4], [2, 2.5]], fade: [0.8, 0.2] },
+  { id: "legend", dur: 4.6, ...clip("public/video/hero.mp4", 0.4, 5.0), over: [["renowned", 1.0]], vo: [[3, 0.05]], fade: [0.12, 0.15] },
+  { id: "evolve", dur: 4.1, ...black(4.1), over: [["evolve", 0]], vo: [[4, 0.1], [6, 2.95]] },
+  { id: "sequence", dur: 10.0, ...clip(`${W}/site-sequence.mp4`, 1.6, 19.6, 1.8), over: [["lb-scroll", 2.9], ["lb-brand", 6.4]], vo: [[7, 0.3], [8, 2.7]], fade: [0.3, 0] },
+  { id: "wheel", dur: 5.5, ...clip(`${W}/site-wheel.mp4`, 1.2, 11.4, 1.85), over: [["lb-wheel", 1.7]], vo: [[9, 0.1]] },
+  { id: "booking", dur: 6.0, ...clip(`${W}/site-booking.mp4`, 4.5, 15.0, 1.75), over: [["lb-book", 2.3]], vo: [[10, 0.3]] },
+  { id: "d1", dur: 5.6, ...dataBg(5.6), over: [["d1", 0]], vo: [[14, 0.15]], fade: [0.3, 0] },
+  { id: "d2", dur: 5.6, ...dataBg(5.6), over: [["d2", 0]], vo: [[15, 0.05]] },
+  { id: "d3", dur: 5.9, ...dataBg(5.9), over: [["d3", 0]], vo: [[16, 0.05]], fade: [0, 0.3] },
+  { id: "close", dur: 6.9, ...black(6.9), over: [["close", 0]], vo: [[20, 0.5], [21, 3.6]], fade: [0, 0.6] },
+];
+const CUT = LONG ? CUT_LONG : CUT_SHORT;
 
 /* ---------------------------------------------------------------- data background loop (boomerang, slowed) */
 if (!AUDIO_ONLY) ff(["-i", "trailer/assets/clips/data.mp4", "-filter_complex",
@@ -148,15 +167,18 @@ if (!AUDIO_ONLY) ff(["-f", "concat", "-safe", "0", "-i", `${SEG}/list.txt`, "-vf
     "drawbox=x=0:y=ih-60:w=iw:h=60:color=black:t=fill", // 2:1 letterbox
     "format=yuv420p",
   ].join(","),
-  "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "22", "-maxrate", "9M", "-bufsize", "18M", "-pix_fmt", "yuv420p", "-r", "30", "-movflags", "+faststart", `${W}/picture.mp4`]);
+  "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "22", "-maxrate", "9M", "-bufsize", "18M", "-pix_fmt", "yuv420p", "-r", "30", "-movflags", "+faststart", `${W}/picture-${NAME}.mp4`]);
 
 /* ---------------------------------------------------------------- sound */
 // Narration stem: each line placed at its cue, lightly polished.
+/* 48 kHz stereo 16-bit WAVs: length from the file size. */
+const lineLen = (n) => (statSync(`${W}/vo-${String(n).padStart(2, "0")}.wav`).size - 44) / (48000 * 4);
 const voInputs = cues.flatMap((c) => ["-i", `${W}/vo-${String(c.n).padStart(2, "0")}.wav`]);
 const voGraph =
-  cues.map((c, i) => `[${i}:a]highpass=f=85,acompressor=threshold=-20dB:ratio=3:attack=8:release=160,aecho=0.8:0.35:38:0.12,adelay=${Math.round(c.at * 1000)}:all=1[v${i}]`).join(";") +
-  `;${cues.map((_, i) => `[v${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:duration=longest,apad=whole_dur=${TOTAL},atrim=duration=${TOTAL},loudnorm=I=-15:TP=-1.5:LRA=9[vo]`;
-ff([...voInputs, "-filter_complex", voGraph, "-map", "[vo]", "-ar", "48000", "-ac", "2", `${OUT}/kiki-trailer-vo-stem.wav`]);
+  /* Each line gets a short fade at both edges (the silence trim leaves the waveform mid-swing, which clicks). */
+  cues.map((c, i) => `[${i}:a]afade=t=in:d=0.03,afade=t=out:st=${Math.max(0, lineLen(c.n) - 0.09).toFixed(3)}:d=0.09,highpass=f=80,acompressor=threshold=-18dB:ratio=2.5:attack=12:release=220:makeup=1,adelay=${Math.round(c.at * 1000)}:all=1[v${i}]`).join(";") +
+  `;${cues.map((_, i) => `[v${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:duration=longest,apad=whole_dur=${TOTAL},atrim=duration=${TOTAL},volume=-5dB[vo]`; // fixed gain: a loudness leveller pumps between phrases
+ff([...voInputs, "-filter_complex", voGraph, "-map", "[vo]", "-ar", "48000", "-ac", "2", `${OUT}/${NAME}-vo-stem.wav`]);
 
 if (music) {
   /*
@@ -184,11 +206,11 @@ if (music) {
   } else {
     bed = `[1:a]${DROP == null ? "" : DROP > REVEAL ? `atrim=start=${(DROP - REVEAL).toFixed(2)},asetpts=PTS-STARTPTS,` : `adelay=${Math.round((REVEAL - DROP) * 1000)}:all=1,`}`;
   }
-  ff(["-i", `${OUT}/kiki-trailer-vo-stem.wav`, "-i", music, "-i", `${W}/boom.wav`, "-filter_complex",
-    `${bed}apad=whole_dur=${TOTAL},atrim=duration=${TOTAL},afade=t=in:d=1.2,afade=t=out:st=${(TOTAL - 2.5).toFixed(2)}:d=2.5,volume=0.72[m];[0:a]asplit[vo][key];` +
-    `[m][key]sidechaincompress=threshold=0.025:ratio=7:attack=20:release=450[duck];[2:a]adelay=${Math.round(REVEAL * 1000)}:all=1,volume=0.5[imp];` +
-    `[vo][duck][imp]amix=inputs=3:normalize=0:duration=first,alimiter=limit=0.95[a]`,
-    "-map", "[a]", "-ar", "48000", `${W}/mix.wav`]);
+  ff(["-i", `${OUT}/${NAME}-vo-stem.wav`, "-i", music, "-i", `${W}/boom.wav`, "-filter_complex",
+    `${bed}apad=whole_dur=${TOTAL},atrim=duration=${TOTAL},afade=t=in:d=1.2,afade=t=out:st=${(TOTAL - 2.5).toFixed(2)}:d=2.5,volume=-9dB[m];[0:a]asplit[vo][key];` +
+    `[m][key]sidechaincompress=threshold=0.01:ratio=6:attack=70:release=900:knee=6[duck];[2:a]adelay=${Math.round(REVEAL * 1000)}:all=1,volume=0.22[imp];` +
+    `[vo][duck][imp]amix=inputs=3:normalize=0:duration=first,volume=3.5dB,alimiter=limit=0.89:attack=25:release=400:level=false[a]`,
+    "-map", "[a]", "-ar", "48000", `${W}/mix-${NAME}.wav`]);
 } else {
   // Stand-in bed: a slow low drone plus impacts on the big cuts.
   ff(["-f", "lavfi", "-i", "sine=f=46:d=3.2", "-f", "lavfi", "-i", "anoisesrc=d=3.2:c=brown:a=0.9", "-filter_complex",
@@ -197,11 +219,11 @@ if (music) {
   const hitInputs = hits.flatMap(() => ["-i", `${W}/boom.wav`]);
   const drone = `sine=f=55:d=${TOTAL}[d1];sine=f=55.6:d=${TOTAL}[d2];sine=f=82.4:d=${TOTAL},volume=0.5[d3];[d1][d2][d3]amix=inputs=3:normalize=0,tremolo=f=0.11:d=0.5,lowpass=f=220,afade=t=in:d=4,afade=t=out:st=${(TOTAL - 4).toFixed(2)}:d=4,volume=0.11,aformat=channel_layouts=stereo[dr]`;
   const hg = hits.map((at, i) => `[${i + 1}:a]adelay=${Math.round(at * 1000)}:all=1,volume=0.55[h${i}]`).join(";");
-  ff(["-i", `${OUT}/kiki-trailer-vo-stem.wav`, ...hitInputs, "-filter_complex",
+  ff(["-i", `${OUT}/${NAME}-vo-stem.wav`, ...hitInputs, "-filter_complex",
     `${drone};${hg};[0:a][dr]${hits.map((_, i) => `[h${i}]`).join("")}amix=inputs=${hits.length + 2}:normalize=0:duration=first,alimiter=limit=0.95[a]`,
-    "-map", "[a]", "-ar", "48000", `${W}/mix.wav`]);
+    "-map", "[a]", "-ar", "48000", `${W}/mix-${NAME}.wav`]);
 }
 
-ff(["-i", `${W}/picture.mp4`, "-i", `${W}/mix.wav`, "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", `${OUT}/kiki-trailer.mp4`]);
+ff(["-i", `${W}/picture-${NAME}.mp4`, "-i", `${W}/mix-${NAME}.wav`, "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", `${OUT}/${NAME}.mp4`]);
 console.log(`site reveal lands at ${REVEAL.toFixed(1)}s`);
-console.log(`\ndone: ${OUT}/kiki-trailer.mp4  ${Math.floor(TOTAL / 60)}:${String(Math.round(TOTAL % 60)).padStart(2, "0")}  (${music ? "with supplied music" : "stand-in drone + impacts"})`);
+console.log(`\ndone: ${OUT}/${NAME}.mp4  ${Math.floor(TOTAL / 60)}:${String(Math.round(TOTAL % 60)).padStart(2, "0")}  (${music ? "with supplied music" : "stand-in drone + impacts"})`);
