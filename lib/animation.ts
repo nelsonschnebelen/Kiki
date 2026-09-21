@@ -54,6 +54,12 @@ export const SEQUENCE = {
   heroFade: [0.48, 0.7],
   /** Floral wordmark crossfades into the video-filled letters. */
   crossfade: [0.5, 0.74],
+  /** Calls to action under the letters: in once the letters land, out as the wheel rises into that space. */
+  ctaIn: [0.7, 0.79],
+  ctaOut: [0.88, 0.95],
+  /** On phones the pin is shorter, so the wheel arrives earlier in the timeline. */
+  ctaInMobile: [0.66, 0.74],
+  ctaOutMobile: [0.79, 0.86],
   /** Video letters settle with a slight scale. */
   settle: [0.74, 1],
   /** Video playback starts once the letters are largely revealed. */

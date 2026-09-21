@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { siteContent } from "@/data/site-content";
+import { siteContent, resolveHref } from "@/data/site-content";
 import {
   gsap,
   ScrollTrigger,
@@ -15,6 +15,7 @@ import Hero from "./Hero";
 import PetalField from "./PetalField";
 import VideoLettermark from "./VideoLettermark";
 import ReducedMotionFallback from "./ReducedMotionFallback";
+import ReserveButton from "./ReserveButton";
 
 /**
  * One pinned, scroll-scrubbed sequence:
@@ -31,6 +32,7 @@ export default function KikiScrollSequence() {
   const uiRef = useRef<HTMLDivElement>(null);
   const blurRef = useRef<HTMLDivElement>(null);
   const floralRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const wmRef = useRef<HTMLDivElement>(null);
   const noteRef = useRef<HTMLParagraphElement>(null);
   const solidRef = useRef<HTMLDivElement>(null);
@@ -91,6 +93,13 @@ export default function KikiScrollSequence() {
         { scale: 1, duration: span(SEQUENCE.settle), ease: EASE.editorial },
         SEQUENCE.settle[0],
       );
+
+      /* Calls to action in the open space under the letters; gone before the wheel arrives there. */
+      const mobile = isMobileViewport();
+      const ctaIn = mobile ? SEQUENCE.ctaInMobile : SEQUENCE.ctaIn;
+      const ctaOut = mobile ? SEQUENCE.ctaOutMobile : SEQUENCE.ctaOut;
+      tl.fromTo(ctaRef.current, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: span(ctaIn), ease: EASE.reveal }, ctaIn[0]);
+      tl.to(ctaRef.current, { autoAlpha: 0, y: -14, duration: span(ctaOut), ease: EASE.editorial }, ctaOut[0]);
 
       /* Handwritten note beside the letters. */
       tl.fromTo(noteRef.current, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.18, ease: EASE.reveal }, 0.78);
@@ -176,6 +185,24 @@ export default function KikiScrollSequence() {
         </div>
 
         <PetalField layer="front" />
+
+        <div
+          ref={ctaRef}
+          className="kiki-sequence-cta pointer-events-auto absolute left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-3 sm:flex-row sm:gap-4"
+          style={{ opacity: 0, visibility: "hidden" }}
+        >
+          {siteContent.wheel.ctas.map((cta) => (
+            <ReserveButton
+              key={cta.label}
+              href={resolveHref(cta.href)}
+              label={cta.label}
+              variant={cta.variant}
+              size="lg"
+              withArrow
+              className="whitespace-nowrap max-sm:w-[272px] max-sm:px-5 max-sm:tracking-[0.2em]"
+            />
+          ))}
+        </div>
 
         <p
           ref={noteRef}
