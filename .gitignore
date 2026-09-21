@@ -51,3 +51,6 @@ next-env.d.ts
 # trailer: large intermediates and renders stay local
 /trailer/work
 /trailer/out
+
+# Dishio brand kit: licensed fonts and source files stay local
+/trailer/brand

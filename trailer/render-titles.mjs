@@ -30,9 +30,9 @@ const JOBS = [
   ["d1", "d1"],
   ["d2", "d2"],
   ["d3", "d3"],
-  ["pillar", "d4", { kicker: "Automate & engage", title: "Retargeting that follows intent", chips: ["Meta Ads", "Instagram", "Google Ads", "HubSpot", "Retargeting ads", "Lookalike seeding"], foot: "Audiences sync the moment they are built" }],
-  ["pillar", "d5", { kicker: "Automate & engage", title: "Marketing that runs itself", chips: ["Custom offers & coupons", "Email journeys", "Review prompts", "Loyalty sign-up triggers", "Event ticketing", "Dishio AI Engine"], foot: "Behaviour-based · always on", dur: 6.2 }],
-  ["pillar", "d6", { kicker: "Grow & optimize", title: "Every dollar, attributed", chips: ["Toast", "Square", "Clover", "Oracle", "Aloha", "PAR", "Olo", "Advanced reporting", "Performance dashboards"], foot: "Trusted by 2,500+ leading restaurant brands", dur: 7.6 }],
+  ["pillar", "d4", { split: true, kicker: "Automate & engage", title: "Retargeting that follows intent.", chips: ["Meta Ads", "Instagram", "Google Ads", "HubSpot", "Retargeting ads"], foot: "Audiences sync the moment they are built." }],
+  ["pillar", "d5", { kicker: "Automate & engage", title: "Marketing that runs itself.", chips: ["Custom offers & coupons", "Email journeys", "Review prompts", "Loyalty sign-up triggers", "Event ticketing", "Dishio AI Engine"], foot: "Behaviour-based. Always on.", dur: 6.2 }],
+  ["pillar", "d6", { split: true, kicker: "Grow & optimize", title: "Every dollar, attributed.", chips: ["Campaign Performance", "Google Ads Performance", "Meta Ad Performance", "Creative Analytics", "Toast · Square · Clover · Oracle"], foot: "Trusted by 2,500+ leading restaurant brands.", dur: 7.6 }],
   ["close", "close"],
 ];
 
@@ -49,6 +49,7 @@ for (const [scene, name, args] of JOBS) {
   await mkdir(dir, { recursive: true });
   const dur = await page.evaluate(([s, a]) => window.mount(s, a), [scene, args]);
   await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))));
+  await page.evaluate(() => document.fonts.ready);
   const frames = Math.round(dur * FPS);
   for (let f = 0; f < frames; f++) {
     await page.evaluate(([s, t]) => window.draw(s, t), [scene, f / FPS]);

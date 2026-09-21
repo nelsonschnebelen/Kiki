@@ -5,6 +5,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
+  @font-face { font-family:"Swiss721"; font-weight:300; src:url("brand/fonts/Swiss%20721/Swiss%20721%20Light.ttf"); }
+  @font-face { font-family:"Swiss721"; font-weight:400; src:url("brand/fonts/Swiss%20721/Swiss%20721%20Roman.ttf"); }
+  @font-face { font-family:"Swiss721"; font-weight:500; src:url("brand/fonts/Swiss%20721/Swiss%20721%20Medium.ttf"); }
+  @font-face { font-family:"Swiss721"; font-weight:700; src:url("brand/fonts/Swiss%20721/Swiss%20721%20Bold.ttf"); }
+  /* Dishio identity: Swiss 721, black with green / yellow / blue. */
+  .dz { font-family:"Swiss721","Inter",sans-serif; --g:#00B400; --gb:#009B00; --y:#FFD900; --b:#0033A4; }
+  .dz .kick { font-weight:500; font-size:21px; letter-spacing:.42em; text-transform:uppercase; color:var(--y); }
+  .dz .head { font-weight:700; letter-spacing:-.01em; line-height:1.06; }
+  .dz .bar { height:4px; background:var(--g); transform-origin:left center; border-radius:2px; }
+  .dz .pill { display:inline-flex; align-items:center; gap:14px; padding:15px 24px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(0,0,0,.72); font-weight:500; font-size:23px; }
+  .dz .pill i { width:10px; height:10px; border-radius:50%; background:var(--g); box-shadow:0 0 14px var(--g); display:block; }
+  .dz .foot { font-weight:400; font-size:22px; opacity:.8; }
   :root { --cobalt:#1238B8; --cobalt-lt:#5B7CFF; --pink:#FF8FB8; --gold:#C9A24A; --stone:#F5F0E8; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html,body { width:1920px; height:1080px; overflow:hidden; background:transparent; color:#fff; }
@@ -35,10 +47,9 @@ const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelect
 const SCENES = {
   /* Opening card on black. */
   presents: {
-    dur: 3.6, bg: "#000",
-    html: `<div class="center"><div class="display" id="a" style="font-size:54px;letter-spacing:.5em;text-transform:none">Dishio</div>
-           <div class="sans" id="b" style="font-size:17px;letter-spacing:.8em;margin-top:30px;opacity:.8">Presents</div></div>`,
-    draw(t) { rise($("#a"), inOut(t, .3, 3.5, 1.0, .6), 0); rise($("#b"), inOut(t, .9, 3.5, 1.0, .6), 0); },
+    dur: 5.0,
+    html: `<div class="center dz"><div id="b" style="margin-top:250px;font-weight:500;font-size:20px;letter-spacing:.9em;padding-left:.9em;text-transform:uppercase">Presents</div></div>`,
+    draw(t) { rise($("#b"), inOut(t, 2.7, 4.9, 1.0, .6), 0); },
   },
   /* Short white-on-black beat cards. window.ARGS = { text } */
   beat: {
@@ -82,11 +93,11 @@ const SCENES = {
   /* Dishio: headline. */
   d1: {
     dur: 6.4,
-    html: `<div class="center" style="background:rgba(3,6,20,.5)">
-      <div class="sans" id="s" style="font-size:20px;letter-spacing:.6em;color:var(--pink);margin-bottom:34px">Fully integrated with</div>
-      <div class="display" id="a" style="font-size:150px;letter-spacing:.14em;text-transform:none">Dishio</div>
-      <div class="rule" id="r" style="width:140px;margin:40px 0 34px"></div>
-      <div class="sans" id="b" style="font-size:26px;letter-spacing:.5em">Your restaurant&rsquo;s AI growth engine</div></div>`,
+    html: `<div class="center dz" style="background:rgba(0,0,0,.62)">
+      <div class="kick" id="s" style="margin-bottom:48px">Fully integrated with</div>
+      <img id="a" src="brand/logos/DISHIO-LOGO-EXPORTS/SVG/DISHIO-ISOLOGOTYPE-A-WHITE.svg" style="width:980px" />
+      <div class="bar" id="r" style="width:150px;margin:56px 0 44px"></div>
+      <div id="b" style="font-weight:300;font-size:44px">Your restaurant&rsquo;s AI growth engine</div></div>`,
     draw(t) { rise($("#s"), inOut(t, .2, 6.3), 20); rise($("#a"), inOut(t, .6, 6.3)); $("#r").style.transform = `scaleX(${easeIO(seg(t, 1.4, 2.3))})`; $("#r").style.opacity = 1 - easeIO(seg(t, 5.8, 6.3)); rise($("#b"), inOut(t, 2.2, 6.3), 24); },
   },
   /* Dishio: live event stream from the site. */
@@ -94,23 +105,23 @@ const SCENES = {
     dur: 6.2,
     html: () => {
       const ev = [["reserve_click", "header · cta"], ["booking_search", "party 6 · Wed 8:30 PM"], ["vip_intent", "VIP reservations"], ["private_event_intent", "plan an event"], ["scroll_depth", "75% · wheel viewed"], ["film_engaged", "hero · 9.3s watched"], ["instagram_click", "@kikiontheriver"], ["return_visit", "guest recognised"]];
-      return `<div style="position:absolute;inset:0;background:rgba(3,6,20,.6)"></div>
-      <div style="position:absolute;left:150px;top:150px">
-        <div class="sans" style="font-size:19px;letter-spacing:.55em;color:var(--pink)" id="k">Capture &amp; connect</div>
-        <div class="display" id="h" style="font-size:74px;letter-spacing:.12em;margin-top:22px;line-height:1.12">Every click,<br/>captured</div>
-        <div class="rule" id="r" style="width:90px;margin-top:34px"></div>
-        <div class="sans" id="f" style="font-size:17px;letter-spacing:.34em;margin-top:34px;opacity:.85;line-height:2">First-party data · Smart Sites<br/>Lead collection · QR capture</div>
+      return `<div class="dz" style="position:absolute;inset:0;background:rgba(0,0,0,.68)">
+      <div style="position:absolute;left:140px;top:210px;width:720px">
+        <div class="kick" id="k">Capture &amp; connect</div>
+        <div class="head" id="h" style="font-size:92px;margin-top:26px">Every click, captured.</div>
+        <div class="bar" id="r" style="width:110px;margin-top:40px"></div>
+        <div class="foot" id="f" style="margin-top:38px;line-height:1.7">First-party data · Smart Sites<br/>Lead collection · QR capture</div>
       </div>
-      <div style="position:absolute;right:150px;top:170px;width:760px" class="mono">
-        ${ev.map(([n, d], i) => `<div class="ev" data-i="${i}" style="display:flex;align-items:center;gap:20px;padding:17px 24px;margin-bottom:12px;border:1px solid rgba(255,255,255,.26);border-left:3px solid var(--cobalt-lt);background:rgba(8,14,40,.8);border-radius:3px;font-size:24px">
-          <span class="dot"></span><span style="color:#9DB2FF;min-width:330px">${n}</span><span style="opacity:.78;font-size:18px">${d}</span></div>`).join("")}
-      </div>`;
+      <div style="position:absolute;right:140px;top:176px;width:780px" class="mono">
+        ${ev.map(([n, d], i) => `<div class="ev" data-i="${i}" style="display:flex;align-items:center;gap:20px;padding:17px 24px;margin-bottom:12px;border:1px solid rgba(255,255,255,.2);border-left:4px solid var(--g);background:rgba(0,0,0,.82);border-radius:6px;font-size:24px">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--y);box-shadow:0 0 12px var(--y)"></span><span style="color:#7CE67C;min-width:340px">${n}</span><span style="opacity:.8;font-size:18px">${d}</span></div>`).join("")}
+      </div></div>`;
     },
     draw(t) {
       const out = 1 - easeIO(seg(t, 5.6, 6.2));
       rise($("#k"), easeOut(seg(t, .1, .8)) * out, 16); rise($("#h"), easeOut(seg(t, .3, 1.1)) * out);
-      $("#r").style.transform = `scaleX(${easeIO(seg(t, .8, 1.6))})`; $("#r").style.opacity = out; rise($("#f"), easeOut(seg(t, 1.2, 2.0)) * out * .85, 16);
-      $$(".ev").forEach((el) => { const i = +el.dataset.i, p = easeOut(seg(t, .5 + i * .42, 1.0 + i * .42)) * out; el.style.opacity = p; el.style.transform = `translateX(${(1 - p) * 60}px)`; });
+      $("#r").style.transform = `scaleX(${easeIO(seg(t, .8, 1.6))})`; $("#r").style.opacity = out; rise($("#f"), easeOut(seg(t, 1.2, 2.0)) * out * .8, 16);
+      document.querySelectorAll(".ev").forEach((el) => { const i = +el.dataset.i, p = easeOut(seg(t, .5 + i * .42, 1.0 + i * .42)) * out; el.style.opacity = p; el.style.transform = `translateX(${(1 - p) * 60}px)`; });
     },
   },
   /* Dishio: audiences built from intent. */
@@ -118,45 +129,51 @@ const SCENES = {
     dur: 6.6,
     html: () => {
       const a = [["VIP intent", "Opened VIP reservations", "2,140"], ["Private events", "Clicked plan an event", "860"], ["Date-night diners", "Party of 2 · Fri–Sat", "5,320"], ["Large parties", "Searched 7+ guests", "1,290"], ["Nightlife", "Watched the night film", "3,780"]];
-      return `<div style="position:absolute;inset:0;background:rgba(3,6,20,.62)"></div>
-      <div class="center" style="justify-content:flex-start;padding-top:120px">
-        <div class="sans" id="k" style="font-size:19px;letter-spacing:.55em;color:var(--pink)">Built in real time</div>
-        <div class="display" id="h" style="font-size:78px;letter-spacing:.14em;margin-top:22px">Custom audiences</div>
-        <div class="rule" id="r" style="width:110px;margin-top:32px"></div>
+      return `<div class="dz" style="position:absolute;inset:0;background:rgba(0,0,0,.68)">
+      <div class="center" style="justify-content:flex-start;padding-top:150px">
+        <div class="kick" id="k">Audiences · built in real time</div>
+        <div class="head" id="h" style="font-size:96px;margin-top:24px">Custom audiences.</div>
+        <div class="bar" id="r" style="width:130px;margin-top:36px"></div>
       </div>
-      <div style="position:absolute;left:0;right:0;top:470px;display:flex;justify-content:center;gap:22px">
-        ${a.map(([n, d, c], i) => `<div class="card au" data-i="${i}"><div class="sans" style="font-size:12px;letter-spacing:.34em;color:var(--pink)">Audience</div>
-          <div class="display" style="font-size:30px;letter-spacing:.08em;margin-top:14px;line-height:1.15;min-height:70px">${n}</div>
-          <div style="font-size:15px;opacity:.78;margin-top:10px;min-height:40px">${d}</div>
-          <div class="mono" style="font-size:34px;margin-top:22px;color:#9DB2FF">${c}</div><div class="sans" style="font-size:11px;letter-spacing:.3em;opacity:.6;margin-top:6px">guests · illustrative</div></div>`).join("")}
-      </div>`;
+      <div style="position:absolute;left:0;right:0;top:500px;display:flex;justify-content:center;gap:22px">
+        ${a.map(([n, d, c], i) => `<div class="au" data-i="${i}" style="width:330px;padding:28px 28px 24px;border-radius:14px;border:1px solid rgba(255,255,255,.2);border-top:4px solid var(--g);background:rgba(0,0,0,.84)">
+          <div style="font-weight:500;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:#7CE67C">Audience</div>
+          <div style="font-weight:700;font-size:32px;margin-top:14px;line-height:1.12;min-height:72px">${n}</div>
+          <div style="font-size:16px;opacity:.75;margin-top:8px;min-height:42px">${d}</div>
+          <div style="font-weight:700;font-size:44px;margin-top:18px;color:var(--y)">${c}</div><div style="font-size:12px;letter-spacing:.24em;text-transform:uppercase;opacity:.55;margin-top:6px">guests · illustrative</div></div>`).join("")}
+      </div></div>`;
     },
     draw(t) {
       const out = 1 - easeIO(seg(t, 6.0, 6.6));
       rise($("#k"), easeOut(seg(t, .1, .8)) * out, 16); rise($("#h"), easeOut(seg(t, .3, 1.1)) * out);
       $("#r").style.transform = `scaleX(${easeIO(seg(t, .8, 1.6))})`; $("#r").style.opacity = out;
-      $$(".au").forEach((el) => { const i = +el.dataset.i; rise(el, easeOut(seg(t, 1.2 + i * .35, 1.9 + i * .35)) * out, 50); });
+      document.querySelectorAll(".au").forEach((el) => { const i = +el.dataset.i; rise(el, easeOut(seg(t, 1.2 + i * .35, 1.9 + i * .35)) * out, 50); });
     },
   },
   /* Dishio: generic pillar with chips. window.ARGS = { kicker, title, chips:[...], foot } */
   pillar: {
     dur: 5.4,
-    html: () => `<div style="position:absolute;inset:0;background:rgba(3,6,20,.62)"></div>
-      <div class="center">
-        <div class="sans" id="k" style="font-size:19px;letter-spacing:.55em;color:var(--pink)">${ARGS.kicker}</div>
-        <div class="display" id="h" style="font-size:76px;letter-spacing:.13em;margin-top:22px;max-width:1500px;line-height:1.14">${ARGS.title}</div>
-        <div class="rule" id="r" style="width:110px;margin:34px 0 46px"></div>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px;max-width:1500px">
-          ${ARGS.chips.map((c, i) => `<div class="chip ch sans" data-i="${i}" style="font-size:23px;letter-spacing:.24em;font-weight:600"><span class="dot" style="background:var(--cobalt-lt);box-shadow:0 0 14px var(--cobalt-lt)"></span>${c}</div>`).join("")}
-        </div>
-        <div class="sans" id="f" style="font-size:18px;letter-spacing:.42em;margin-top:50px;opacity:.85">${ARGS.foot || ""}</div>
-      </div>`,
+    html: () => ARGS.split
+      ? `<div class="dz" style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.72) 36%,rgba(0,0,0,0) 46%)">
+          <div style="position:absolute;left:140px;top:0;bottom:0;width:640px;display:flex;flex-direction:column;justify-content:center">
+            <div class="kick" id="k">${ARGS.kicker}</div>
+            <div class="head" id="h" style="font-size:78px;margin-top:24px">${ARGS.title}</div>
+            <div class="bar" id="r" style="width:110px;margin:36px 0 40px"></div>
+            <div style="display:flex;flex-wrap:wrap;gap:12px">${ARGS.chips.map((c, i) => `<div class="pill ch" data-i="${i}" style="font-size:20px;padding:12px 20px"><i></i>${c}</div>`).join("")}</div>
+            <div class="foot" id="f" style="margin-top:40px">${ARGS.foot || ""}</div>
+          </div></div>`
+      : `<div class="dz center" style="background:rgba(0,0,0,.68)">
+          <div class="kick" id="k">${ARGS.kicker}</div>
+          <div class="head" id="h" style="font-size:92px;margin-top:24px;max-width:1500px">${ARGS.title}</div>
+          <div class="bar" id="r" style="width:130px;margin:38px 0 48px"></div>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px;max-width:1500px">${ARGS.chips.map((c, i) => `<div class="pill ch" data-i="${i}"><i></i>${c}</div>`).join("")}</div>
+          <div class="foot" id="f" style="margin-top:52px">${ARGS.foot || ""}</div></div>`,
     draw(t) {
       const D = ARGS.dur || 5.4, out = 1 - easeIO(seg(t, D - .6, D));
       rise($("#k"), easeOut(seg(t, .1, .8)) * out, 16); rise($("#h"), easeOut(seg(t, .3, 1.1)) * out);
       $("#r").style.transform = `scaleX(${easeIO(seg(t, .8, 1.6))})`; $("#r").style.opacity = out;
-      $$(".ch").forEach((el) => { const i = +el.dataset.i; rise(el, easeOut(seg(t, 1.1 + i * .22, 1.7 + i * .22)) * out, 30); });
-      rise($("#f"), easeOut(seg(t, 2.6, 3.4)) * out * .85, 16);
+      document.querySelectorAll(".ch").forEach((el) => { const i = +el.dataset.i; rise(el, easeOut(seg(t, 1.1 + i * .22, 1.7 + i * .22)) * out, 30); });
+      rise($("#f"), easeOut(seg(t, 2.6, 3.4)) * out * .8, 16);
     },
   },
   /* Close: logo, then sign-off. */
@@ -167,18 +184,18 @@ const SCENES = {
       <div class="sans" id="s" style="font-size:24px;letter-spacing:.7em;margin-top:44px">On the River</div>
       <div class="rule" id="r" style="width:120px;margin:54px 0 40px"></div>
       <div class="display" id="a" style="font-size:44px;letter-spacing:.4em">Now live</div>
-      <div class="sans" id="b" style="font-size:16px;letter-spacing:.5em;margin-top:30px;opacity:.75">The next era · Built by Dishio</div></div>`,
+      <div id="b" class="dz" style="margin-top:44px;display:flex;align-items:center;gap:22px"><span style="font-weight:500;font-size:15px;letter-spacing:.5em;text-transform:uppercase;opacity:.7">Built by</span><img src="brand/logos/DISHIO-LOGO-EXPORTS/SVG/DISHIO-ISOLOGOTYPE-A-WHITE.svg" style="height:34px" /></div></div>`,
     draw(t) {
       const out = 1 - easeIO(seg(t, 7.6, 8.5));
       const p = easeOut(seg(t, .3, 1.8)); $("#l").style.opacity = p * out; $("#l").style.transform = `scale(${1.06 - p * .06})`;
       rise($("#s"), easeOut(seg(t, 1.2, 2.2)) * out, 18); $("#r").style.transform = `scaleX(${easeIO(seg(t, 3.0, 3.9))})`; $("#r").style.opacity = out;
-      rise($("#a"), easeOut(seg(t, 3.4, 4.3)) * out, 24); rise($("#b"), easeOut(seg(t, 4.2, 5.1)) * out * .75, 16);
+      rise($("#a"), easeOut(seg(t, 3.4, 4.3)) * out, 24); rise($("#b"), easeOut(seg(t, 4.2, 5.1)) * out, 16);
     },
   },
 };
 
 window.mount = (name, args) => { window.ARGS = args || {}; const s = SCENES[name]; if (args && args.dur) s.dur = args.dur; else if (name === 'pillar') s.dur = 5.4; document.body.style.background = s.bg || "transparent"; $("#root").innerHTML = typeof s.html === "function" ? s.html() : s.html; s.draw(0); return s.dur; };
-window.draw = (name, t) => { const s = SCENES[name]; s.draw(t); if (name !== "label") $("#root").style.transform = `scale(${1 + 0.05 * (t / s.dur)})`; else $("#root").style.transform = ""; };
+window.draw = (name, t) => { const s = SCENES[name]; s.draw(t); if (name !== "label" && !(window.ARGS && ARGS.split)) $("#root").style.transform = `scale(${1 + 0.05 * (t / s.dur)})`; else $("#root").style.transform = ""; };
 </script>
 </body>
 </html>
