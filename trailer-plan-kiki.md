@@ -1,5 +1,11 @@
 # KIKI — "It's Time" · Website reveal trailer
 
+> **Status, 2026-09-21: first cut built.** `trailer/out/kiki-trailer.mp4`, 2:21, 1080p, Netflix-style finish (2:1 letterbox, grade, grain, push-in title cards). Female narration (Higgsfield voice "Soraya", chosen as the lowest-pitched of 24 presets). The Dishio act was expanded to six panels using the real capability list from get.dish.io, so the running time grew from the planned 70 seconds. Music is a synthesized stand-in until the licensed track arrives: `node trailer/build-trailer.mjs path/to/track.mp3` remixes it, ducked under the narration. Spend: 22.3 credits.
+>
+> Rebuild from scratch: `node trailer/capture-site.mjs` → `node trailer/render-titles.mjs` → `node trailer/build-trailer.mjs [music]`. The cut, cue times and overlays are one table (`CUT`) in build-trailer.mjs.
+
+The plan below is the original brief, kept for reference.
+
 **Format:** 16:9, 1080p, about 70 seconds · **Tone:** Netflix title sequence. Slow, confident, dark-to-bright. Short lines, long pauses, hard cuts on the beat.
 **Audience:** KIKI's owners and marketing team, in the room or on a link.
 **Higgsfield balance:** 1,197.6 credits

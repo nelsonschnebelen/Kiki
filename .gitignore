@@ -47,3 +47,7 @@ next-env.d.ts
 /verify-out
 
 .vercel
+
+# trailer: large intermediates and renders stay local
+/trailer/work
+/trailer/out
