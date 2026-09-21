@@ -45,3 +45,5 @@ next-env.d.ts
 
 # headless verification screenshots
 /verify-out
+
+.vercel
