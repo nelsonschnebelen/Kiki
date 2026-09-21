@@ -39,6 +39,9 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  /* Links whose href is "#" are demo placeholders: swallow the click so the page neither navigates nor jumps. */
+  const inert = (href: string) => href === "#";
+
   const onImage = !solid && !open;
   const linkClass =
     "link-underline font-sans text-[10px] font-medium uppercase tracking-[0.32em] focus-visible:outline-none " +
@@ -66,6 +69,7 @@ export default function Header() {
               key={item.label}
               href={item.href}
               className={linkClass}
+              onClick={inert(item.href) ? (e) => e.preventDefault() : undefined}
               target={/^https?:/.test(item.href) ? "_blank" : undefined}
               rel={/^https?:/.test(item.href) ? "noopener noreferrer" : undefined}
             >
@@ -97,7 +101,10 @@ export default function Header() {
             <a
               key={item.label}
               href={item.href}
-              onClick={() => setOpen(false)}
+              onClick={(e) => {
+                if (inert(item.href)) e.preventDefault();
+                setOpen(false);
+              }}
               className="border-b border-cobalt/10 py-4 font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-cobalt last:border-b-0"
             >
               {item.label}

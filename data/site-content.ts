@@ -40,12 +40,15 @@ export const siteContent = {
   reservationUrl: RESERVATION_URL,
   privateEventsUrl: PRIVATE_EVENTS_URL,
 
-  /** Header links, as laid out in the mock. Anchors point at sections on this page. */
+  /**
+   * Header links. Demo: every href is "#", which the header treats as inert (no navigation, no jump to top).
+   * Give a link a real URL or an on-page anchor such as "#experience" to switch it on.
+   */
   navigation: [
-    { label: "Menu", href: "https://www.kikiontheriver.com/menu" },
-    { label: "Experience", href: "#experience" },
-    { label: "Private Events", href: "#meet" },
-    { label: "VIP", href: RESERVATION_URL },
+    { label: "Menu", href: "#" },
+    { label: "Experience", href: "#" },
+    { label: "Private Events", href: "#" },
+    { label: "VIP", href: "#" },
   ],
 
   hero: {
