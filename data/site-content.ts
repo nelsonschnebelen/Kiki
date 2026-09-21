@@ -31,7 +31,7 @@ const PRIVATE_EVENTS_URL = process.env.NEXT_PUBLIC_PRIVATE_EVENTS_URL ?? "https:
 export const siteContent = {
   brand: {
     name: "KIKI",
-    subtitle: "On the Miami River",
+    subtitle: "On the River",
     tagline: "Eat · Drink · Dance",
     description:
       "KIKI on the River is a Greek-inspired waterfront restaurant in Miami. Bright lunches, long dinners, and nights that turn into dancing.",
@@ -124,7 +124,7 @@ export const siteContent = {
 
   wheel: {
     topArc: "DAY TURNS INTO NIGHT",
-    bottomArc: "KIKI ON THE MIAMI RIVER",
+    bottomArc: "KIKI ON THE RIVER",
     center: "EAT • DRINK • DANCE",
     /** Square images. The wheel starts on day and turns to night as you scroll. */
     dayImage: "/images/wheel-day.jpg",

@@ -30,7 +30,7 @@ export default function SiteFooter() {
           target="_blank"
           rel="noopener noreferrer"
           className="drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-          aria-label={`KIKI on the Miami River, ${hero.reserveLabel}`}
+          aria-label={`KIKI on the River, ${hero.reserveLabel}`}
         >
           <BrandMark color="white" className="h-[56px] md:h-[84px]" />
         </a>

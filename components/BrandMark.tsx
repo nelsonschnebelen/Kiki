@@ -13,7 +13,7 @@ export default function BrandMark({ color = "cobalt", className = "" }: BrandMar
   return (
     <span
       role="img"
-      aria-label="KIKI on the Miami River"
+      aria-label="KIKI on the River"
       className={`inline-block ${className}`}
       style={{
         aspectRatio: `${width} / ${height}`,

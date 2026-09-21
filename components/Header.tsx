@@ -55,7 +55,7 @@ export default function Header() {
         <a
           href="#main"
           className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-          aria-label="KIKI on the Miami River, back to top"
+          aria-label="KIKI on the River, back to top"
         >
           <BrandMark color={onImage ? "white" : "cobalt"} className="h-7 md:h-9" />
         </a>
