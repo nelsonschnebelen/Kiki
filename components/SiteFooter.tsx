@@ -1,6 +1,7 @@
 import { siteContent, resolveHref } from "@/data/site-content";
 import BrandMark from "./BrandMark";
 import FooterMedia from "./FooterMedia";
+import ReserveLink from "./ReserveLink";
 
 /** Night-time close: the dancing crowd photograph with the wordmark over it. */
 export default function SiteFooter() {
@@ -25,30 +26,26 @@ export default function SiteFooter() {
       </p>
 
       <div className="relative flex min-h-[78svh] flex-col items-center justify-end px-6 pb-[8svh] pt-[24svh] text-center">
-        <a
+        <ReserveLink
           href={reservationUrl}
-          target="_blank"
-          rel="noopener noreferrer"
           className="drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           aria-label={`KIKI on the River, ${hero.reserveLabel}`}
         >
           <BrandMark color="white" className="h-[56px] md:h-[84px]" />
-        </a>
+        </ReserveLink>
         <p className="mt-4 font-sans text-[10px] font-medium uppercase tracking-[0.5em] drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)] md:text-[11px]">
           {siteContent.brand.subtitle}
         </p>
 
         <nav aria-label="Footer" className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {footer.links.map((l) => (
-            <a
+            <ReserveLink
               key={l.label}
               href={resolveHref(l.href)}
-              target="_blank"
-              rel="noopener noreferrer"
               className="link-underline font-sans text-[10px] uppercase tracking-[0.32em] drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)]"
             >
               {l.label}
-            </a>
+            </ReserveLink>
           ))}
           <a
             href={footer.instagram.href}

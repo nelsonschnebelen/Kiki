@@ -109,11 +109,11 @@ body {
 
 /* Calls to action sit in the middle of the open space under the landed letters. */
 .kiki-sequence-cta {
-  top: calc(var(--wm-letters-bottom) + (100svh - var(--wm-letters-bottom)) / 2 - 26px);
+  top: calc(var(--wm-letters-bottom) + (100svh - var(--wm-letters-bottom)) / 2 - 42px);
 }
 @media (max-width: 639px) {
   .kiki-sequence-cta {
-    top: calc(var(--wm-letters-bottom) + 9svh);
+    top: calc(var(--wm-letters-bottom) + 5svh);
   }
 }
 

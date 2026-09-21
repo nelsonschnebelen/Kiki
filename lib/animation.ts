@@ -141,11 +141,13 @@ export function initSmoothScroll(): () => void {
     autoRaf: false,
   });
   lenis.on("scroll", ScrollTrigger.update);
+  (window as Window & { __lenis?: Lenis }).__lenis = lenis; // lets overlays pause smooth scrolling
   const tick = (time: number) => lenis.raf(time * 1000);
   gsap.ticker.add(tick);
   gsap.ticker.lagSmoothing(0);
   return () => {
     gsap.ticker.remove(tick);
+    delete (window as Window & { __lenis?: Lenis }).__lenis;
     lenis.destroy();
   };
 }

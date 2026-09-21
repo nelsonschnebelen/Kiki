@@ -4,6 +4,7 @@ import KikiScrollSequence from "@/components/KikiScrollSequence";
 import ExperienceWheel from "@/components/ExperienceWheel";
 import MeetMeSection from "@/components/MeetMeSection";
 import SiteFooter from "@/components/SiteFooter";
+import ReservationDrawer from "@/components/ReservationDrawer";
 import { BRAND_GEOMETRY } from "@/lib/brand-geometry";
 
 /* Wordmark proportions drive the sequence layout and where the next section starts. */
@@ -19,6 +20,7 @@ export default function HomePage() {
         <MeetMeSection />
       </main>
       <SiteFooter />
+      <ReservationDrawer />
     </>
   );
 }

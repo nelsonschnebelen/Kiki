@@ -24,8 +24,12 @@ export interface LetterContent {
   video: VideoSource;
 }
 
-/** Set NEXT_PUBLIC_RESERVATION_URL in .env.local to point the Reserve buttons anywhere. */
-const RESERVATION_URL = process.env.NEXT_PUBLIC_RESERVATION_URL ?? "https://www.kikiontheriver.com/reservations";
+/**
+ * KIKI's SevenRooms booking page (venue id "kikiontheriver", the same one their current site's widget uses).
+ * Set NEXT_PUBLIC_RESERVATION_URL in .env.local to point at a different venue or booking system.
+ */
+const RESERVATION_URL =
+  process.env.NEXT_PUBLIC_RESERVATION_URL ?? "https://www.sevenrooms.com/explore/kikiontheriver/reservations/create/search";
 const PRIVATE_EVENTS_URL = process.env.NEXT_PUBLIC_PRIVATE_EVENTS_URL ?? "https://www.kikiontheriver.com/private-events";
 
 export const siteContent = {
@@ -39,6 +43,33 @@ export const siteContent = {
 
   reservationUrl: RESERVATION_URL,
   privateEventsUrl: PRIVATE_EVENTS_URL,
+
+  /** Reservations: the on-page booking bar and the slide-in drawer (see lib/booking.ts). */
+  booking: {
+    url: RESERVATION_URL,
+    defaultPartySize: 2,
+    /** Parties above this go to the private-events enquiry instead of SevenRooms. */
+    maxPartySize: 10,
+    /** Bookable times offered in the bar, 24h. "Any time" is always offered first. */
+    times: ["12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"],
+    bar: {
+      label: "Reserve a table",
+      date: "Date",
+      guests: "Guests",
+      time: "Time",
+      anyTime: "Any time",
+      cta: "Find a table",
+      largeParty: "11+ · Private events",
+      largeCta: "Plan an event",
+    },
+    drawer: {
+      title: "Reserve your table",
+      subtitle: "KIKI on the River · Miami",
+      loading: "Finding tables",
+      poweredBy: "Secure booking by SevenRooms",
+      newTab: "Open in a new tab",
+    },
+  },
 
   /**
    * Header links. Demo: every href is "#", which the header treats as inert (no navigation, no jump to top).

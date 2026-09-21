@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap, hasFinePointer, prefersReducedMotion } from "@/lib/animation";
+import { isReservationHref, openReservation } from "@/lib/booking";
 
 type Variant = "primary" | "ghost" | "onImage";
 type Size = "md" | "lg";
@@ -86,6 +87,16 @@ export default function ReserveButton({
     <a
       ref={ref}
       href={href}
+      onClick={
+        isReservationHref(href)
+          ? (e) => {
+              // Plain clicks open the on-site drawer; modified clicks keep the normal link behaviour.
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+              e.preventDefault();
+              openReservation();
+            }
+          : undefined
+      }
       className={`${BASE} ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}

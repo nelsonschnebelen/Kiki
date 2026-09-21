@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { siteContent, resolveHref } from "@/data/site-content";
+import { siteContent } from "@/data/site-content";
 import {
   gsap,
   ScrollTrigger,
@@ -15,7 +15,7 @@ import Hero from "./Hero";
 import PetalField from "./PetalField";
 import VideoLettermark from "./VideoLettermark";
 import ReducedMotionFallback from "./ReducedMotionFallback";
-import ReserveButton from "./ReserveButton";
+import BookingBar from "./BookingBar";
 
 /**
  * One pinned, scroll-scrubbed sequence:
@@ -188,20 +188,10 @@ export default function KikiScrollSequence() {
 
         <div
           ref={ctaRef}
-          className="kiki-sequence-cta pointer-events-auto absolute left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-3 sm:flex-row sm:gap-4"
+          className="kiki-sequence-cta pointer-events-auto absolute left-1/2 z-30 -translate-x-1/2"
           style={{ opacity: 0, visibility: "hidden" }}
         >
-          {siteContent.wheel.ctas.map((cta) => (
-            <ReserveButton
-              key={cta.label}
-              href={resolveHref(cta.href)}
-              label={cta.label}
-              variant={cta.variant}
-              size="lg"
-              withArrow
-              className="whitespace-nowrap max-sm:w-[272px] max-sm:px-5 max-sm:tracking-[0.2em]"
-            />
-          ))}
+          <BookingBar />
         </div>
 
         <p

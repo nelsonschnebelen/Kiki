@@ -41,11 +41,15 @@ components/
   MeetMeSection.tsx     rose heart, long table, champagne collage
   SiteFooter.tsx        night‑time close with the wordmark
   ReducedMotionFallback.tsx  static composition for prefers‑reduced‑motion
-  ReserveButton.tsx     magnetic cobalt CTA with colour inversion
+  ReserveButton.tsx     magnetic cobalt CTA with colour inversion; reservation links open the drawer
+  BookingBar.tsx        date / guests / time bar under the letters
+  ReservationDrawer.tsx slide-in SevenRooms booking panel
+  ReserveLink.tsx       plain link that opens the drawer (footer)
   Reveal.tsx            once‑only fade/lift on scroll
   SmoothScroll.tsx      Lenis bootstrap
 lib/
   animation.ts          GSAP registration, custom eases, choreography constants, device helpers, Lenis
+  booking.ts            SevenRooms URL builder, openReservation(), date/time formatting
   petal-config.ts       seeded petal generator (deterministic → no hydration warnings)
 data/
   site-content.ts       ALL copy, links, image and video paths
@@ -183,6 +187,26 @@ end card, slows the footage to 0.75x, and writes:
   blurred copy used by the scroll transition.
 
 To recut, edit the `SHOTS` and `COLUMNS` tables in the script and re-run it.
+
+### Reservations (SevenRooms)
+
+Booking runs on KIKI's existing SevenRooms account (venue id `kikiontheriver`,
+the same one their current site's pop-up widget uses), presented two ways:
+
+- **Booking bar** (`BookingBar.tsx`): date, guests and time in KIKI's own type,
+  sitting under the landed letters. It fades in and out with the sequence.
+- **Reservation drawer** (`ReservationDrawer.tsx`): a panel that slides in from
+  the right with the site still visible behind it. The SevenRooms flow is
+  embedded inside and only loads the first time the drawer opens.
+
+The bar, every Reserve button and the footer links all call `openReservation()`
+in `lib/booking.ts`. Pre-fill uses `?date=YYYY-MM-DD&party_size=N&start_time=HH:MM`,
+verified against KIKI's live booking page. Parties over `booking.maxPartySize`
+go to the private-events enquiry. Copy, times and the URL live under `booking`
+in `data/site-content.ts`; `NEXT_PUBLIC_RESERVATION_URL` overrides the URL.
+Modified clicks (Ctrl/Cmd/middle) still open SevenRooms in a new tab, and the
+drawer always offers "Open in a new tab" as a fallback. The look inside the
+frame is SevenRooms' own; its accent colour is set in KIKI's SevenRooms admin.
 
 ### Footer film
 
