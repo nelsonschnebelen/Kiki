@@ -22,6 +22,7 @@ const music = args.find((a) => !a.startsWith("--"));
 /* Second in the supplied track where its drop lands; it is slid to meet the site reveal. */
 const dropArg = args.find((a) => a.startsWith("--drop="));
 const DROP = dropArg ? Number(dropArg.split("=")[1]) : null;
+const AUDIO_ONLY = args.includes("--audio-only");
 const BRAND = "trailer/brand/dl";
 const W = "trailer/work", T = `${W}/titles`, SEG = `${W}/seg`, OUT = "trailer/out";
 await mkdir(SEG, { recursive: true });
@@ -94,7 +95,7 @@ const CUT = [
 ];
 
 /* ---------------------------------------------------------------- data background loop (boomerang, slowed) */
-ff(["-i", "trailer/assets/clips/data.mp4", "-filter_complex",
+if (!AUDIO_ONLY) ff(["-i", "trailer/assets/clips/data.mp4", "-filter_complex",
   "[0:v]setpts=PTS/0.6,minterpolate=fps=30:mi_mode=blend,split[f][r];[r]reverse,setpts=PTS-STARTPTS[rv];[f][rv]concat=n=2:v=1:a=0,scale=1920:1080[v]",
   "-map", "[v]", ...ENC, `${W}/data-loop.mp4`]);
 
@@ -126,7 +127,7 @@ for (const s of CUT) {
   });
   const [fi, fo] = s.fade || [0, 0];
   graph += `;[${last}]trim=duration=${s.dur},setpts=PTS-STARTPTS${fi ? `,fade=t=in:st=0:d=${fi}` : ""}${fo ? `,fade=t=out:st=${(s.dur - fo).toFixed(2)}:d=${fo}` : ""},fps=30,format=yuv420p[v]`;
-  ff([...inputs, "-filter_complex", graph, "-map", "[v]", "-t", String(s.dur), ...ENC, out]);
+  if (!AUDIO_ONLY) ff([...inputs, "-filter_complex", graph, "-map", "[v]", "-t", String(s.dur), ...ENC, out]);
   if (s.id === "sequence") REVEAL = cursor;
   (s.vo || []).forEach(([n, at]) => cues.push({ n, at: cursor + at }));
   (s.hit || []).forEach((at) => hits.push(cursor + at));
@@ -137,7 +138,7 @@ const TOTAL = cursor;
 
 /* ---------------------------------------------------------------- picture: concat + Netflix finish */
 await writeFile(`${SEG}/list.txt`, CUT.map((s) => `file '${s.id}.mp4'`).join("\n"));
-ff(["-f", "concat", "-safe", "0", "-i", `${SEG}/list.txt`, "-vf",
+if (!AUDIO_ONLY) ff(["-f", "concat", "-safe", "0", "-i", `${SEG}/list.txt`, "-vf",
   [
     "eq=contrast=1.07:saturation=1.06:gamma=0.97",
     "colorbalance=rs=-0.03:bs=0.05:rh=0.03:bh=-0.03", // cool shadows, warm highlights
@@ -158,10 +159,35 @@ const voGraph =
 ff([...voInputs, "-filter_complex", voGraph, "-map", "[vo]", "-ar", "48000", "-ac", "2", `${OUT}/kiki-trailer-vo-stem.wav`]);
 
 if (music) {
-  // Supplied track: trimmed to length, faded, ducked under the narration.
-  ff(["-i", `${OUT}/kiki-trailer-vo-stem.wav`, "-i", music, "-filter_complex",
-    `[1:a]${DROP == null ? "" : DROP > REVEAL ? `atrim=start=${(DROP - REVEAL).toFixed(2)},asetpts=PTS-STARTPTS,` : `adelay=${Math.round((REVEAL - DROP) * 1000)}:all=1,`}atrim=duration=${TOTAL},afade=t=in:d=1.5,afade=t=out:st=${(TOTAL - 3).toFixed(2)}:d=3,volume=0.9[m];[0:a]asplit[vo][key];` +
-    `[m][key]sidechaincompress=threshold=0.03:ratio=6:attack=25:release=420[duck];[vo][duck]amix=inputs=2:normalize=0,alimiter=limit=0.95[a]`,
+  /*
+   * Supplied track, ducked under the narration.
+   *   --hit=SS    second of the track's final hit. The intro plays from the top, then at the site
+   *               reveal the music cuts (on a whole number of bars, masked by an impact) into the
+   *               later part of the track so that the final hit lands as the picture goes to black
+   *               for the closing logo. --bpm=N sets the bar length (default 100).
+   *   --drop=SS   simpler alternative: slide the whole track so this second meets the reveal.
+   */
+  const num = (k) => { const v = args.find((x) => x.startsWith(`--${k}=`)); return v ? Number(v.split("=")[1]) : null; };
+  const HIT = num("hit"), BAR = (60 / (num("bpm") ?? 100)) * 4;
+  const closeAt = CUT.slice(0, -1).reduce((t, s) => t + s.dur, 0) - 0.2;
+  ff(["-f", "lavfi", "-i", "sine=f=46:d=3.2", "-f", "lavfi", "-i", "anoisesrc=d=3.2:c=brown:a=0.9", "-filter_complex",
+    "[1:a]lowpass=f=140[n];[0:a][n]amix=inputs=2:normalize=0,afade=t=out:st=0.05:d=3.1:curve=exp,volume=1.6,aformat=channel_layouts=stereo[b]",
+    "-map", "[b]", "-ar", "48000", `${W}/boom.wav`]);
+  let bed;
+  if (HIT != null) {
+    // Track second that must sit at the reveal, snapped to whole bars counted back from the hit.
+    const want = HIT - (closeAt - REVEAL);
+    const B0 = HIT - Math.round((HIT - want) / BAR) * BAR;
+    const hitLands = REVEAL + (HIT - B0);
+    console.log(`music edit: intro 0-${REVEAL.toFixed(1)}s, then track ${B0.toFixed(2)}s onward; final hit lands at ${hitLands.toFixed(2)}s (picture goes black at ${(closeAt + 0.2).toFixed(1)}s)`);
+    bed = `[1:a]asplit[a0][b0];[a0]atrim=end=${(REVEAL + 0.25).toFixed(2)},asetpts=PTS-STARTPTS[A];[b0]atrim=start=${(B0 - 0.25).toFixed(2)},asetpts=PTS-STARTPTS[B];[A][B]acrossfade=d=0.5:c1=tri:c2=tri,`;
+  } else {
+    bed = `[1:a]${DROP == null ? "" : DROP > REVEAL ? `atrim=start=${(DROP - REVEAL).toFixed(2)},asetpts=PTS-STARTPTS,` : `adelay=${Math.round((REVEAL - DROP) * 1000)}:all=1,`}`;
+  }
+  ff(["-i", `${OUT}/kiki-trailer-vo-stem.wav`, "-i", music, "-i", `${W}/boom.wav`, "-filter_complex",
+    `${bed}apad=whole_dur=${TOTAL},atrim=duration=${TOTAL},afade=t=in:d=1.2,afade=t=out:st=${(TOTAL - 2.5).toFixed(2)}:d=2.5,volume=0.72[m];[0:a]asplit[vo][key];` +
+    `[m][key]sidechaincompress=threshold=0.025:ratio=7:attack=20:release=450[duck];[2:a]adelay=${Math.round(REVEAL * 1000)}:all=1,volume=0.5[imp];` +
+    `[vo][duck][imp]amix=inputs=3:normalize=0:duration=first,alimiter=limit=0.95[a]`,
     "-map", "[a]", "-ar", "48000", `${W}/mix.wav`]);
 } else {
   // Stand-in bed: a slow low drone plus impacts on the big cuts.
