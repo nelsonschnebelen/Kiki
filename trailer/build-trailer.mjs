@@ -100,16 +100,16 @@ const CUT_LONG = [
 /* One minute. Fewer lines, the titles carry more, footage runs faster. */
 const CUT_SHORT = [
   { id: "presents", dur: 3.2, ...dishioLogo(3.2), fade: [0, 0.5] },
-  { id: "river", dur: 5.0, ...clip("trailer/assets/clips/river.mp4", 0.5, 5.5), vo: [[1, 0.4], [2, 2.5]], fade: [0.8, 0.2] },
-  { id: "legend", dur: 4.6, ...clip("public/video/hero.mp4", 0.4, 5.0), over: [["renowned", 1.0]], vo: [[3, 0.05]], fade: [0.12, 0.15] },
-  { id: "evolve", dur: 4.1, ...black(4.1), over: [["evolve", 0]], vo: [[4, 0.1], [6, 2.95]] },
-  { id: "sequence", dur: 10.0, ...clip(`${W}/site-sequence.mp4`, 1.6, 19.6, 1.8), over: [["lb-scroll", 2.9], ["lb-brand", 6.4]], vo: [[7, 0.3], [8, 2.7]], fade: [0.3, 0] },
-  { id: "wheel", dur: 5.5, ...clip(`${W}/site-wheel.mp4`, 1.2, 11.4, 1.85), over: [["lb-wheel", 1.7]], vo: [[9, 0.1]] },
-  { id: "booking", dur: 6.0, ...clip(`${W}/site-booking.mp4`, 4.5, 15.0, 1.75), over: [["lb-book", 2.3]], vo: [[10, 0.3]] },
-  { id: "d1", dur: 5.6, ...dataBg(5.6), over: [["d1", 0]], vo: [[14, 0.15]], fade: [0.3, 0] },
-  { id: "d2", dur: 5.6, ...dataBg(5.6), over: [["d2", 0]], vo: [[15, 0.05]] },
-  { id: "d3", dur: 5.9, ...dataBg(5.9), over: [["d3", 0]], vo: [[16, 0.05]], fade: [0, 0.3] },
-  { id: "close", dur: 6.9, ...black(6.9), over: [["close", 0]], vo: [[20, 0.5], [21, 3.6]], fade: [0, 0.6] },
+  { id: "river", dur: 5.0, ...clip("trailer/assets/clips/river.mp4", 0.5, 5.5), vo: [[1, 0.4]], fade: [0.8, 0.2] },
+  { id: "legend", dur: 4.6, ...clip("public/video/hero.mp4", 0.4, 5.0), over: [["renowned", 1.0]], fade: [0.12, 0.15] },
+  { id: "evolve", dur: 4.7, ...black(4.7), over: [["evolve", 0]], vo: [[2, 0.15]] },
+  { id: "sequence", dur: 10.0, ...clip(`${W}/site-sequence.mp4`, 1.6, 19.6, 1.8), over: [["lb-scroll", 2.9], ["lb-brand", 6.4]], vo: [[3, 0.3]], fade: [0.3, 0] },
+  { id: "wheel", dur: 5.5, ...clip(`${W}/site-wheel.mp4`, 1.2, 11.4, 1.85), over: [["lb-wheel", 1.7]], vo: [[4, 0.3]] },
+  { id: "booking", dur: 6.0, ...clip(`${W}/site-booking.mp4`, 4.5, 15.0, 1.75), over: [["lb-book", 2.3]], vo: [[5, 0.3]] },
+  { id: "d1", dur: 5.6, ...dataBg(5.6), over: [["d1", 0]], vo: [[6, 0.3]], fade: [0.3, 0] },
+  { id: "d2", dur: 5.6, ...dataBg(5.6), over: [["d2", 0]], vo: [[7, 0.2]] },
+  { id: "d3", dur: 5.9, ...dataBg(5.9), over: [["d3", 0]], vo: [[8, 0.3]], fade: [0, 0.3] },
+  { id: "close", dur: 6.9, ...black(6.9), over: [["close", 0]], vo: [[9, 0.6]], fade: [0, 0.6] },
 ];
 const CUT = LONG ? CUT_LONG : CUT_SHORT;
 
@@ -172,8 +172,10 @@ if (!AUDIO_ONLY) ff(["-f", "concat", "-safe", "0", "-i", `${SEG}/list.txt`, "-vf
 /* ---------------------------------------------------------------- sound */
 // Narration stem: each line placed at its cue, lightly polished.
 /* 48 kHz stereo 16-bit WAVs: length from the file size. */
-const lineLen = (n) => (statSync(`${W}/vo-${String(n).padStart(2, "0")}.wav`).size - 44) / (48000 * 4);
-const voInputs = cues.flatMap((c) => ["-i", `${W}/vo-${String(c.n).padStart(2, "0")}.wav`]);
+/* Short cut narrates in whole passages (ElevenLabs, vop-NN); the long cut keeps the per-line takes (vo-NN). */
+const VO = LONG ? "vo-" : "vop-";
+const lineLen = (n) => (statSync(`${W}/${VO}${String(n).padStart(2, "0")}.wav`).size - 44) / (48000 * 4);
+const voInputs = cues.flatMap((c) => ["-i", `${W}/${VO}${String(c.n).padStart(2, "0")}.wav`]);
 const voGraph =
   /* Each line gets a short fade at both edges (the silence trim leaves the waveform mid-swing, which clicks). */
   cues.map((c, i) => `[${i}:a]afade=t=in:d=0.03,afade=t=out:st=${Math.max(0, lineLen(c.n) - 0.09).toFixed(3)}:d=0.09,highpass=f=80,acompressor=threshold=-18dB:ratio=2.5:attack=12:release=220:makeup=1,adelay=${Math.round(c.at * 1000)}:all=1[v${i}]`).join(";") +
