@@ -127,7 +127,7 @@ export default function MenuBook() {
 
         <Reveal className="mx-auto max-w-[900px] px-6 pb-[12svh] pt-[6svh] text-center">
           <Meander className="mx-auto mb-8 opacity-80" units={7} />
-          {active.chef && <p className="font-display text-[15px] uppercase tracking-[0.34em] text-cobalt">{active.chef}</p>}
+          {active.chef && <p className="font-display display-sturdy text-[15px] uppercase tracking-[0.3em] text-cobalt">{active.chef}</p>}
           <p className="mx-auto mt-6 max-w-[62ch] font-sans text-[11px] leading-[1.9] tracking-[0.06em] text-cobalt-deep/65">{MENU_DISCLAIMER}</p>
         </Reveal>
       </div>
@@ -143,14 +143,14 @@ function Sections({ sections, menuId }: { sections: Menu["sections"]; menuId: st
         <Reveal key={`${menuId}-${s.title}-${i}`} className={i ? "mt-[9svh]" : ""}>
           <header className="mb-10 text-center md:mb-14">
             <Meander className="mx-auto mb-6 opacity-70" units={5} />
-            <SplitReveal className="font-display text-[30px] uppercase leading-[1.15] tracking-[0.16em] text-cobalt md:text-[40px]">{s.title}</SplitReveal>
+            <SplitReveal className="font-display display-sturdy-lg text-[30px] uppercase leading-[1.15] tracking-[0.14em] text-cobalt md:text-[40px]">{s.title}</SplitReveal>
             {s.note && <p className="mt-4 font-sans text-[10px] uppercase tracking-[0.4em] text-cobalt-deep/70 md:text-[11px]">{s.note}</p>}
           </header>
           {s.items.length > 0 && (
             <ul className="grid grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-2 md:gap-y-10">
               {s.items.map((it, j) => (
                 <li key={j} className="menu-item border-b border-cobalt/12 pb-6">
-                  <h3 className="font-display text-[19px] uppercase leading-[1.25] tracking-[0.12em] text-cobalt md:text-[21px]">{it.name}</h3>
+                  <h3 className="font-display display-sturdy text-[19px] uppercase leading-[1.25] text-cobalt md:text-[21px]">{it.name}</h3>
                   {it.description && <p className="mt-2.5 font-sans text-[13px] leading-[1.75] text-cobalt-deep/75 md:text-[14px]">{it.description}</p>}
                 </li>
               ))}

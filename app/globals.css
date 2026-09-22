@@ -44,6 +44,17 @@ body {
   font-weight: 600;
 }
 
+/* Bodoni for reading sizes: heavier, and cut at a small optical size so the hairlines hold. */
+.display-sturdy {
+  font-weight: 600;
+  font-variation-settings: "opsz" 11;
+  letter-spacing: 0.08em;
+}
+.display-sturdy-lg {
+  font-weight: 600;
+  font-variation-settings: "opsz" 18;
+}
+
 /* ---------------------------------------------------------------------------
  * Glass panels: frosted stone or white over whatever is behind, with a fine
  * grain so they read as material rather than a flat tint. The element must
