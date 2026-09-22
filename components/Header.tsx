@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { siteContent } from "@/data/site-content";
 import { ScrollTrigger, registerGsap, isMobileViewport, prefersReducedMotion, SEQUENCE } from "@/lib/animation";
@@ -12,7 +13,14 @@ import ReserveButton from "./ReserveButton";
  * white with cobalt type once the photograph has faded out of the sequence.
  * Below md the links collapse into a minimal Menu button.
  */
-export default function Header() {
+interface HeaderProps {
+  /** "home": transparent until the hero sequence has faded. "page": transparent over the page hero, solid after it. */
+  mode?: "home" | "page";
+  /** Pathname of the current page, for the active underline. */
+  current?: string;
+}
+
+export default function Header({ mode = "home", current = "/" }: HeaderProps) {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
   const menuId = useId();
@@ -22,6 +30,7 @@ export default function Header() {
     const reduced = prefersReducedMotion();
     const trigger = ScrollTrigger.create({
       start: () => {
+        if (mode === "page") return window.innerHeight * 0.62;
         if (reduced) return window.innerHeight * 0.85;
         const m = isMobileViewport() ? SEQUENCE.scrollMultiplier.mobile : SEQUENCE.scrollMultiplier.desktop;
         return window.innerHeight * m * SEQUENCE.heroFade[1];
@@ -30,7 +39,7 @@ export default function Header() {
       onLeaveBack: () => setSolid(false),
     });
     return () => trigger.kill();
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     if (!open) return;
@@ -55,26 +64,25 @@ export default function Header() {
       }
     >
       <div className="mx-auto flex h-[72px] max-w-[1600px] items-center gap-6 px-5 md:h-20 md:px-8 lg:gap-10">
-        <a
-          href="#main"
+        <Link
+          href="/"
           className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-          aria-label="KIKI on the River, back to top"
+          aria-label="KIKI on the River, home"
         >
           <BrandMark color={onImage ? "white" : "cobalt"} className="h-7 md:h-9" />
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-7 md:flex lg:gap-9" aria-label="Primary">
           {siteContent.navigation.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
-              className={linkClass}
+              className={`${linkClass} ${item.href === current ? "is-current" : ""}`}
+              aria-current={item.href === current ? "page" : undefined}
               onClick={inert(item.href) ? (e) => e.preventDefault() : undefined}
-              target={/^https?:/.test(item.href) ? "_blank" : undefined}
-              rel={/^https?:/.test(item.href) ? "noopener noreferrer" : undefined}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -98,17 +106,18 @@ export default function Header() {
       <div id={menuId} hidden={!open} className="border-t border-cobalt/10 bg-white/96 md:hidden">
         <nav className="mx-auto flex max-w-[1600px] flex-col px-5 py-4" aria-label="Primary, mobile">
           {siteContent.navigation.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
+              aria-current={item.href === current ? "page" : undefined}
               onClick={(e) => {
                 if (inert(item.href)) e.preventDefault();
                 setOpen(false);
               }}
-              className="border-b border-cobalt/10 py-4 font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-cobalt last:border-b-0"
+              className={`border-b border-cobalt/10 py-4 font-sans text-[11px] font-medium uppercase tracking-[0.32em] last:border-b-0 ${item.href === current ? "text-bougainvillea" : "text-cobalt"}`}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>

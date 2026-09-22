@@ -9,6 +9,10 @@ import { gsap, registerGsap, hasFinePointer, prefersReducedMotion } from "@/lib/
 interface PetalFieldProps {
   /** Which depth layer to render. Two fields are stacked around the typography. */
   layer: "front" | "back";
+  /** Cap on how many petals this field renders (inner pages use a sparser fall). */
+  max?: number;
+  /** Show every petal from the start instead of staging the "transition" tier via the scroll timeline. */
+  allVisible?: boolean;
 }
 
 /**
@@ -22,9 +26,9 @@ interface PetalFieldProps {
  *
  * Everything is transform/opacity. Drift is paused while the field is off screen.
  */
-export default function PetalField({ layer }: PetalFieldProps) {
+export default function PetalField({ layer, max, allVisible = false }: PetalFieldProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const petals = PETALS.filter((p) => p.front === (layer === "front"));
+  const petals = PETALS.filter((p) => p.front === (layer === "front")).slice(0, max ?? PETALS.length);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -168,7 +172,7 @@ export default function PetalField({ layer }: PetalFieldProps) {
             data-tier={p.tier}
             data-depth={p.depth}
             data-opacity={p.opacity}
-            style={{ left: `${p.x}vw`, opacity: p.tier === "base" ? p.opacity : 0 }}
+            style={{ left: `${p.x}vw`, opacity: p.tier === "base" || allVisible ? p.opacity : 0 }}
           >
             <div
               className="petal-drift will-change-transform"

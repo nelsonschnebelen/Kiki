@@ -45,6 +45,12 @@ components/
   BookingBar.tsx        date / guests / time bar under the letters
   ReservationDrawer.tsx slide-in SevenRooms booking panel
   ReserveLink.tsx       plain link that opens the drawer (footer)
+  PageChrome.tsx        header + ambient petals + footer + drawer for inner pages
+  PageHero.tsx          parallax page hero with petals
+  ParallaxBand.tsx      full-bleed parallax photograph band
+  Chapter.tsx           photo + passage, alternating
+  Meander.tsx           Greek-key divider
+  MenuBook.tsx          course tabs + dish lists
   Reveal.tsx            once‑only fade/lift on scroll
   SmoothScroll.tsx      Lenis bootstrap
 lib/
@@ -53,8 +59,11 @@ lib/
   petal-config.ts       seeded petal generator (deterministic → no hydration warnings)
 data/
   site-content.ts       ALL copy, links, image and video paths
+  menu.ts               GENERATED from kikiontheriver.com/menus (scripts/import-menu.mjs)
+  pages.ts              copy for Happenings, Private Events, VIP
 scripts/
   import-assets.mjs     converts the supplied stills in assets/source into public/images
+  import-menu.mjs       parses the live KIKI menus page into data/menu.ts
   extract-petals.mjs    cuts real bracts and leaves out of the floral wordmark → public/petals, lib/petal-sprites.ts
   vectorize-logo.mjs    traces the 500px KIKI logo to SVG + a 2400px PNG
   brand-geometry.mjs    measures the traced logo → letter masks, outlines, lib/brand-geometry.ts
@@ -112,6 +121,31 @@ marina crops. Replace a source file and re-run to update the site.
 it is no longer needed unless a source still is missing.
 
 Videos are the remaining generated assets; see `asset-plan-kiki-on-the-river.md`.
+
+## Inner pages
+
+`/menu`, `/happenings`, `/private-events` and `/vip` share one system:
+
+- `PageChrome` — header in page mode (transparent over the hero, solid after
+  62% of the viewport, current link underlined), a fixed layer of six ambient
+  petals behind the content, the footer and the reservation drawer.
+- `PageHero` — a photograph that dollies and drifts on scroll, petals in front
+  of and behind the title, the title easing away as you leave, a chevron. The
+  title scales down automatically past six characters.
+- `ParallaxBand` — full-bleed photographs that travel slower than the page,
+  with an optional handwritten note and copy on top.
+- `Chapter` — tall photograph and passage, alternating sides.
+- `Meander` — the wheel's Greek key as a divider.
+
+**Menu.** `scripts/import-menu.mjs` parses kikiontheriver.com/menus (Elementor
+tabs + price lists) into `data/menu.ts`: six menus, every dish and description,
+the chef credit and the disclaimer. KIKI does not publish prices, so none are
+shown. `MenuBook` renders a sticky course selector (deep-linkable, e.g.
+`/menu#brunch`), two-column dishes, a parallax photograph between courses and
+staggered reveals. Re-run the script to refresh the dishes.
+
+**Copy** for the other three pages is in `data/pages.ts`, drawn from KIKI's
+about, happenings, private-events and KIKI at Sea pages.
 
 ## The scroll sequence
 

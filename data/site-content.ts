@@ -71,15 +71,12 @@ export const siteContent = {
     },
   },
 
-  /**
-   * Header links. Demo: every href is "#", which the header treats as inert (no navigation, no jump to top).
-   * Give a link a real URL or an on-page anchor such as "#experience" to switch it on.
-   */
+  /** Header links. "#" would make a link inert (demo placeholder); these are real pages. */
   navigation: [
-    { label: "Menu", href: "#" },
-    { label: "Experience", href: "#" },
-    { label: "Private Events", href: "#" },
-    { label: "VIP", href: "#" },
+    { label: "Menu", href: "/menu" },
+    { label: "Happenings", href: "/happenings" },
+    { label: "Private Events", href: "/private-events" },
+    { label: "VIP", href: "/vip" },
   ],
 
   hero: {

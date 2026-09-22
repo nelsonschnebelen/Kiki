@@ -218,6 +218,11 @@ body {
   }
 }
 
+/* Current page keeps its underline. */
+.link-underline.is-current::after {
+  transform: scaleX(1);
+}
+
 /* Thin animated underline for text links. */
 .link-underline {
   position: relative;
