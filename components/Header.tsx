@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { useEffect, useId, useState } from "react";
 import { siteContent } from "@/data/site-content";
 import { ScrollTrigger, registerGsap, isMobileViewport, prefersReducedMotion, SEQUENCE } from "@/lib/animation";
@@ -58,9 +58,10 @@ export default function Header({ mode = "home", current = "/" }: HeaderProps) {
 
   return (
     <header
+      style={{ viewTransitionName: "site-header" }}
       className={
         "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-500 ease-editorial " +
-        (onImage ? "border-b border-transparent bg-transparent" : "border-b border-cobalt/10 bg-white/94 backdrop-blur-sm")
+        (onImage ? "border-b border-transparent bg-transparent" : "glass-light border-b border-white/60")
       }
     >
       <div className="mx-auto flex h-[72px] max-w-[1600px] items-center gap-6 px-5 md:h-20 md:px-8 lg:gap-10">
@@ -103,7 +104,7 @@ export default function Header({ mode = "home", current = "/" }: HeaderProps) {
         </div>
       </div>
 
-      <div id={menuId} hidden={!open} className="border-t border-cobalt/10 bg-white/96 md:hidden">
+      <div id={menuId} hidden={!open} className="border-t border-cobalt/10 bg-white/96 backdrop-blur-xl md:hidden">
         <nav className="mx-auto flex max-w-[1600px] flex-col px-5 py-4" aria-label="Primary, mobile">
           {siteContent.navigation.map((item) => (
             <Link

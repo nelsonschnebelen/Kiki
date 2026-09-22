@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Inter, Caveat } from "next/font/google";
+import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { siteContent } from "@/data/site-content";
@@ -52,17 +53,19 @@ const motionScript =
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${bodoni.variable} ${inter.variable} ${caveat.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
-      </head>
-      <body className="font-sans antialiased">
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <SmoothScroll />
-        {children}
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en" className={`${bodoni.variable} ${inter.variable} ${caveat.variable}`} suppressHydrationWarning>
+        <head>
+          <script dangerouslySetInnerHTML={{ __html: motionScript }} />
+        </head>
+        <body className="font-sans antialiased">
+          <a href="#main" className="skip-link">
+            Skip to content
+          </a>
+          <SmoothScroll />
+          {children}
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

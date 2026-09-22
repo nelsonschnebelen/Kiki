@@ -13,7 +13,7 @@ export default function PageChrome({ children, current }: { children: ReactNode;
   return (
     <>
       <Header mode="page" current={current} />
-      <div className="pointer-events-none fixed inset-0 z-0" aria-hidden>
+      <div className="pointer-events-none fixed inset-0 z-0" style={{ viewTransitionName: "petals" }} aria-hidden>
         <PetalField layer="back" max={6} allVisible />
       </div>
       <main id="main" className="relative z-10">

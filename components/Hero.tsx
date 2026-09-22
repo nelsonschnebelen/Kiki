@@ -85,7 +85,7 @@ export default function Hero({ bgRef, uiRef, blurRef }: HeroProps) {
 
   return (
     <>
-      <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ transformOrigin: "50% 50%" }}>
+      <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ transformOrigin: "50% 50%", viewTransitionName: "page-hero" }}>
         <Image src={hero.image} alt={hero.alt} fill priority quality={85} sizes="100vw" className="object-cover object-center" />
         <video
           ref={videoRef}

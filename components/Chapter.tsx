@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Meander from "./Meander";
 import Reveal from "./Reveal";
+import SplitReveal from "./SplitReveal";
 
 interface ChapterProps {
   kicker: string;
@@ -22,7 +23,7 @@ export default function Chapter({ kicker, title, body, image, alt, focus = "50% 
       </Reveal>
       <Reveal className={`${flip ? "md:order-1 md:pr-[4vw]" : "md:pl-[4vw]"}`} delay={0.12}>
         <p className="font-sans text-[10px] font-medium uppercase tracking-[0.5em] text-cobalt-deep/65">{kicker}</p>
-        <h2 className="mt-5 font-display text-[34px] uppercase leading-[1.08] tracking-[0.1em] text-cobalt md:text-[46px]">{title}</h2>
+        <SplitReveal className="mt-5 font-display text-[34px] uppercase leading-[1.12] tracking-[0.1em] text-cobalt md:text-[46px]">{title}</SplitReveal>
         <Meander className="mt-7 opacity-70" units={4} />
         <p className="mt-7 max-w-[46ch] font-sans text-[15px] leading-[1.85] text-cobalt-deep/80">{body}</p>
       </Reveal>

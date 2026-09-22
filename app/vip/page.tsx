@@ -5,6 +5,7 @@ import ParallaxBand from "@/components/ParallaxBand";
 import Chapter from "@/components/Chapter";
 import Meander from "@/components/Meander";
 import Reveal from "@/components/Reveal";
+import SplitReveal from "@/components/SplitReveal";
 import ReserveButton from "@/components/ReserveButton";
 import { vipPage as p } from "@/data/pages";
 import { siteContent } from "@/data/site-content";
@@ -29,7 +30,7 @@ export default function VipPage() {
           {p.nights.map((n, i) => (
             <Reveal key={n.day} delay={i * 0.1} className="border-t border-cobalt/20 pt-7">
               <p className="font-sans text-[10px] font-medium uppercase tracking-[0.42em] text-bougainvillea">{n.day}</p>
-              <h3 className="mt-4 font-display text-[28px] uppercase leading-[1.1] tracking-[0.1em] text-cobalt">{n.title}</h3>
+              <SplitReveal as="h3" unit="lines" className="mt-4 font-display text-[28px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt">{n.title}</SplitReveal>
               <p className="mt-5 font-sans text-[14px] leading-[1.8] text-cobalt-deep/78">{n.body}</p>
             </Reveal>
           ))}
@@ -41,7 +42,7 @@ export default function VipPage() {
           <p className="font-sans text-[10px] uppercase tracking-[0.5em] text-white/75">{p.perks.title}</p>
           <ul className="mt-6 space-y-3">
             {p.perks.items.map((it) => (
-              <li key={it} className="flex items-start gap-4 font-display text-[16px] uppercase leading-[1.5] tracking-[0.14em] md:text-[19px]">
+              <li key={it} className="flex items-start gap-4 font-display text-[16px] uppercase leading-[1.12] tracking-[0.14em] md:text-[19px]">
                 <span className="mt-[9px] h-px w-6 shrink-0 bg-gold" aria-hidden />
                 {it}
               </li>
@@ -53,7 +54,7 @@ export default function VipPage() {
       <section className="py-[12svh] text-center">
         <Reveal className="mx-auto max-w-[720px] px-6">
           <Meander className="mx-auto mb-8 opacity-70" units={7} />
-          <h2 className="font-display text-[34px] uppercase leading-[1.1] tracking-[0.16em] text-cobalt md:text-[48px]">Your night starts here</h2>
+          <SplitReveal className="font-display text-[34px] uppercase leading-[1.15] tracking-[0.16em] text-cobalt md:text-[48px]">Your night starts here</SplitReveal>
           <p className="mx-auto mt-6 max-w-[48ch] font-sans text-[13px] leading-[1.8] text-cobalt-deep/75">{p.cta.note}</p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <ReserveButton href={siteContent.reservationUrl} label={p.cta.label} variant="primary" size="lg" withArrow />

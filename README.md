@@ -147,6 +147,30 @@ staggered reveals. Re-run the script to refresh the dishes.
 **Copy** for the other three pages is in `data/pages.ts`, drawn from KIKI's
 about, happenings, private-events and KIKI at Sea pages.
 
+## Motion layer
+
+- **Type** — `SplitReveal` wraps every display heading. GSAP SplitText splits it
+  once fonts are ready (re-splitting on reflow) and each letter rises from
+  behind a mask: hero titles on mount, section titles when they scroll in,
+  card titles by line. Rendered whole on the server, so it reads without
+  JavaScript, and skipped under reduced motion.
+- **Dividers** — `Meander` draws itself on left to right (DrawSVG) the first
+  time it enters the viewport.
+- **Menu tabs** — a single cobalt pill glides between courses (Flip.fit) while
+  the outgoing dishes settle away and the new ones rise in.
+- **Route transitions** — `next-view-transitions` wraps the App Router in the
+  View Transitions API. The header (`site-header`) and the ambient petals
+  (`petals`) hold still, one hero photograph morphs into the next
+  (`page-hero`), the outgoing title leaves quickly (`hero-copy`) while the new
+  one is already rising, and the rest of the page crossfades with a small
+  vertical drift. Browsers without the API just navigate; reduced motion
+  disables the animations. Timings live in `app/globals.css`.
+- **Glass** — `.glass` (stone) and `.glass-light` (white) in `globals.css`:
+  26px backdrop blur, saturation lift, a hairline highlight and a fine SVG
+  grain. Used by the solid header, the sticky menu bar, the booking bar and
+  the reservation drawer. Falls back to near-opaque where `backdrop-filter`
+  is unsupported.
+
 ## The scroll sequence
 
 The hero is pinned for 2.8× the viewport height (2× on mobile). The timeline is

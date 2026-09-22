@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { siteContent } from "@/data/site-content";
 import {
   RESERVATION_EVENT,
@@ -113,7 +113,8 @@ export default function ReservationDrawer() {
         aria-modal="true"
         aria-label={booking.drawer.title}
         data-lenis-prevent
-        className={`absolute inset-y-0 right-0 flex w-full flex-col bg-stone shadow-[-30px_0_80px_-30px_rgba(14,44,147,0.45)] transition-transform duration-[650ms] ease-editorial motion-reduce:transition-none sm:w-[min(560px,92vw)] ${open ? "translate-x-0" : "translate-x-full"}`}
+        style={{ "--glass-shadow": "-30px 0 80px -30px rgba(14,44,147,0.45)" } as CSSProperties}
+        className={`glass absolute inset-y-0 right-0 flex w-full flex-col transition-transform duration-[650ms] ease-editorial motion-reduce:transition-none sm:w-[min(560px,92vw)] ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="relative shrink-0 border-b border-cobalt/12 px-6 pb-5 pt-6 sm:px-8">
           <div className="flex items-start justify-between gap-6">

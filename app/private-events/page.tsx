@@ -5,6 +5,7 @@ import PageHero from "@/components/PageHero";
 import ParallaxBand from "@/components/ParallaxBand";
 import Meander from "@/components/Meander";
 import Reveal from "@/components/Reveal";
+import SplitReveal from "@/components/SplitReveal";
 import ReserveButton from "@/components/ReserveButton";
 import { privateEventsPage as p } from "@/data/pages";
 import { siteContent } from "@/data/site-content";
@@ -32,7 +33,7 @@ export default function PrivateEventsPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" aria-hidden />
                 <p className="script absolute bottom-6 left-6 right-6 text-[26px] leading-[1] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">{t.quote}</p>
               </div>
-              <h2 className="mt-6 font-display text-[24px] uppercase leading-[1.15] tracking-[0.12em] text-cobalt">{t.title}</h2>
+              <SplitReveal className="mt-6 font-display text-[24px] uppercase leading-[1.15] tracking-[0.12em] text-cobalt">{t.title}</SplitReveal>
               <p className="mt-3 font-sans text-[14px] leading-[1.8] text-cobalt-deep/78">{t.body}</p>
             </Reveal>
           ))}
@@ -42,7 +43,7 @@ export default function PrivateEventsPage() {
       <ParallaxBand image="/images/wheel-night.jpg" alt="The terrace at night, napkins in the air" note={["Private Moments", "Unforgettable Nights"]} height="64svh" dim>
         <div className="text-white">
           <p className="font-sans text-[10px] uppercase tracking-[0.5em] text-white/75">Signature spaces</p>
-          <h2 className="mt-4 font-display text-[40px] uppercase leading-[1.05] tracking-[0.12em] md:text-[60px]">{p.spaces.title}</h2>
+          <SplitReveal className="mt-4 font-display text-[40px] uppercase leading-[1.12] tracking-[0.12em] md:text-[60px]">{p.spaces.title}</SplitReveal>
         </div>
       </ParallaxBand>
 
@@ -50,7 +51,7 @@ export default function PrivateEventsPage() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 md:gap-8">
           {p.spaces.items.map((s, i) => (
             <Reveal key={s.name} delay={i * 0.08} className="border-t border-cobalt/20 pt-7">
-              <h3 className="font-display text-[24px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt">{s.name}</h3>
+              <SplitReveal as="h3" unit="lines" className="font-display text-[24px] uppercase leading-[1.15] tracking-[0.1em] text-cobalt">{s.name}</SplitReveal>
               <p className="mt-4 font-sans text-[14px] leading-[1.8] text-cobalt-deep/78">{s.body}</p>
             </Reveal>
           ))}
@@ -60,7 +61,7 @@ export default function PrivateEventsPage() {
       <section className="bg-cobalt py-[12svh] text-center text-white">
         <Reveal className="mx-auto max-w-[720px] px-6">
           <Meander className="mx-auto mb-8 text-white opacity-80" units={7} />
-          <h2 className="font-display text-[36px] uppercase leading-[1.1] tracking-[0.16em] md:text-[52px]">Host your next event with us</h2>
+          <SplitReveal className="font-display text-[36px] uppercase leading-[1.15] tracking-[0.16em] md:text-[52px]">Host your next event with us</SplitReveal>
           <p className="mx-auto mt-6 max-w-[48ch] font-sans text-[13px] leading-[1.8] text-white/80">{p.cta.note}</p>
           <div className="mt-10">
             <ReserveButton href={siteContent.privateEventsUrl} label={p.cta.label} variant="onImage" size="lg" withArrow className="!border-white !bg-white !text-cobalt hover:!bg-transparent hover:!text-white" />

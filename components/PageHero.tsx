@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, registerGsap, prefersReducedMotion, EASE } from "@/lib/animation";
 import PetalField from "./PetalField";
+import SplitReveal from "./SplitReveal";
 
 interface PageHeroProps {
   image: string;
@@ -62,7 +63,7 @@ export default function PageHero({ image, alt, title, eyebrow, subtitle, note, h
 
   return (
     <section ref={rootRef} className={`relative w-full overflow-hidden bg-stone ${height === "full" ? "h-[100svh]" : "h-[82svh] min-h-[560px]"}`}>
-      <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ transformOrigin: "50% 40%" }}>
+      <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ transformOrigin: "50% 40%", viewTransitionName: "page-hero" }}>
         <Image src={image} alt={alt} fill priority quality={85} sizes="100vw" className="object-cover" style={{ objectPosition: focus }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/30" aria-hidden />
       </div>
@@ -70,18 +71,21 @@ export default function PageHero({ image, alt, title, eyebrow, subtitle, note, h
 
       <PetalField layer="back" max={7} allVisible />
 
-      <div ref={copyRef} className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white will-change-transform">
+      <div ref={copyRef} className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white will-change-transform" style={{ viewTransitionName: "hero-copy" }}>
         {eyebrow && (
           <p data-rise className="font-sans text-[10px] font-medium uppercase tracking-[0.55em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] md:text-[12px]">
             {eyebrow}
           </p>
         )}
-        <h1
-          data-rise
-          className={`mt-5 font-display uppercase leading-[0.95] tracking-[0.12em] drop-shadow-[0_6px_30px_rgba(0,0,0,0.35)] ${title.length > 6 ? "text-[clamp(44px,8.6vw,132px)]" : "text-[clamp(64px,13vw,190px)]"}`}
+        <SplitReveal
+          as="h1"
+          on="mount"
+          delay={0.35}
+          stagger={0.05}
+          className={`mt-5 font-display uppercase leading-[1.05] tracking-[0.12em] drop-shadow-[0_6px_30px_rgba(0,0,0,0.35)] ${title.length > 6 ? "text-[clamp(44px,8.6vw,132px)]" : "text-[clamp(64px,13vw,190px)]"}`}
         >
           {title}
-        </h1>
+        </SplitReveal>
         {subtitle && (
           <p data-rise className="mt-6 max-w-[34ch] font-display text-[15px] uppercase leading-[1.6] tracking-[0.3em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] md:text-[18px]">
             {subtitle}

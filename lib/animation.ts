@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CustomEase } from "gsap/CustomEase";
+import { SplitText } from "gsap/SplitText";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { Flip } from "gsap/Flip";
 import Lenis from "lenis";
 
-export { gsap, ScrollTrigger };
+export { gsap, ScrollTrigger, SplitText, Flip };
 
 /* ---------------------------------------------------------------------------
  * Easing
@@ -26,7 +29,7 @@ let registered = false;
 /** Registers plugins and custom eases once, on the client only. */
 export function registerGsap() {
   if (typeof window === "undefined" || registered) return;
-  gsap.registerPlugin(ScrollTrigger, CustomEase);
+  gsap.registerPlugin(ScrollTrigger, CustomEase, SplitText, DrawSVGPlugin, Flip);
   CustomEase.create(EASE.editorial, "0.65, 0, 0.15, 1");
   CustomEase.create(EASE.reveal, "0.22, 1, 0.36, 1");
   ScrollTrigger.config({ ignoreMobileResize: true });

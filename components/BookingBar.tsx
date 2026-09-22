@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState, type FormEvent } from "react";
+import { useEffect, useId, useState, type CSSProperties, type FormEvent } from "react";
 import { siteContent } from "@/data/site-content";
 import { formatTime, openReservation, toDateInputValue } from "@/lib/booking";
 
@@ -46,7 +46,8 @@ export default function BookingBar() {
     <form
       onSubmit={onSubmit}
       aria-label={booking.bar.label}
-      className="flex w-[min(92vw,880px)] flex-col gap-4 rounded-[3px] bg-white/92 px-6 py-5 shadow-[0_24px_60px_-30px_rgba(14,44,147,0.45),0_0_0_1px_rgba(18,56,184,0.1)] backdrop-blur-sm sm:flex-row sm:items-stretch sm:gap-0 sm:py-4 sm:pl-7 sm:pr-4"
+      style={{ "--glass-shadow": "0 24px 60px -30px rgba(14,44,147,0.45), 0 0 0 1px rgba(255,255,255,0.35)" } as CSSProperties}
+      className="glass-light relative flex w-[min(92vw,880px)] flex-col gap-4 rounded-[3px] px-6 py-5 sm:flex-row sm:items-stretch sm:gap-0 sm:py-4 sm:pl-7 sm:pr-4"
     >
       <div className={CELL}>
         <input

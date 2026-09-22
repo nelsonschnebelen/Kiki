@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { siteContent } from "@/data/site-content";
 import Reveal from "./Reveal";
+import SplitReveal from "./SplitReveal";
 
 /**
  * "Meet me at KIKI", laid out as in the mock: the rose heart bleeding off the
@@ -23,9 +24,9 @@ export default function MeetMeSection() {
 
         {/* Headline block, top right. */}
         <Reveal className="order-first flex flex-col justify-center px-6 py-10 md:order-none md:col-start-3 md:px-8 md:pt-[6.5vw] md:pb-8" delay={0.1}>
-          <h2 id="meet-heading" className="font-display text-[22px] leading-tight tracking-[0.16em] text-cobalt uppercase md:text-[24px] xl:text-[27px]">
+          <SplitReveal id="meet-heading" className="font-display text-[22px] leading-tight tracking-[0.16em] text-cobalt uppercase md:text-[24px] xl:text-[27px]">
             {meet.eyebrow}
-          </h2>
+          </SplitReveal>
           <span className="mt-4 block h-px w-10 bg-gold" aria-hidden />
           <p className="mt-5 font-sans text-[10.5px] uppercase leading-[2] tracking-[0.3em] text-cobalt-deep/80">
             {meet.lines[0]}

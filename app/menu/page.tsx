@@ -4,6 +4,7 @@ import PageHero from "@/components/PageHero";
 import MenuBook from "@/components/MenuBook";
 import ReserveButton from "@/components/ReserveButton";
 import Reveal from "@/components/Reveal";
+import SplitReveal from "@/components/SplitReveal";
 import { siteContent } from "@/data/site-content";
 
 export const metadata: Metadata = { title: "Menu · KIKI On the River" };
@@ -33,7 +34,7 @@ export default function MenuPage() {
       <section className="relative overflow-hidden bg-cobalt py-[12svh] text-center text-white">
         <Reveal className="mx-auto max-w-[720px] px-6">
           <p className="font-sans text-[10px] uppercase tracking-[0.5em] text-white/70">Your table is waiting</p>
-          <h2 className="mt-5 font-display text-[36px] uppercase leading-[1.1] tracking-[0.16em] md:text-[52px]">Eat · Drink · Dance</h2>
+          <SplitReveal className="mt-5 font-display text-[36px] uppercase leading-[1.15] tracking-[0.16em] md:text-[52px]">Eat · Drink · Dance</SplitReveal>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <ReserveButton href={siteContent.reservationUrl} label="Reserve a table" variant="onImage" size="lg" withArrow className="!border-white !bg-white !text-cobalt hover:!bg-transparent hover:!text-white" />
             <ReserveButton href={siteContent.privateEventsUrl} label="Plan a private event" variant="ghost" size="lg" withArrow className="!border-white/60 !text-white hover:!border-white hover:!bg-white hover:!text-cobalt" />

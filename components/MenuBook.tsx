@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { MENUS, MENU_DISCLAIMER, type Menu } from "@/data/menu";
-import { gsap, ScrollTrigger, registerGsap, prefersReducedMotion, EASE } from "@/lib/animation";
+import { gsap, ScrollTrigger, Flip, registerGsap, prefersReducedMotion, EASE } from "@/lib/animation";
 import Meander from "./Meander";
 import ParallaxBand from "./ParallaxBand";
 import Reveal from "./Reveal";
+import SplitReveal from "./SplitReveal";
 
 /** A photograph to break each menu, chosen to suit the course. */
 const BANDS: Record<string, { image: string; alt: string; note: string[]; focus?: string }> = {
@@ -18,16 +19,24 @@ const BANDS: Record<string, { image: string; alt: string; note: string[]; focus?
 };
 
 export default function MenuBook() {
+  /* "selected" moves the tab pill at once; "active" (the menu on the page) follows once the old dishes have faded. */
   const [active, setActive] = useState<Menu>(MENUS[0]);
+  const [selected, setSelected] = useState(MENUS[0].id);
   const id = useId();
   const listRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const pillRef = useRef<HTMLSpanElement>(null);
+  const firstFit = useRef(true);
 
   /* Deep links: /menu#brunch */
   useEffect(() => {
     const pick = () => {
       const m = MENUS.find((x) => x.id === window.location.hash.slice(1));
-      if (m) setActive(m);
+      if (m) {
+        setSelected(m.id);
+        setActive(m);
+      }
     };
     pick();
     window.addEventListener("hashchange", pick);
@@ -50,11 +59,33 @@ export default function MenuBook() {
     return () => ctx.revert();
   }, [active]);
 
+  /* The cobalt pill glides between tabs (Flip), and is re-fitted when the bar reflows. */
+  useLayoutEffect(() => {
+    const pill = pillRef.current;
+    const tab = tabsRef.current?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (!pill || !tab) return;
+    registerGsap();
+    const fit = (animate: boolean) => Flip.fit(pill, tab, { scale: false, duration: animate && !prefersReducedMotion() ? 0.65 : 0, ease: EASE.editorial, overwrite: true });
+    fit(!firstFit.current);
+    firstFit.current = false;
+    const ro = new ResizeObserver(() => fit(false));
+    ro.observe(tabsRef.current!);
+    return () => ro.disconnect();
+  }, [selected]);
+
   const choose = (m: Menu) => {
-    setActive(m);
+    if (m.id === selected) return;
+    setSelected(m.id);
     history.replaceState(null, "", `#${m.id}`);
     const top = (barRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - 72;
     if (window.scrollY > top) window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    const list = listRef.current;
+    if (!list || prefersReducedMotion()) {
+      setActive(m);
+      return;
+    }
+    // The outgoing dishes settle away before the new menu rises in.
+    gsap.to(list.querySelectorAll(".menu-item, header"), { y: -10, opacity: 0, duration: 0.32, ease: "power2.in", stagger: 0.004, overwrite: true, onComplete: () => setActive(m) });
   };
 
   const band = BANDS[active.id] ?? BANDS.dinner;
@@ -65,10 +96,11 @@ export default function MenuBook() {
   return (
     <div>
       {/* Course selector, sticky under the header. */}
-      <div ref={barRef} className="sticky top-[72px] z-30 border-y border-cobalt/12 bg-stone/92 backdrop-blur-sm md:top-20">
-        <div role="tablist" aria-label="Menus" className="mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 py-3 md:justify-center md:gap-3 md:px-8 md:py-4">
+      <div ref={barRef} className="glass sticky top-[72px] z-30 border-y border-white/50 md:top-20">
+        <div ref={tabsRef} role="tablist" aria-label="Menus" className="relative mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 py-3 md:justify-center md:gap-3 md:px-8 md:py-4">
+          <span ref={pillRef} className="pointer-events-none absolute left-0 top-0 h-10 w-24 rounded-[2px] bg-cobalt shadow-[0_10px_24px_-14px_rgba(14,44,147,0.7)]" aria-hidden />
           {MENUS.map((m) => {
-            const on = m.id === active.id;
+            const on = m.id === selected;
             return (
               <button
                 key={m.id}
@@ -77,8 +109,8 @@ export default function MenuBook() {
                 aria-selected={on}
                 aria-controls={`${id}-panel`}
                 onClick={() => choose(m)}
-                className={`shrink-0 rounded-[2px] border px-5 py-3 font-sans text-[10px] font-medium uppercase tracking-[0.3em] transition-colors duration-500 ease-editorial focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cobalt md:text-[10.5px] ${
-                  on ? "border-cobalt bg-cobalt text-white" : "border-cobalt/25 bg-transparent text-cobalt hover:border-cobalt"
+                className={`relative z-10 shrink-0 rounded-[2px] border px-5 py-3 font-sans text-[10px] font-medium uppercase tracking-[0.3em] transition-colors duration-500 ease-editorial focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cobalt md:text-[10.5px] ${
+                  on ? "border-transparent text-white" : "border-cobalt/25 text-cobalt hover:border-cobalt"
                 }`}
               >
                 {m.title}
@@ -111,7 +143,7 @@ function Sections({ sections, menuId }: { sections: Menu["sections"]; menuId: st
         <Reveal key={`${menuId}-${s.title}-${i}`} className={i ? "mt-[9svh]" : ""}>
           <header className="mb-10 text-center md:mb-14">
             <Meander className="mx-auto mb-6 opacity-70" units={5} />
-            <h2 className="font-display text-[30px] uppercase leading-[1.1] tracking-[0.16em] text-cobalt md:text-[40px]">{s.title}</h2>
+            <SplitReveal className="font-display text-[30px] uppercase leading-[1.15] tracking-[0.16em] text-cobalt md:text-[40px]">{s.title}</SplitReveal>
             {s.note && <p className="mt-4 font-sans text-[10px] uppercase tracking-[0.4em] text-cobalt-deep/70 md:text-[11px]">{s.note}</p>}
           </header>
           {s.items.length > 0 && (
