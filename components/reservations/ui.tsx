@@ -141,7 +141,7 @@ export function Field({ label, hint, children }: { label: ReactNode; hint?: stri
 export function Meander({ units = 5, className = "", color = "currentColor" }: { units?: number; className?: string; color?: string }) {
   const w = units * 40;
   return (
-    <svg viewBox={`0 0 ${w} 16`} width={w} height={16} className={className} aria-hidden focusable="false">
+    <svg viewBox={`0 0 ${w} 16`} width={w} height={16} className={`k-meander ${className}`} aria-hidden focusable="false">
       <g fill="none" stroke={color} strokeWidth="1.4" strokeLinejoin="miter" strokeLinecap="square">
         {Array.from({ length: units }, (_, i) => (
           <path key={i} d="M0 14 H7 V2 H33 V10 H13 V6 H27 M33 14 H40" transform={`translate(${i * 40} 0)`} />

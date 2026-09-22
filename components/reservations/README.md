@@ -26,3 +26,12 @@ Files:
 | `reservations.css` | Tokens and the handful of classes the components use. |
 
 Nothing is submitted anywhere; the payment step is a mock.
+
+## Two options
+
+- `/reservations` — option A, the full KIKI treatment (Bodoni, script notes,
+  petals, florals, "Your table awaits" card).
+- `/reservations/lite` — option B, Dishio's own system, brighter. Same flow
+  with `variant="lite"`: overrides only (see the `theme-lite` block in
+  `reservations.css`). The quickest path for the Dishio team is not to port
+  this code at all but to recolor their existing flow: see `LOVABLE.md`.

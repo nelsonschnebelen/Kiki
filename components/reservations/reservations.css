@@ -183,3 +183,22 @@
 .kiki-rsv .k-table { cursor: pointer; transition: transform 0.3s var(--k-ease); transform-box: fill-box; transform-origin: center; }
 .kiki-rsv .k-table:hover { transform: scale(1.06); }
 .kiki-rsv .k-table[data-taken="true"] { cursor: not-allowed; }
+
+/* ---------------------------------------------------------------------------
+ * Option B: Dishio's system, brighter. Same flow, no flourishes: one sans
+ * face, Dishio's rounded cards and chips, pink accent. Overrides only.
+ * ------------------------------------------------------------------------- */
+.kiki-rsv.theme-lite { background: #F7F4EE; }
+.kiki-rsv.theme-lite .k-display { font-family: var(--k-sans); font-weight: 700; letter-spacing: -0.01em; text-transform: none; }
+.kiki-rsv.theme-lite h2.k-display { font-size: 26px; line-height: 1.15; }
+.kiki-rsv.theme-lite .k-script,
+.kiki-rsv.theme-lite .k-meander,
+.kiki-rsv.theme-lite .k-floral,
+.kiki-rsv.theme-lite .k-petal { display: none; }
+.kiki-rsv.theme-lite .k-glass { background: rgba(255, 255, 255, 0.82); box-shadow: 0 20px 50px -30px rgba(14, 44, 147, 0.3), 0 0 0 1px rgba(18, 56, 184, 0.06); border-radius: 22px; }
+.kiki-rsv.theme-lite .k-glass::after { display: none; }
+.kiki-rsv.theme-lite .k-btn { border-radius: 14px; font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 17px 24px; }
+.kiki-rsv.theme-lite .k-chip { border-radius: 12px; font-family: var(--k-sans); font-size: 14px; font-weight: 500; letter-spacing: 0; background: #fff; }
+.kiki-rsv.theme-lite .k-field { border-radius: 12px; font-family: var(--k-sans); font-size: 15px; letter-spacing: 0; background: #fff; }
+.kiki-rsv.theme-lite .k-label { letter-spacing: 0.12em; font-size: 11px; }
+.kiki-rsv.theme-lite .k-chip[data-on="true"] { background: var(--k-pink); border-color: var(--k-pink); color: #fff; }

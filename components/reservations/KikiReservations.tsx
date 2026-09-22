@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import "./reservations.css";
 import Landing, { type Prefill } from "./Landing";
+import LandingLite from "./LandingLite";
 import { AddOnsStep, ConfirmedStep, DetailsStep, EMPTY, PaymentStep, PhoneStep, WhenStep, type Booking } from "./steps";
 import { Florals, Petals, Stepper, Wordmark } from "./ui";
 import { DISHIO, RESTAURANT } from "./config";
@@ -15,7 +16,10 @@ const LABELS = ["Your phone", "When & where", "Your details", "Add-ons", "Paymen
  * frosted card on stone with petals falling behind. Everything is local
  * state; nothing is sent anywhere.
  */
-export default function KikiReservations() {
+/** variant "kiki": the full KIKI treatment. "lite": Dishio's own system, brighter. */
+export default function KikiReservations({ variant = "kiki" }: { variant?: "kiki" | "lite" }) {
+  const lite = variant === "lite";
+  const root = `kiki-rsv${lite ? " theme-lite" : ""}`;
   const [step, setStep] = useState(0); // 0 = landing
   const [dir, setDir] = useState(1);
   const [b, setB] = useState<Booking>(EMPTY);
@@ -43,8 +47,8 @@ export default function KikiReservations() {
 
   if (step === 0) {
     return (
-      <div className="kiki-rsv">
-        <Landing onReserve={start} onSpace={(_, p) => start(p)} />
+      <div className={root}>
+        {lite ? <LandingLite onReserve={start} onSpace={(_, p) => start(p)} /> : <Landing onReserve={start} onSpace={(_, p) => start(p)} />}
       </div>
     );
   }
@@ -56,7 +60,7 @@ export default function KikiReservations() {
   };
 
   return (
-    <div className="kiki-rsv flex min-h-[100svh] flex-col">
+    <div className={`${root} flex min-h-[100svh] flex-col`}>
       <Florals />
       <Petals count={9} seed={11} className="!fixed" />
 
