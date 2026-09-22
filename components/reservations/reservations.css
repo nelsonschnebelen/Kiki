@@ -1,0 +1,185 @@
+/*
+ * KIKI reservations, styled for Dishio. Self-contained: brand tokens, type,
+ * glass, buttons and the petal keyframes. Tailwind handles layout only, so
+ * this drops into a Vite/Lovable project unchanged. If the project does not
+ * already load Bodoni Moda, Inter and Caveat, add them from Google Fonts.
+ */
+.kiki-rsv {
+  --k-cobalt: #1238b8;
+  --k-cobalt-deep: #0e2c93;
+  --k-pink: #e50064;
+  --k-pink-deep: #c40056;
+  --k-pink-soft: #ffe1ee;
+  --k-stone: #f5f0e8;
+  --k-stone-deep: #ede5d8;
+  --k-gold: #c9a24a;
+  --k-display: var(--font-bodoni, "Bodoni Moda"), "Bodoni 72", "Didot", Georgia, serif;
+  --k-sans: var(--font-inter, "Inter"), ui-sans-serif, system-ui, sans-serif;
+  --k-script: var(--font-caveat, "Caveat"), "Segoe Script", cursive;
+  --k-ease: cubic-bezier(0.65, 0, 0.15, 1);
+  --k-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  min-height: 100svh;
+  background: var(--k-stone);
+  color: var(--k-cobalt-deep);
+  font-family: var(--k-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+.kiki-rsv .k-display { font-family: var(--k-display); }
+.kiki-rsv .k-script { font-family: var(--k-script); font-weight: 600; }
+
+/* Frosted white panel with a fine grain. */
+.kiki-rsv .k-glass {
+  position: relative;
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.66);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 30px 70px -40px rgba(14, 44, 147, 0.35);
+}
+.kiki-rsv .k-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.5 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .kiki-rsv .k-glass { background: rgba(255, 255, 255, 0.94); }
+}
+
+/* Buttons */
+.kiki-rsv .k-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 16px 28px;
+  font-family: var(--k-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: transform 0.5s var(--k-ease), background-color 0.4s var(--k-ease), box-shadow 0.5s var(--k-ease), color 0.4s;
+  white-space: nowrap;
+}
+.kiki-rsv .k-btn:disabled { opacity: 0.4; pointer-events: none; }
+.kiki-rsv .k-btn-pink {
+  background: var(--k-pink);
+  color: #fff;
+  box-shadow: 0 18px 40px -14px rgba(229, 0, 100, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.kiki-rsv .k-btn-pink:hover { background: var(--k-pink-deep); transform: translateY(-1px); box-shadow: 0 22px 46px -14px rgba(229, 0, 100, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.kiki-rsv .k-btn-pink:active { transform: translateY(0); }
+.kiki-rsv .k-btn-ghost { background: rgba(255, 255, 255, 0.6); color: var(--k-cobalt); border: 1px solid rgba(18, 56, 184, 0.22); }
+.kiki-rsv .k-btn-ghost:hover { border-color: var(--k-cobalt); background: #fff; }
+.kiki-rsv .k-btn-white { background: #fff; color: var(--k-cobalt); box-shadow: 0 16px 40px -18px rgba(14, 44, 147, 0.5); }
+.kiki-rsv .k-btn-white:hover { color: var(--k-pink); }
+
+/* Selectable chips (party size, times, occasions) */
+.kiki-rsv .k-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 56, 184, 0.2);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--k-cobalt);
+  font-family: var(--k-display);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  transition: all 0.35s var(--k-ease);
+}
+.kiki-rsv .k-chip:hover { border-color: var(--k-cobalt); transform: translateY(-1px); }
+.kiki-rsv .k-chip[data-on="true"] {
+  background: var(--k-pink);
+  border-color: var(--k-pink);
+  color: #fff;
+  box-shadow: 0 14px 30px -14px rgba(229, 0, 100, 0.7);
+}
+.kiki-rsv .k-chip:disabled { opacity: 0.35; text-decoration: line-through; pointer-events: none; }
+
+/* Inputs */
+.kiki-rsv .k-field {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(18, 56, 184, 0.18);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 16px 18px;
+  font-family: var(--k-display);
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  color: var(--k-cobalt);
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+.kiki-rsv .k-field::placeholder { color: rgba(14, 44, 147, 0.35); }
+.kiki-rsv .k-field:focus { border-color: var(--k-pink); background: #fff; box-shadow: 0 0 0 4px rgba(229, 0, 100, 0.12); }
+.kiki-rsv .k-label {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--k-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(14, 44, 147, 0.65);
+}
+
+/* Thin animated underline */
+.kiki-rsv .k-link { position: relative; display: inline-block; padding-bottom: 3px; }
+.kiki-rsv .k-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 0.5s var(--k-ease); }
+.kiki-rsv .k-link:hover::after { transform: scaleX(1); }
+
+/* Hide scrollbars on snap rows */
+.kiki-rsv .k-snap { scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.kiki-rsv .k-snap::-webkit-scrollbar { display: none; }
+.kiki-rsv .k-snap > * { scroll-snap-align: start; }
+
+/* Watercolour florals in the corners */
+.kiki-rsv .k-floral { position: absolute; pointer-events: none; user-select: none; opacity: 0.9; }
+
+/* Petals: each one gets its own timing through CSS variables. */
+@keyframes k-fall {
+  0%   { transform: translate3d(var(--x0), -12vh, 0) rotate(var(--r0)); opacity: 0; }
+  8%   { opacity: var(--o); }
+  50%  { transform: translate3d(calc(var(--x0) + var(--drift)), 45vh, 0) rotate(calc(var(--r0) + 140deg)); }
+  92%  { opacity: var(--o); }
+  100% { transform: translate3d(calc(var(--x0) - var(--drift) * 0.6), 108vh, 0) rotate(calc(var(--r0) + 330deg)); opacity: 0; }
+}
+@keyframes k-flutter {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  50% { transform: rotateX(55deg) rotateY(-35deg); }
+}
+.kiki-rsv .k-petal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--w);
+  height: auto;
+  will-change: transform, opacity;
+  animation: k-fall var(--dur) linear var(--delay) infinite;
+  filter: drop-shadow(0 6px 10px rgba(229, 0, 100, 0.12));
+}
+.kiki-rsv .k-petal > img { display: block; width: 100%; height: auto; animation: k-flutter var(--flutter) ease-in-out infinite; transform-style: preserve-3d; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kiki-rsv .k-petal, .kiki-rsv .k-petal > img { animation: none; opacity: 0.35; transform: translate3d(var(--x0), var(--y-static, 30vh), 0) rotate(var(--r0)); }
+}
+
+/* Floor plan */
+.kiki-rsv .k-table { cursor: pointer; transition: transform 0.3s var(--k-ease); transform-box: fill-box; transform-origin: center; }
+.kiki-rsv .k-table:hover { transform: scale(1.06); }
+.kiki-rsv .k-table[data-taken="true"] { cursor: not-allowed; }
