@@ -7,6 +7,8 @@ import { BRAND_GEOMETRY } from "@/lib/brand-geometry";
 import { gsap, registerGsap, pickVideoSource, prefersReducedMotion } from "@/lib/animation";
 
 type Mode = "sequence" | "solid" | "posters";
+/** What fills the letters once revealed: the reels, or plain cobalt. */
+export type LetterFill = "video" | "cobalt";
 
 interface VideoLettermarkProps {
   letters: readonly LetterContent[];
@@ -20,6 +22,7 @@ interface VideoLettermarkProps {
   playing?: boolean;
   solidRef?: RefObject<HTMLDivElement | null>;
   videoLayerRef?: RefObject<HTMLDivElement | null>;
+  fill?: LetterFill;
 }
 
 const pct = (fraction: number) => `${fraction * 100}%`;
@@ -58,6 +61,7 @@ export default function VideoLettermark({
   playing = false,
   solidRef,
   videoLayerRef,
+  fill = "video",
 }: VideoLettermarkProps) {
   const g = BRAND_GEOMETRY;
   const rootRef = useRef<HTMLDivElement>(null);
@@ -161,8 +165,8 @@ export default function VideoLettermark({
           role={mode === "posters" ? "img" : undefined}
           aria-label={mode === "posters" ? "KIKI" : undefined}
         >
-          {/* White outlines: dilated letter masks beneath the letters. */}
-          {g.slots.map((s) => (
+          {/* White outlines: dilated letter masks beneath the letters (video fill only). */}
+          {fill === "video" && g.slots.map((s) => (
             <div
               key={`outline-${s.id}`}
               className="absolute bg-white"
@@ -185,6 +189,8 @@ export default function VideoLettermark({
                 className="absolute top-0 h-full overflow-hidden"
                 style={{ left: pct(s.x), width: pct(s.w), ...mask(`/brand/mask-${s.id}.png`) }}
               >
+                {fill === "cobalt" && <div className="absolute inset-0 bg-cobalt" />}
+                {fill === "video" && (<>
                 <Image
                   src={l.video.poster}
                   alt=""
@@ -210,6 +216,7 @@ export default function VideoLettermark({
                     style={{ transform: "scale(1.08)", opacity: 0, objectPosition: l.focus }}
                   />
                 )}
+                </>)}
               </div>
             );
           })}

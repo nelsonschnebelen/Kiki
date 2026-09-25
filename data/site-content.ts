@@ -95,6 +95,9 @@ export const siteContent = {
     note: ["Good Food", "Brighter Days"],
   },
 
+  /** What the KIKI letters fill with once revealed: "cobalt" (calm, solid) or "video" (the reels). */
+  letterFill: "cobalt" as "cobalt" | "video",
+
   letters: [
     {
       id: "k1",

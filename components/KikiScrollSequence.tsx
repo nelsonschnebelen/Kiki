@@ -178,6 +178,7 @@ export default function KikiScrollSequence() {
           <VideoLettermark
             letters={siteContent.letters}
             mode="sequence"
+            fill={siteContent.letterFill}
             playing={playing}
             solidRef={solidRef}
             videoLayerRef={videoLayerRef}
