@@ -12,6 +12,7 @@ import {
   SEQUENCE,
 } from "@/lib/animation";
 import Hero from "./Hero";
+import Doorway from "./Doorway";
 import PetalField from "./PetalField";
 import VideoLettermark from "./VideoLettermark";
 import ReducedMotionFallback from "./ReducedMotionFallback";
@@ -37,6 +38,7 @@ export default function KikiScrollSequence() {
   const noteRef = useRef<HTMLParagraphElement>(null);
   const solidRef = useRef<HTMLDivElement>(null);
   const videoLayerRef = useRef<HTMLDivElement>(null);
+  const doorRef = useRef<HTMLDivElement>(null);
 
   const playingRef = useRef(false);
   const [playing, setPlaying] = useState(false);
@@ -59,6 +61,15 @@ export default function KikiScrollSequence() {
 
       const span = (range: readonly [number, number]) => range[1] - range[0];
       const tl = gsap.timeline({ defaults: { ease: "none" } });
+
+      /* The door: the facade zooms through its arch until the opening is the whole screen, then lets go.
+         Behind it the film eases from a slight push-in to rest, and the wordmark and hero UI arrive as the wall clears. */
+      const door = gsap.timeline({ defaults: { ease: "none" } });
+      const D = SEQUENCE.door;
+      door.fromTo(doorRef.current, { scale: 1 }, { scale: 9, duration: D, ease: "power2.in" }, 0);
+      door.to(doorRef.current, { autoAlpha: 0, duration: D * 0.2 }, D * 0.8);
+      door.fromTo(bgRef.current, { scale: 1.18 }, { scale: 1, duration: D, ease: "power1.out" }, 0);
+      door.fromTo([wm, uiRef.current], { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: D * 0.35, ease: EASE.reveal }, D * 0.65);
 
       /* Background: slow dolly, then soften (blurred copy fades in), then fade to stone. */
       tl.fromTo(bgRef.current, { scale: 1 }, { scale: 1.06, duration: 1 }, 0);
@@ -122,6 +133,10 @@ export default function KikiScrollSequence() {
         SEQUENCE.petals[0],
       );
 
+      /* Door first, then the hero sequence, scrubbed as one. */
+      const master = gsap.timeline({ defaults: { ease: "none" } });
+      master.add(door, 0).add(tl, D);
+
       ScrollTrigger.create({
         trigger: section,
         start: "top top",
@@ -132,11 +147,12 @@ export default function KikiScrollSequence() {
         pin: stage,
         pinSpacing: true,
         scrub: 0.5,
-        animation: tl,
+        animation: master,
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onUpdate: (self) => {
-          const shouldPlay = self.progress > SEQUENCE.playThreshold;
+          const inner = (self.progress * (1 + D) - D) / 1; // progress of the hero sequence itself
+          const shouldPlay = inner > SEQUENCE.playThreshold;
           if (shouldPlay !== playingRef.current) {
             playingRef.current = shouldPlay;
             setPlaying(shouldPlay);
@@ -165,6 +181,7 @@ export default function KikiScrollSequence() {
         <div className="kiki-stage-glow absolute inset-0" aria-hidden />
 
         <Hero bgRef={bgRef} uiRef={uiRef} blurRef={blurRef} />
+        <Doorway ref={doorRef} />
 
         {/* Watercolour corners, revealed with the video letters. */}
         <div ref={floralRef} className="absolute inset-0 opacity-0" aria-hidden>

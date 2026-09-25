@@ -36,12 +36,29 @@ export default function Header({ mode = "home", current = "/", forceSolid = fals
         if (mode === "page") return window.innerHeight * 0.62;
         if (reduced) return window.innerHeight * 0.85;
         const m = isMobileViewport() ? SEQUENCE.scrollMultiplier.mobile : SEQUENCE.scrollMultiplier.desktop;
-        return window.innerHeight * m * SEQUENCE.heroFade[1];
+        return (window.innerHeight * m * (SEQUENCE.door + SEQUENCE.heroFade[1])) / (1 + SEQUENCE.door);
       },
       onEnter: () => setSolid(true),
       onLeaveBack: () => setSolid(false),
     });
-    return () => trigger.kill();
+    /* Home only: the page opens on the stone door, where the header must already be solid. */
+    let doorTrigger: ScrollTrigger | undefined;
+    if (mode === "home" && !reduced) {
+      doorTrigger = ScrollTrigger.create({
+        start: 0,
+        end: () => {
+          const m = isMobileViewport() ? SEQUENCE.scrollMultiplier.mobile : SEQUENCE.scrollMultiplier.desktop;
+          return (window.innerHeight * m * SEQUENCE.door * 0.8) / (1 + SEQUENCE.door);
+        },
+        onLeave: () => setSolid(false),
+        onEnterBack: () => setSolid(true),
+      });
+      setSolid(true);
+    }
+    return () => {
+      trigger.kill();
+      doorTrigger?.kill();
+    };
   }, [mode]);
 
   useEffect(() => {

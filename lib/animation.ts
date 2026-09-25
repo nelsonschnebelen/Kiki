@@ -42,7 +42,13 @@ export function registerGsap() {
 
 export const SEQUENCE = {
   /** Scroll distance of the pinned hero, as a multiple of the viewport height. */
-  scrollMultiplier: { desktop: 2.2, mobile: 1.6 },
+  scrollMultiplier: { desktop: 2.9, mobile: 2.1 },
+  /**
+   * The door act, in the timeline's own seconds: the facade zooms through its
+   * arch for this long before the hero sequence (which runs 0 to 1) begins.
+   * Fractions below are of that inner sequence, not of the door.
+   */
+  door: 0.35,
   /** Hero holds; background scales; base petals drift. */
   hold: [0, 0.22],
   /** Tagline, chevron and note fade. */
