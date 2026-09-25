@@ -22,12 +22,13 @@ export default function QuickPicks({ compact = false }: { compact?: boolean }) {
   }, [quickPicks]);
 
   return (
-    <section className={`relative ${compact ? "" : "mx-auto max-w-[1500px] px-6 py-[10svh] md:px-10"}`} aria-labelledby={compact ? undefined : "quick-picks-heading"} aria-label={compact ? "Book the night you want" : undefined}>
+    <section className={`relative ${compact ? "" : "mx-auto max-w-[1500px] px-6 py-[10svh] md:px-10"}`} aria-labelledby={compact ? undefined : "quick-picks-heading"} aria-label={compact ? "Meet me at KIKI" : undefined}>
       {!compact && (
         <Reveal className="mb-10 text-center md:mb-14">
-          <SplitReveal id="quick-picks-heading" className="font-display display-sturdy-lg mt-3 text-[32px] uppercase leading-[1.12] tracking-[0.14em] text-cobalt md:text-[46px]">
-            Book the night you want
+          <SplitReveal id="quick-picks-heading" className="font-display display-sturdy-lg text-[32px] uppercase leading-[1.12] tracking-[0.14em] text-cobalt md:text-[46px]">
+            Meet me at KIKI
           </SplitReveal>
+          <p className="mt-4 font-sans text-[10.5px] font-medium uppercase tracking-[0.42em] text-cobalt-deep/70">Book the night you want</p>
           <Meander className="mx-auto mt-6 opacity-70" units={5} />
         </Reveal>
       )}

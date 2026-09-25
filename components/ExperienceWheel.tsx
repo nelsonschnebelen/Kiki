@@ -13,8 +13,7 @@ const MEANDER_UNITS = 30;
  * "Day turns into night", laid out as in the mock: one band that starts at the
  * bottom of the letters. Copy and CTAs sit on stone to the left with a couple
  * of bougainvillea sprigs, the wheel is centred and drives the band's height,
- * and the waterfront photograph fills the right with the handwritten note over
- * it. The collage below tucks under the wheel's bottom edge.
+ * and the waterfront photograph fills the right.
  *
  * Outer Greek border rotates clockwise, the inner ring counter-clockwise; both
  * respond to scroll and idle very slowly once the section has settled.
@@ -84,8 +83,8 @@ export default function ExperienceWheel() {
           </Reveal>
         </div>
 
-        {/* Centre: wheel. It sets the band's height, poking up into the letters and down over the collage. */}
-        <div className="relative order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:-mt-[3vw] lg:-mb-[4.5vw] lg:w-full lg:pb-0">
+        {/* Centre: wheel. It sets the band's height, poking up into the letters. */}
+        <div className="relative order-1 mx-auto w-[min(86vw,560px)] pb-4 lg:order-2 lg:-mt-[3vw] lg:w-full lg:pb-0">
           <div className="relative aspect-square w-full">
             <div
               className="absolute inset-0 rounded-full bg-[#FBF8F2] shadow-[0_40px_80px_-40px_rgba(18,56,184,0.35),0_-18px_50px_-24px_rgba(14,44,147,0.35),0_0_0_1px_rgba(18,56,184,0.12)]"
@@ -163,19 +162,9 @@ export default function ExperienceWheel() {
           </div>
         </div>
 
-        {/* Right: waterfront photograph filling the column, note over the sky. */}
+        {/* Right: waterfront photograph filling the column. */}
         <div className="relative order-3 min-h-[52svh] lg:h-full lg:min-h-0">
           <Image src={wheel.accentImage} alt={wheel.accentAlt} fill sizes="(max-width: 1023px) 100vw, 32vw" className="object-cover object-[50%_38%]" />
-          <p
-            aria-hidden
-            className="script absolute right-[9%] top-[8%] rotate-[-6deg] text-right text-[34px] leading-[0.95] text-cobalt drop-shadow-[0_1px_0_rgba(255,255,255,0.75)] lg:text-[clamp(34px,2.9vw,60px)]"
-          >
-            {wheel.note[0]}
-            <br />
-            {wheel.note[1]}
-            <br />
-            <span className="text-[26px]">♡</span>
-          </p>
         </div>
       </div>
     </section>
