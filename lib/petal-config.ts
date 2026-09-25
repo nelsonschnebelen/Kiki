@@ -51,12 +51,12 @@ export interface PetalConfig {
   opacity: number;
 }
 
-export const PETAL_COUNT = 36;
+export const PETAL_COUNT = 22;
 export const PETAL_SEED = 20260917;
 /** Petals with an id at or above this limit are hidden below the md breakpoint. */
 export const MOBILE_PETAL_LIMIT = 16;
 /** Number of petals visible before scrolling. */
-export const BASE_PETAL_COUNT = 7;
+export const BASE_PETAL_COUNT = 4;
 /** Longest edge in px for the farthest and nearest petals. Matches a single bract in the logo. */
 export const PETAL_SIZE = { far: 16, near: 32 } as const;
 

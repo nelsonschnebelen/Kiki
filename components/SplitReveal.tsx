@@ -25,7 +25,7 @@ interface SplitRevealProps {
  * motion; the split happens on the client once fonts are ready, and is redone
  * if the text reflows. Line breaks (<br />) are honoured.
  */
-export default function SplitReveal({ as = "h2", children, className, id, unit = "chars", on = "scroll", delay = 0, stagger }: SplitRevealProps) {
+export default function SplitReveal({ as = "h2", children, className, id, unit = "lines", on = "scroll", delay = 0, stagger }: SplitRevealProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {

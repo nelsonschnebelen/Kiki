@@ -69,7 +69,7 @@ export default function PageHero({ image, alt, title, eyebrow, subtitle, note, h
       </div>
       <div ref={veilRef} className="absolute inset-0 bg-stone opacity-0" aria-hidden />
 
-      <PetalField layer="back" max={7} allVisible />
+      <PetalField layer="back" max={3} allVisible />
 
       <div ref={copyRef} className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white will-change-transform" style={{ viewTransitionName: "hero-copy" }}>
         {eyebrow && (
@@ -79,6 +79,7 @@ export default function PageHero({ image, alt, title, eyebrow, subtitle, note, h
         )}
         <SplitReveal
           as="h1"
+          unit="chars"
           on="mount"
           delay={0.35}
           stagger={0.05}
@@ -94,7 +95,7 @@ export default function PageHero({ image, alt, title, eyebrow, subtitle, note, h
         {children && <div data-rise className="mt-9">{children}</div>}
       </div>
 
-      <PetalField layer="front" max={5} allVisible />
+      <PetalField layer="front" max={2} allVisible />
 
       {note && (
         <p aria-hidden className="script pointer-events-none absolute right-[6vw] top-[16svh] hidden rotate-[-6deg] text-right text-[30px] leading-[0.95] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] md:block lg:text-[34px]">

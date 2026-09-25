@@ -25,7 +25,6 @@ export default function QuickPicks({ compact = false }: { compact?: boolean }) {
     <section className={`relative ${compact ? "" : "mx-auto max-w-[1500px] px-6 py-[10svh] md:px-10"}`} aria-labelledby={compact ? undefined : "quick-picks-heading"} aria-label={compact ? "Book the night you want" : undefined}>
       {!compact && (
         <Reveal className="mb-10 text-center md:mb-14">
-          <p className="script text-[26px] leading-none text-bougainvillea">Which night is yours?</p>
           <SplitReveal id="quick-picks-heading" className="font-display display-sturdy-lg mt-3 text-[32px] uppercase leading-[1.12] tracking-[0.14em] text-cobalt md:text-[46px]">
             Book the night you want
           </SplitReveal>

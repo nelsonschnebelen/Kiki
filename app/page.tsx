@@ -6,7 +6,6 @@ import MeetMeSection from "@/components/MeetMeSection";
 import SiteFooter from "@/components/SiteFooter";
 import ReservationDrawer from "@/components/ReservationDrawer";
 import QuickPicks from "@/components/QuickPicks";
-import InstagramStrip from "@/components/InstagramStrip";
 import MobileReserveBar from "@/components/MobileReserveBar";
 import { BRAND_GEOMETRY } from "@/lib/brand-geometry";
 
@@ -22,10 +21,9 @@ export default function HomePage() {
         <ExperienceWheel />
         <MeetMeSection />
         <QuickPicks />
-        <InstagramStrip />
       </main>
       <SiteFooter />
-      <MobileReserveBar after={3.2} />
+      <MobileReserveBar after={2.6} />
       <ReservationDrawer />
     </>
   );

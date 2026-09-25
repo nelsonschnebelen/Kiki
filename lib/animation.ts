@@ -42,7 +42,7 @@ export function registerGsap() {
 
 export const SEQUENCE = {
   /** Scroll distance of the pinned hero, as a multiple of the viewport height. */
-  scrollMultiplier: { desktop: 2.8, mobile: 2.0 },
+  scrollMultiplier: { desktop: 2.2, mobile: 1.6 },
   /** Hero holds; background scales; base petals drift. */
   hold: [0, 0.22],
   /** Tagline, chevron and note fade. */

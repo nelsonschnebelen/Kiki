@@ -529,7 +529,7 @@ export function ConfirmedStep({ b, onDone }: { b: Booking; onDone: () => void })
 
   return (
     <div className="relative space-y-7 text-center">
-      <Petals count={16} seed={21} scale={1.1} className="!fixed" />
+      <Petals count={8} seed={21} className="!fixed" />
       <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#E50064] text-white shadow-[0_20px_44px_-14px_rgba(229,0,100,0.8)]">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5l4.5 4.5L19 7" /></svg>
       </motion.div>

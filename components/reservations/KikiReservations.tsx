@@ -88,7 +88,7 @@ export default function KikiReservations({ variant = "kiki", mode = "page", pref
   return (
     <div className={`${root} flex flex-col ${drawer ? "min-h-full" : "min-h-[100svh]"}`}>
       {!drawer && <Florals />}
-      <Petals count={drawer ? 5 : 9} seed={11} className={drawer ? "" : "!fixed"} scale={drawer ? 0.8 : 1} />
+      {!drawer && <Petals count={5} seed={11} className="!fixed" />}
 
       {/* Top bar: back, wordmark (unless the site's own header is above us). */}
       <header className={`relative z-10 flex items-center justify-between ${drawer ? "px-1 pt-1" : embedded ? "px-5 pt-[92px] sm:px-8 sm:pt-[104px]" : "px-5 pt-5 sm:px-8"}`}>

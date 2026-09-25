@@ -67,7 +67,7 @@ export default function Landing({ onReserve, onSpace, initial, hideTopBar = fals
         <img src={RESTAURANT.hero.image} alt={RESTAURANT.hero.alt} className="h-full w-full object-cover" style={{ objectPosition: RESTAURANT.hero.focus, filter: "brightness(1.08) saturate(1.08)" }} />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/55" aria-hidden />
-      <Petals count={18} seed={5} scale={1.25} />
+      <Petals count={7} seed={5} scale={1.1} />
 
       <div className="relative flex min-h-[100svh] flex-col">
         {/* Top bar (the site's own header replaces it on /reserve) */}

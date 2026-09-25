@@ -341,11 +341,11 @@ html[data-drawer="open"] .mobile-reserve-bar {
 /* The hero sequence pins for scrollMultiplier viewports (lib/animation.ts). Reserving that height
    in CSS means the wheel and everything below sit where they will end up before ScrollTrigger runs. */
 #kiki-sequence {
-  min-height: calc(100svh * 3.8);
+  min-height: calc(100svh * 3.2);
 }
 @media (max-width: 767px) {
   #kiki-sequence {
-    min-height: calc(100svh * 3);
+    min-height: calc(100svh * 2.6);
   }
 }
 html[data-motion="reduce"] #kiki-sequence {
