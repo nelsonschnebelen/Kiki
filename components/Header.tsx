@@ -18,10 +18,13 @@ interface HeaderProps {
   mode?: "home" | "page";
   /** Pathname of the current page, for the active underline. */
   current?: string;
+  /** Solid regardless of scroll (used over content with no hero photograph). */
+  forceSolid?: boolean;
 }
 
-export default function Header({ mode = "home", current = "/" }: HeaderProps) {
-  const [solid, setSolid] = useState(false);
+export default function Header({ mode = "home", current = "/", forceSolid = false }: HeaderProps) {
+  const [scrolled, setSolid] = useState(false);
+  const solid = forceSolid || scrolled;
   const [open, setOpen] = useState(false);
   const menuId = useId();
 

@@ -10,6 +10,7 @@ import {
   type ReservationRequest,
 } from "@/lib/booking";
 import BrandMark from "./BrandMark";
+import KikiReservations from "./reservations/KikiReservations";
 
 interface LenisLike {
   stop: () => void;
@@ -19,15 +20,15 @@ interface LenisLike {
 /**
  * Slide-in reservation panel. Every Reserve button and the booking bar open it
  * (see lib/booking.ts). The site stays visible behind it, lightly dimmed, so
- * booking reads as part of the page rather than a pop-up. The SevenRooms flow is
- * embedded and only loads the first time the drawer opens.
+ * booking reads as part of the page rather than a pop-up. Inside is the Dishio
+ * flow (components/reservations), pre-filled with whatever was chosen outside.
  */
 export default function ReservationDrawer() {
   const { booking } = siteContent;
   const [open, setOpen] = useState(false);
   const [request, setRequest] = useState<ReservationRequest>({});
   const [src, setSrc] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [session, setSession] = useState(0);
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
@@ -41,10 +42,8 @@ export default function ReservationDrawer() {
       returnFocusRef.current = document.activeElement as HTMLElement | null;
       const next = buildBookingUrl(detail);
       setRequest(detail);
-      setSrc((current) => {
-        if (current !== next) setLoaded(false);
-        return next;
-      });
+      setSrc(next);
+      setSession((n) => n + 1); // a fresh flow each time it opens
       setOpen(true);
     };
     window.addEventListener(RESERVATION_EVENT, onReserve);
@@ -66,7 +65,7 @@ export default function ReservationDrawer() {
         return;
       }
       if (e.key !== "Tab" || !panelRef.current) return;
-      const items = panelRef.current.querySelectorAll<HTMLElement>("button, a[href], iframe");
+      const items = panelRef.current.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], input, select, textarea");
       const first = items[0];
       const last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -140,22 +139,8 @@ export default function ReservationDrawer() {
           <span className="absolute bottom-0 left-6 block h-px w-12 bg-gold sm:left-8" aria-hidden />
         </div>
 
-        <div className="relative min-h-0 flex-1 bg-white">
-          {!loaded && (
-            <div className="absolute inset-0 grid place-items-center bg-stone" aria-hidden>
-              <span className="font-sans text-[10px] uppercase tracking-[0.4em] text-cobalt/60">{booking.drawer.loading}</span>
-            </div>
-          )}
-          {src && (
-            <iframe
-              key={src}
-              src={src}
-              title="KIKI on the River reservations, by SevenRooms"
-              className="absolute inset-0 h-full w-full border-0"
-              onLoad={() => setLoaded(true)}
-              allow="payment"
-            />
-          )}
+        <div className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4 pt-3 sm:px-4" data-lenis-prevent>
+          {open && <KikiReservations key={session} mode="drawer" prefill={request} onClose={close} />}
         </div>
 
         <div className="flex shrink-0 items-center justify-between gap-4 border-t border-cobalt/12 px-6 py-3.5 sm:px-8">

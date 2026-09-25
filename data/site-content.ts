@@ -24,12 +24,8 @@ export interface LetterContent {
   video: VideoSource;
 }
 
-/**
- * KIKI's SevenRooms booking page (venue id "kikiontheriver", the same one their current site's widget uses).
- * Set NEXT_PUBLIC_RESERVATION_URL in .env.local to point at a different venue or booking system.
- */
-const RESERVATION_URL =
-  process.env.NEXT_PUBLIC_RESERVATION_URL ?? "https://www.sevenrooms.com/explore/kikiontheriver/reservations/create/search";
+/** Every reservation runs through the Dishio flow at /reserve (and in the drawer). */
+const RESERVATION_URL = "/reserve";
 const PRIVATE_EVENTS_URL = process.env.NEXT_PUBLIC_PRIVATE_EVENTS_URL ?? "https://www.kikiontheriver.com/private-events";
 
 export const siteContent = {
@@ -66,8 +62,8 @@ export const siteContent = {
       title: "Reserve your table",
       subtitle: "KIKI on the River · Miami",
       loading: "Finding tables",
-      poweredBy: "Secure booking by SevenRooms",
-      newTab: "Open in a new tab",
+      poweredBy: "Reservations by Dishio",
+      newTab: "Open the full page",
     },
   },
 

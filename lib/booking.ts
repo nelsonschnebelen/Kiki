@@ -1,8 +1,10 @@
 /**
  * Reservation plumbing shared by the booking bar, every Reserve button and the drawer.
  *
- * SevenRooms pre-fill parameters were verified against KIKI's live booking page:
- *   ?date=YYYY-MM-DD&party_size=N&start_time=HH:MM
+ * Every reservation goes through the Dishio flow (components/reservations):
+ * in the drawer when opened from a button, or on /reserve as a full page.
+ * Links carry the same pre-fill parameters either way:
+ *   /reserve?date=YYYY-MM-DD&party_size=N&start_time=HH:MM
  */
 import { siteContent } from "@/data/site-content";
 
@@ -16,13 +18,27 @@ export interface ReservationRequest {
 
 export const RESERVATION_EVENT = "kiki:reserve";
 
-/** Builds the SevenRooms booking URL for a request. */
+/** Builds the /reserve URL for a request (the no-JS and "open full page" path). */
 export function buildBookingUrl(req: ReservationRequest = {}): string {
-  const url = new URL(siteContent.booking.url);
-  if (req.date) url.searchParams.set("date", req.date);
-  if (req.partySize) url.searchParams.set("party_size", String(req.partySize));
-  if (req.time) url.searchParams.set("start_time", req.time);
-  return url.toString();
+  const p = new URLSearchParams();
+  if (req.date) p.set("date", req.date);
+  if (req.partySize) p.set("party_size", String(req.partySize));
+  if (req.time) p.set("start_time", req.time);
+  const q = p.toString();
+  return siteContent.booking.url + (q ? "?" + q : "");
+}
+
+/** Reads a request back out of a /reserve URL's query string. */
+export function parseBookingRequest(search: string): ReservationRequest {
+  const p = new URLSearchParams(search);
+  const req: ReservationRequest = {};
+  const date = p.get("date") ?? "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) req.date = date;
+  const n = Number(p.get("party_size"));
+  if (n >= 1 && n <= 20) req.partySize = n;
+  const time = p.get("start_time") ?? "";
+  if (/^\d{2}:\d{2}$/.test(time)) req.time = time;
+  return req;
 }
 
 /** Opens the reservation drawer. Safe to call from anywhere on the client. */
@@ -32,7 +48,7 @@ export function openReservation(req: ReservationRequest = {}) {
 
 /** True when a link points at the reservation flow, so its click should open the drawer instead. */
 export function isReservationHref(href: string): boolean {
-  return href === siteContent.reservationUrl;
+  return href === siteContent.reservationUrl || href.startsWith(siteContent.reservationUrl + "?");
 }
 
 /** Local-time YYYY-MM-DD (toISOString would shift the day for evening visitors). */

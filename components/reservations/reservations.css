@@ -202,3 +202,8 @@
 .kiki-rsv.theme-lite .k-field { border-radius: 12px; font-family: var(--k-sans); font-size: 15px; letter-spacing: 0; background: #fff; }
 .kiki-rsv.theme-lite .k-label { letter-spacing: 0.12em; font-size: 11px; }
 .kiki-rsv.theme-lite .k-chip[data-on="true"] { background: var(--k-pink); border-color: var(--k-pink); color: #fff; }
+
+/* Inside the site's reservation drawer: no page background, no forced height. */
+.kiki-rsv.is-drawer { min-height: 0; background: transparent; overflow: visible; }
+/* Under the site's own header on /reserve. */
+.kiki-rsv.is-embedded { background: var(--k-stone); }

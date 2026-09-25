@@ -40,11 +40,11 @@ function Picker({ icon, label, value, children, ...rest }: { icon: ReactNode; la
  * wordmark over the water, one white card with date, time and guests, the
  * pink call to action, and the spaces you can book. Petals fall throughout.
  */
-export default function Landing({ onReserve, onSpace }: { onReserve: (p: Prefill) => void; onSpace: (id: string, p: Prefill) => void }) {
+export default function Landing({ onReserve, onSpace, initial, hideTopBar = false }: { onReserve: (p: Prefill) => void; onSpace: (id: string, p: Prefill) => void; initial?: Partial<Prefill>; hideTopBar?: boolean }) {
   const days = useMemo(() => nextDays(21), []);
-  const [date, setDate] = useState(days[0].iso);
-  const [time, setTime] = useState("19:00");
-  const [guests, setGuests] = useState<number | "11+">(2);
+  const [date, setDate] = useState(initial?.date && days.some((d) => d.iso === initial.date) ? initial.date : days[0].iso);
+  const [time, setTime] = useState(initial?.time ?? "19:00");
+  const [guests, setGuests] = useState<number | "11+">(initial?.partySize ?? 2);
   const prefill: Prefill = { date, time, partySize: guests };
   const dayLabel = days.find((d) => d.iso === date)?.label ?? date;
 
@@ -70,8 +70,9 @@ export default function Landing({ onReserve, onSpace }: { onReserve: (p: Prefill
       <Petals count={18} seed={5} scale={1.25} />
 
       <div className="relative flex min-h-[100svh] flex-col">
-        {/* Top bar */}
-        <div className="flex items-center justify-between p-4 sm:px-8 sm:pt-6">
+        {/* Top bar (the site's own header replaces it on /reserve) */}
+        <div className={hideTopBar ? "h-[104px] sm:h-[112px]" : "flex items-center justify-between p-4 sm:px-8 sm:pt-6"}>
+          {!hideTopBar && (<>
           <motion.div variants={rise} custom={0} initial="hidden" animate="show" className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2.5 text-[13px] text-[#1238B8] shadow-[0_10px_30px_-12px_rgba(14,44,147,0.5)]">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="#1238B8" aria-hidden><path d="M12 2l2.9 6.6 7.1.7-5.4 4.8 1.6 7L12 17.3 5.8 21l1.6-7L2 9.3l7.1-.7z" /></svg>
             <span className="font-semibold">{RESTAURANT.rating.toFixed(1)}</span>
@@ -92,6 +93,7 @@ export default function Landing({ onReserve, onSpace }: { onReserve: (p: Prefill
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="18" cy="5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="19" r="2.5" /><path d="M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6" /></svg>
             </button>
           </motion.div>
+          </>)}
         </div>
 
         {/* Wordmark */}
