@@ -98,8 +98,8 @@ export default function Hero({ bgRef, uiRef, blurRef }: HeroProps) {
           className="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1400ms] ease-editorial"
           style={{ opacity: videoReady ? 1 : 0 }}
         />
-        {/* Very light exposure lift so the white wordmark reads on the brightest skies. */}
-        <div className="absolute inset-0 bg-white/[0.04]" aria-hidden />
+        {/* A touch of shade, heavier at the edges, so the white wordmark and the header always read. */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/40" aria-hidden />
         {/* Blurred copy, faded in by the sequence (opacity only: no per-frame filter). */}
         <div ref={blurRef} className="absolute inset-0 opacity-0" aria-hidden>
           <Image src={hero.blurImage} alt="" fill sizes="100vw" quality={75} className="object-cover object-center" />

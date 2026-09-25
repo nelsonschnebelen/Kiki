@@ -17,6 +17,7 @@ export default function SiteFooter() {
     <footer className="relative z-10 min-h-[86svh] w-full overflow-hidden text-white" aria-label="Footer">
       <FooterMedia image={footer.image} alt={footer.alt} video={footer.video} />
       {/* Legibility veil for the wordmark and links; the top of the film stays untouched. */}
+      <div className="pointer-events-none absolute inset-0 bg-black/15" aria-hidden />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-black/80 via-black/40 to-transparent" aria-hidden />
 
       <p aria-hidden className="script absolute left-[5vw] top-[8svh] hidden rotate-[-8deg] text-[34px] leading-[0.95] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:block">
