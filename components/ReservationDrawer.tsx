@@ -58,6 +58,7 @@ export default function ReservationDrawer() {
     lenis?.stop();
     const previousOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
+    document.documentElement.dataset.drawer = "open";
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -83,6 +84,7 @@ export default function ReservationDrawer() {
       window.clearTimeout(focusTimer);
       window.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = previousOverflow;
+      delete document.documentElement.dataset.drawer;
       lenis?.start();
       returnFocusRef.current?.focus?.();
     };

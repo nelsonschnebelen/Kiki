@@ -77,6 +77,7 @@ export const siteContent = {
     { label: "Happenings", href: "/happenings" },
     { label: "Private Events", href: "/private-events" },
     { label: "VIP", href: "/vip" },
+    { label: "Reservations", href: "/reserve" },
   ],
 
   hero: {
@@ -180,6 +181,32 @@ export const siteContent = {
     table: { src: "/images/long-table.jpg", alt: "A long white table set under bougainvillea beside the river" },
     champagne: { src: "/images/champagne.jpg", alt: "Champagne bottles chilling in silver buckets at sunset" },
   },
+
+  /** Contact and hours, as published on kikiontheriver.com. */
+  contact: {
+    phone: "(786) 502-3243",
+    phoneHref: "tel:+17865023243",
+    email: "reservation@kikimiami.com",
+    address: "450 NW North River Dr, Miami, FL 33128",
+    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=450+NW+North+River+Dr,+Miami,+FL+33128",
+    instagram: { label: "@kikiontheriver", href: "https://www.instagram.com/kikiontheriver" },
+    /** Opening hours by weekday (0 = Sunday), 24h; close past midnight is written as 24+ hours. */
+    hours: [
+      { days: [0, 6], label: "Saturday & Sunday", open: "12:30", close: "26:00", note: "Brunch from 12:30" },
+      { days: [1, 2], label: "Monday & Tuesday", open: "17:00", close: "24:00" },
+      { days: [3], label: "Wednesday", open: "17:00", close: "26:00" },
+      { days: [4, 5], label: "Thursday & Friday", open: "13:00", close: "26:00" },
+    ],
+    happyHour: "Monday to Friday, 5 – 7 PM at the bar",
+  },
+
+  /** One-tap bookings: the nights people come to KIKI for, each with a real next date. */
+  quickPicks: [
+    { id: "brunch", title: "Weekend brunch", when: "Saturday & Sunday · 12:30 PM", body: "Champagne, the Riviera on the river.", days: [6, 0], time: "12:30", image: "/images/wheel-day.jpg", focus: "50% 50%" },
+    { id: "happy-hour", title: "Happy Hour", when: "Weekdays · 5 PM", body: "Sunset sips at the bar.", days: [1, 2, 3, 4, 5], time: "17:00", image: "/images/champagne.jpg", focus: "50% 40%" },
+    { id: "thursday", title: "Thursday into dancing", when: "Thursdays · 8:30 PM", body: "Live entertainment between courses.", days: [4], time: "20:30", image: "/images/letters/k1.jpg", focus: "50% 30%" },
+    { id: "saturday", title: "Saturday night", when: "Saturdays · 9:30 PM", body: "Sparklers, samba, napkins in the air.", days: [6], time: "21:30", image: "/images/wheel-night.jpg", focus: "50% 50%" },
+  ],
 
   footer: {
     /** Poster frame of the footer film (written by scripts/cut-footer.mjs). */

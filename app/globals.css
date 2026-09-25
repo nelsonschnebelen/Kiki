@@ -333,6 +333,25 @@ body {
   transform: scaleX(1);
 }
 
+/* The mobile reserve bar steps aside while the reservation drawer is open. */
+html[data-drawer="open"] .mobile-reserve-bar {
+  transform: translateY(120%);
+}
+
+/* The hero sequence pins for scrollMultiplier viewports (lib/animation.ts). Reserving that height
+   in CSS means the wheel and everything below sit where they will end up before ScrollTrigger runs. */
+#kiki-sequence {
+  min-height: calc(100svh * 3.8);
+}
+@media (max-width: 767px) {
+  #kiki-sequence {
+    min-height: calc(100svh * 3);
+  }
+}
+html[data-motion="reduce"] #kiki-sequence {
+  min-height: 0;
+}
+
 /* Thin animated underline for text links. */
 .link-underline {
   position: relative;
